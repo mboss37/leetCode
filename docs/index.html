@@ -359,6 +359,56 @@
     background: var(--accent);
     color: var(--paper);
   }
+  .problem-list li .pattern-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
+    padding: 1px 5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .problem-list li .progress-check {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--ink-3);
+    background: var(--paper);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--good);
+    font-weight: 700;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .problem-list li .progress-check:hover {
+    border-color: var(--good);
+  }
+  .problem-list li.done {
+    background: var(--good-soft);
+    border-left-color: var(--good);
+  }
+  .problem-list li.done .name {
+    color: var(--ink-3);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .problem-list li.done .progress-check {
+    background: var(--good);
+    border-color: var(--good);
+    color: var(--paper);
+  }
+  .progress-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--good);
+    letter-spacing: 0.08em;
+    margin-left: 8px;
+  }
 
   /* ========= MODAL ========= */
   .modal {
@@ -415,6 +465,30 @@
     color: var(--accent);
     font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
   }
+  .modal-header .header-controls {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .modal-nav-btn {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 6px 10px;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+  .modal-nav-btn:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .modal-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
   .modal-close {
     background: var(--ink);
     color: var(--paper);
@@ -427,6 +501,40 @@
     transition: background 0.15s;
   }
   .modal-close:hover { background: var(--accent); }
+  .modal-pattern-badge {
+    background: var(--paper-2);
+    border-left: 4px solid var(--accent);
+    padding: 10px 16px;
+    margin: 0 0 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    align-items: center;
+  }
+  .modal-pattern-badge .lbl {
+    color: var(--ink-3);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+  }
+  .modal-pattern-badge a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+  }
+  .modal-pattern-badge a:hover {
+    background: var(--gold);
+  }
+  .modal-pattern-badge .phase-tag {
+    background: var(--ink);
+    color: var(--gold);
+    padding: 2px 7px;
+    font-size: 10px;
+  }
   .modal-content {
     flex: 1;
     overflow-y: auto;
@@ -784,6 +892,7 @@
     <div class="phase-heading">
       <h3>Phase A<em>.</em></h3>
       <span class="dates">Recovery + foundations</span>
+      <span class="progress-summary" data-phase-pill="A"></span>
       <span class="count-pill">17 problems</span>
     </div>
     <ul class="problem-list" id="phase-a-list"></ul>
@@ -795,6 +904,7 @@
     <div class="phase-heading">
       <h3>Phase B<em>.</em></h3>
       <span class="dates">Depth + extensions</span>
+      <span class="progress-summary" data-phase-pill="B"></span>
       <span class="count-pill">15 problems</span>
     </div>
     <ul class="problem-list" id="phase-b-list"></ul>
@@ -806,6 +916,7 @@
     <div class="phase-heading">
       <h3>Phase C<em>.</em></h3>
       <span class="dates">Mock mode</span>
+      <span class="progress-summary" data-phase-pill="C"></span>
       <span class="count-pill">7 problems</span>
     </div>
     <ul class="problem-list" id="phase-c-list"></ul>
@@ -817,7 +928,11 @@
     <div class="modal-panel">
       <div class="modal-header">
         <h2 id="modal-title">—</h2>
-        <button class="modal-close" id="modal-close" aria-label="Close">CLOSE ✕</button>
+        <div class="header-controls">
+          <button class="modal-nav-btn" id="modal-prev" aria-label="Previous problem" title="Previous problem (←)">← Prev</button>
+          <button class="modal-nav-btn" id="modal-next" aria-label="Next problem" title="Next problem (→)">Next →</button>
+          <button class="modal-close" id="modal-close" aria-label="Close">CLOSE ✕</button>
+        </div>
       </div>
       <div class="modal-content markdown-content" id="modal-content">
         <div class="modal-loading">Loading…</div>
@@ -937,28 +1052,131 @@ const SCRIPTS = {
 
 /* ===== Visual walkthrough map ===== */
 const VISUALS = {
-  'Three Sum':         '3sum_skip_visual.html',
-  'Longest Substring': 'sliding_window_visual.html',
-  'Valid Parentheses': 'stack_visual.html',
-  'Min Stack':         'stack_visual.html',
+  'Three Sum':                          '3sum_skip_visual.html',
+  'Longest Substring':                  'sliding_window_visual.html',
+  'Valid Parentheses':                  'stack_visual.html',
+  'Min Stack':                          'stack_visual.html',
+  'Binary Search':                      'binary_search_visual.html',
+  'Search Insert Position':             'binary_search_visual.html',
+  'Find First and Last Position':       'binary_search_visual.html',
 };
+
+/* ===== Problem → pattern map (drives sub-list tags + the modal badge) ===== */
+const PROBLEMS_META = {
+  'Two Sum':                              { pattern: 'Hash Map',         flashcardCat: 'hashmap' },
+  'Contains Duplicate':                   { pattern: 'Hash Set',         flashcardCat: 'hashmap' },
+  'Valid Anagram':                        { pattern: 'Counter',          flashcardCat: 'hashmap' },
+  'Valid Palindrome':                     { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+  'Best Time to Buy and Sell Stock':      { pattern: 'One-pass tracker', flashcardCat: 'array-misc' },
+  'Maximum Subarray':                     { pattern: 'Kadane',           flashcardCat: 'array-misc' },
+  'Two Sum Sorted':                       { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+  'Three Sum':                            { pattern: 'Sort + 2Ptr',      flashcardCat: 'two-pointers' },
+  'Three Sum Closest':                    { pattern: 'Sort + 2Ptr',      flashcardCat: 'two-pointers' },
+  'Longest Substring':                    { pattern: 'Sliding Window',   flashcardCat: 'sliding-window' },
+  'Binary Search':                        { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Search Insert Position':               { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Find First and Last Position':         { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Valid Parentheses':                    { pattern: 'Stack',            flashcardCat: 'stack' },
+  'Min Stack':                            { pattern: 'Stack + Aux',      flashcardCat: 'stack' },
+  'LRU Cache':                            { pattern: 'Hash + DLL',       flashcardCat: 'linked-list' },
+  'Top K Frequent Elements':              { pattern: 'Heap',             flashcardCat: 'heap' },
+  'Group Anagrams':                       { pattern: 'Hash + Bucket',    flashcardCat: 'hashmap' },
+  'Longest Consecutive Sequence':         { pattern: 'Set + Anchor',     flashcardCat: 'hashmap' },
+  'Container With Most Water':            { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+  'Merge Intervals':                      { pattern: 'Sort + Sweep',     flashcardCat: 'array-misc' },
+  'Longest Repeating Character Replacement': { pattern: 'Sliding Window', flashcardCat: 'sliding-window' },
+  'Daily Temperatures':                   { pattern: 'Monotonic Stack',  flashcardCat: 'stack' },
+  'Find Minimum in Rotated Sorted Array': { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Search in Rotated Sorted Array':       { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Reverse Linked List':                  { pattern: '3-Pointer Walk',   flashcardCat: 'linked-list' },
+  'Remove Nth Node From End':             { pattern: 'Fast/Slow Ptrs',   flashcardCat: 'linked-list' },
+  'Maximum Depth of Binary Tree':         { pattern: 'DFS Recursion',    flashcardCat: 'tree-graph' },
+  'Invert Binary Tree':                   { pattern: 'DFS Recursion',    flashcardCat: 'tree-graph' },
+  'Insert Delete GetRandom O(1)':         { pattern: 'Hash + Array',     flashcardCat: 'hashmap' },
+  'Design HashMap':                       { pattern: 'Hash (manual)',    flashcardCat: 'hashmap' },
+  'Logger Rate Limit':                    { pattern: 'Dict + Expiry',    flashcardCat: 'hashmap' },
+  'Number of Islands':                    { pattern: 'DFS / BFS Grid',   flashcardCat: 'tree-graph' },
+  'Coin Change':                          { pattern: 'Bottom-up DP',     flashcardCat: 'dp' },
+  'Word Search':                          { pattern: 'Backtracking',     flashcardCat: 'tree-graph' },
+  'Binary Tree Level Order Traversal':    { pattern: 'BFS',              flashcardCat: 'tree-graph' },
+  'Product of Array Except Self':         { pattern: 'Prefix + Suffix',  flashcardCat: 'array-misc' },
+  'Longest Palindromic Substring':        { pattern: 'Expand-Center',    flashcardCat: 'array-misc' },
+  'Merge Strings Alternately':            { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+};
+
+/* ===== Progress tracking (localStorage) ===== */
+const DONE_KEY = 'problems_done_v1';
+function loadDone() {
+  try { return new Set(JSON.parse(localStorage.getItem(DONE_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+function saveDone(set) {
+  localStorage.setItem(DONE_KEY, JSON.stringify([...set]));
+}
+const doneSet = loadDone();
+
+/* ===== Flat ordered list for modal prev/next (Phase A → B → C) ===== */
+const ALL_PROBLEMS = [...PHASE_A, ...PHASE_B, ...PHASE_C];
 
 /* ===== Modal logic ===== */
 const modalEl       = document.getElementById('modal');
 const modalTitleEl  = document.getElementById('modal-title');
 const modalContentEl= document.getElementById('modal-content');
 
+let currentProblem = null;
+
+function phaseLabelFor(name) {
+  if (PHASE_A.includes(name)) return 'A';
+  if (PHASE_B.includes(name)) return 'B';
+  if (PHASE_C.includes(name)) return 'C';
+  return '';
+}
+
+function buildPatternBadge(name) {
+  const meta = PROBLEMS_META[name];
+  if (!meta) return '';
+  const phase = phaseLabelFor(name);
+  const visual = VISUALS[name];
+  const parts = [];
+  if (phase) parts.push(`<span class="phase-tag">PHASE ${phase}</span>`);
+  parts.push(`<span><span class="lbl">Pattern:</span> <b>${meta.pattern}</b></span>`);
+  parts.push(`<a href="pattern_flashcards.html#cat=${meta.flashcardCat}">↗ flashcards</a>`);
+  parts.push(`<a href="patterns_cheatsheet.html">↗ cheatsheet</a>`);
+  if (visual) parts.push(`<a href="${visual}">▶ visual</a>`);
+  if (name !== 'Python Idioms') parts.push(`<a href="#" onclick="openScript('Python Idioms','python_idioms.md'); return false;">↗ idioms</a>`);
+  return `<div class="modal-pattern-badge">${parts.join('')}</div>`;
+}
+
+function updateModalNavButtons() {
+  if (!currentProblem) {
+    modalPrevBtn.disabled = true;
+    modalNextBtn.disabled = true;
+    modalPrevBtn.style.display = 'none';
+    modalNextBtn.style.display = 'none';
+    return;
+  }
+  modalPrevBtn.style.display = '';
+  modalNextBtn.style.display = '';
+  const idx = ALL_PROBLEMS.indexOf(currentProblem);
+  modalPrevBtn.disabled = idx <= 0;
+  modalNextBtn.disabled = idx < 0 || idx >= ALL_PROBLEMS.length - 1;
+}
+
 async function openScript(name, path) {
+  currentProblem = SCRIPTS[name] ? name : null;
   modalTitleEl.textContent = name;
   modalContentEl.innerHTML = '<div class="modal-loading">Loading practice script…</div>';
   modalEl.classList.add('open');
   document.body.style.overflow = 'hidden';
+  updateModalNavButtons();
 
   try {
     const response = await fetch(path);
     if (!response.ok) throw new Error('HTTP ' + response.status);
     const md = await response.text();
-    modalContentEl.innerHTML = marked.parse(md);
+    const rendered = marked.parse(md);
+    const badge = currentProblem ? buildPatternBadge(currentProblem) : '';
+    modalContentEl.innerHTML = badge + rendered;
     modalContentEl.scrollTop = 0;
   } catch (err) {
     modalContentEl.innerHTML = `<div class="modal-loading" style="color:var(--accent);">
@@ -970,15 +1188,35 @@ async function openScript(name, path) {
   }
 }
 
+function navProblem(delta) {
+  if (!currentProblem) return;
+  const idx = ALL_PROBLEMS.indexOf(currentProblem);
+  if (idx < 0) return;
+  const nextIdx = idx + delta;
+  if (nextIdx < 0 || nextIdx >= ALL_PROBLEMS.length) return;
+  const nextName = ALL_PROBLEMS[nextIdx];
+  const nextPath = SCRIPTS[nextName];
+  if (nextPath) openScript(nextName, nextPath);
+}
+
+const modalPrevBtn = document.getElementById('modal-prev');
+const modalNextBtn = document.getElementById('modal-next');
+modalPrevBtn.addEventListener('click', () => navProblem(-1));
+modalNextBtn.addEventListener('click', () => navProblem(1));
+
 function closeModal() {
   modalEl.classList.remove('open');
   document.body.style.overflow = '';
+  currentProblem = null;
 }
 
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-overlay').addEventListener('click', closeModal);
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && modalEl.classList.contains('open')) closeModal();
+  if (!modalEl.classList.contains('open')) return;
+  if (e.key === 'Escape') closeModal();
+  else if (e.key === 'ArrowRight' && currentProblem && !modalNextBtn.disabled) navProblem(1);
+  else if (e.key === 'ArrowLeft'  && currentProblem && !modalPrevBtn.disabled) navProblem(-1);
 });
 
 /* Open the Python Idioms reference in the same modal */
@@ -987,17 +1225,23 @@ document.getElementById('open-idioms').addEventListener('click', (e) => {
   openScript('Python Idioms', 'python_idioms.md');
 });
 
-/* ===== Render lists with clickable items ===== */
-function renderList(elId, items) {
+/* ===== Render lists with clickable items, pattern tags, progress checkbox ===== */
+function renderList(elId, items, phaseId) {
   const el = document.getElementById(elId);
   if (!el) return;
   el.innerHTML = items.map((name, i) => {
     const path = SCRIPTS[name];
     const visual = VISUALS[name];
-    const cls = path ? 'clickable' : 'unavailable';
+    const meta = PROBLEMS_META[name];
+    const isDone = doneSet.has(name);
+    const cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
+    const tag = meta ? `<span class="pattern-tag">${meta.pattern}</span>` : '';
     const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
+    const check = `<span class="progress-check" data-name="${name}" title="Mark complete">${isDone ? '✓' : ''}</span>`;
     return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
+      ${check}
       <span class="name">${name}</span>
+      ${tag}
       ${badge}
       <span class="open-icon">OPEN →</span>
       <span class="num-tag">${(i+1).toString().padStart(2,'0')}</span>
@@ -1005,14 +1249,37 @@ function renderList(elId, items) {
   }).join('');
 
   el.querySelectorAll('li.clickable').forEach(li => {
-    li.addEventListener('click', () => {
+    li.addEventListener('click', (e) => {
+      if (e.target.classList.contains('progress-check') || e.target.classList.contains('visual-badge')) return;
       openScript(li.dataset.name, li.dataset.path);
     });
   });
+  el.querySelectorAll('.progress-check').forEach(c => {
+    c.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const name = c.dataset.name;
+      if (doneSet.has(name)) doneSet.delete(name);
+      else doneSet.add(name);
+      saveDone(doneSet);
+      renderAllLists();
+    });
+  });
+  updateProgressPill(phaseId, items);
 }
-renderList('phase-a-list', PHASE_A);
-renderList('phase-b-list', PHASE_B);
-renderList('phase-c-list', PHASE_C);
+
+function updateProgressPill(phaseId, items) {
+  const pillEl = document.querySelector(`[data-phase-pill="${phaseId}"]`);
+  if (!pillEl) return;
+  const doneInPhase = items.filter(n => doneSet.has(n)).length;
+  pillEl.textContent = doneInPhase ? `${doneInPhase}/${items.length} done` : '';
+}
+
+function renderAllLists() {
+  renderList('phase-a-list', PHASE_A, 'A');
+  renderList('phase-b-list', PHASE_B, 'B');
+  renderList('phase-c-list', PHASE_C, 'C');
+}
+renderAllLists();
 
 /* ===== Deep-link: open ?problem=Name on load (used by flashcards) ===== */
 (() => {

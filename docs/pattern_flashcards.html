@@ -1240,7 +1240,17 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ===================== INIT ===================== */
-render();
+/* If URL has #cat=<category>, pre-apply that filter (used by deep links from index.html badge) */
+(() => {
+  const m = window.location.hash.match(/cat=([a-z-]+)/);
+  if (!m) { render(); return; }
+  const cat = m[1];
+  const chip = document.querySelector(`.chip[data-cat="${cat}"]`);
+  if (!chip) { render(); return; }
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  applyFilter(cat);
+})();
 </script>
 </body>
 </html>
