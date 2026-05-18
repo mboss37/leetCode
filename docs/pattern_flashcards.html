@@ -323,7 +323,14 @@
     color: var(--ink-2);
     background: transparent;
     padding: 0 3px;
+    text-decoration: none;
+    border-bottom: 1px dotted transparent;
+    transition: color 0.15s, border-color 0.15s;
     font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .front .examples-front .pill:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
   }
   .front .examples-front .pill:not(:last-child)::after {
     content: ' ·';
@@ -485,7 +492,13 @@
     background: var(--gold);
     color: var(--ink);
     padding: 3px 10px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
     font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .back .example-pill:hover {
+    background: var(--accent);
+    color: var(--paper);
   }
 
   /* ========= CONTROLS ========= */
@@ -1118,8 +1131,10 @@ function render() {
   markBtn.textContent = isKnown ? '★ Known' : '☆ Mark known';
   markBtn.classList.toggle('is-known', isKnown);
 
-  const examplesHTML = card.examples.map(e => `<span class="example-pill">${e}</span>`).join('');
-  const examplesHTMLFront = card.examples.map(e => `<span class="pill">${e}</span>`).join('');
+  const exampleLink = name => `<a class="example-pill" href="index.html?problem=${encodeURIComponent(name)}" title="Open ${name} practice script">${name}</a>`;
+  const exampleLinkFront = name => `<a class="pill" href="index.html?problem=${encodeURIComponent(name)}" title="Open ${name} practice script">${name}</a>`;
+  const examplesHTML = card.examples.map(exampleLink).join('');
+  const examplesHTMLFront = card.examples.map(exampleLinkFront).join('');
 
   cardEl.innerHTML = `
     <div class="face front">

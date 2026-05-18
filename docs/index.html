@@ -144,6 +144,34 @@
     letter-spacing: 0;
     font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
   }
+  .section-label .learn-path {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 12px;
+    letter-spacing: 0;
+    margin-left: 8px;
+    text-transform: none;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .section-label .learn-path b {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+  }
+  .tool .tag .step-num {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--paper);
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    margin-right: 6px;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0;
+  }
 
   /* ========= TOOL CARDS GRID ========= */
   .tools {
@@ -675,13 +703,23 @@
   </header>
 
   <!-- =================== TOOLS =================== -->
-  <div class="section-label"><span class="num">i.</span> Visual learning tools</div>
+  <div class="section-label"><span class="num">i.</span> Visual learning tools <span class="learn-path">— start at <b>1</b>, work right</span></div>
   <section class="tools">
 
+    <a href="#" id="open-idioms" class="tool">
+      <div class="tag"><b class="step-num">1</b> Foundation · Python</div>
+      <h2>Python Idioms<em>.</em></h2>
+      <div class="desc">— 15 idioms drilled to muscle memory. Counter, defaultdict, deque, heapq, bisect, slicing, comprehensions. Language fluency first — every pattern below assumes you can type these in 30 seconds.</div>
+      <div class="footer-row">
+        <div class="features">15 idioms · snippets · chain map</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
     <a href="patterns_cheatsheet.html" class="tool">
-      <div class="tag">Reference · Printable</div>
+      <div class="tag"><b class="step-num">2</b> Map · Printable</div>
       <h2>Patterns Cheatsheet<em>.</em></h2>
-      <div class="desc">— Dense single-page map of every pattern. Print landscape A4 and keep beside you while you code.</div>
+      <div class="desc">— Dense single-page map of every pattern. The "what exists" overview. Print landscape A4 and keep beside you while you code.</div>
       <div class="footer-row">
         <div class="features">12 cards · idiom shapes · bugs · phrases</div>
         <div class="open-arrow">OPEN →</div>
@@ -689,9 +727,9 @@
     </a>
 
     <a href="pattern_flashcards.html" class="tool">
-      <div class="tag">Interactive · Drill</div>
+      <div class="tag"><b class="step-num">3</b> Drill · Interactive</div>
       <h2>Pattern Flashcards<em>.</em></h2>
-      <div class="desc">— Signal-to-pattern cards. Click to flip. Mark as known. Filter by category. Build the recognition reflex.</div>
+      <div class="desc">— Signal-to-pattern cards. Click to flip. Mark as known. Filter by category. Turn the cheatsheet's passive map into a recognition reflex. Each example links to its practice script.</div>
       <div class="footer-row">
         <div class="features">35 cards · 10 categories · localStorage</div>
         <div class="open-arrow">OPEN →</div>
@@ -699,7 +737,7 @@
     </a>
 
     <a href="3sum_skip_visual.html" class="tool">
-      <div class="tag">Walkthrough · 3Sum</div>
+      <div class="tag"><b class="step-num">4</b> Walkthrough · LC 15</div>
       <h2>3Sum Skip Logic<em>.</em></h2>
       <div class="desc">— Step through the dedup invariant side by side: WITHOUT skip vs WITH skip. Watch the duplicate triplet appear in one panel and not the other.</div>
       <div class="footer-row">
@@ -709,7 +747,7 @@
     </a>
 
     <a href="sliding_window_visual.html" class="tool">
-      <div class="tag">Walkthrough · Sliding Window</div>
+      <div class="tag"><b class="step-num">5</b> Walkthrough · LC 3</div>
       <h2>Sliding Window<em>.</em></h2>
       <div class="desc">— Watch the window grow on the right and shrink on the left for Longest Substring Without Repeating. Both pointers move forward — see why.</div>
       <div class="footer-row">
@@ -718,22 +756,22 @@
       </div>
     </a>
 
-    <a href="stack_visual.html" class="tool">
-      <div class="tag">Walkthrough · Stack</div>
-      <h2>Stack Ops<em>.</em></h2>
-      <div class="desc">— Push, pop, and peek visualized. Two scenes: Valid Parentheses matching, and Min Stack with its auxiliary stack synced in parallel.</div>
+    <a href="binary_search_visual.html" class="tool">
+      <div class="tag"><b class="step-num">6</b> Walkthrough · LC 704 / 35 / 34</div>
+      <h2>Binary Search Variants<em>.</em></h2>
+      <div class="desc">— Four modes of the same skeleton: exact match, insertion point, first occurrence, last occurrence. Step through and watch which return changes and why.</div>
       <div class="footer-row">
-        <div class="features">two scenarios · LIFO visual · sync view</div>
+        <div class="features">4 modes · L/R/mid · biased search</div>
         <div class="open-arrow">OPEN →</div>
       </div>
     </a>
 
-    <a href="#" id="open-idioms" class="tool">
-      <div class="tag">Reference · Python</div>
-      <h2>Python Idioms<em>.</em></h2>
-      <div class="desc">— 15 idioms drilled to muscle memory. Counter, defaultdict, deque, heapq, bisect, slicing, comprehensions. Canonical shapes + gotchas.</div>
+    <a href="stack_visual.html" class="tool">
+      <div class="tag"><b class="step-num">7</b> Walkthrough · LC 20 / 155</div>
+      <h2>Stack Ops<em>.</em></h2>
+      <div class="desc">— Push, pop, and peek visualized. Two scenes: Valid Parentheses matching, and Min Stack with its auxiliary stack synced in parallel.</div>
       <div class="footer-row">
-        <div class="features">15 idioms · code snippets · chain map</div>
+        <div class="features">two scenarios · LIFO visual · sync view</div>
         <div class="open-arrow">OPEN →</div>
       </div>
     </a>
@@ -975,6 +1013,16 @@ function renderList(elId, items) {
 renderList('phase-a-list', PHASE_A);
 renderList('phase-b-list', PHASE_B);
 renderList('phase-c-list', PHASE_C);
+
+/* ===== Deep-link: open ?problem=Name on load (used by flashcards) ===== */
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const problem = params.get('problem');
+  if (problem && SCRIPTS[problem]) {
+    openScript(problem, SCRIPTS[problem]);
+    history.replaceState({}, '', window.location.pathname);
+  }
+})();
 </script>
 </body>
 </html>
