@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FDE Prep — Visual Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<style>
+  :root {
+    --paper:     #f3eddc;
+    --paper-2:   #ebe2cc;
+    --paper-3:   #e3d8bd;
+    --ink:       #1a1410;
+    --ink-2:     #3c352d;
+    --ink-3:     #6b6155;
+    --accent:    #8b2c1c;
+    --accent-2:  #b34a2a;
+    --tan:       #a07c52;
+    --gold:      #f4dfa8;
+    --gold-2:    #ead09a;
+    --muted:     #5a5147;
+    --hair:      #c8bea4;
+    --good:      #4a6b3a;
+    --good-soft: #d9e3cf;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 5%, rgba(139,44,28,0.04), transparent 55%),
+      radial-gradient(ellipse at 90% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  /* ========= HEADER ========= */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+  }
+  header.top::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 72px;
+    line-height: 0.85;
+    letter-spacing: -0.045em;
+    margin: 0 0 8px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 20px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  header .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+  header .meta .countdown-row {
+    display: flex;
+    gap: 18px;
+    margin-top: 8px;
+    justify-content: flex-end;
+  }
+  header .meta .countdown {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 14px;
+    text-align: center;
+  }
+  header .meta .countdown .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--gold);
+    display: block;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+  header .meta .countdown .lbl {
+    font-size: 9px;
+    color: var(--paper-2);
+    letter-spacing: 0.18em;
+    margin-top: 4px;
+    display: block;
+  }
+  header .meta .dim { color: var(--ink-3); }
+
+  /* ========= SECTION HEADER ========= */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--hair);
+  }
+  .section-label .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 13px;
+    letter-spacing: 0;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ========= TOOL CARDS GRID ========= */
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 18px;
+    margin-bottom: 44px;
+  }
+  .tool {
+    background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 70%);
+    border: 1.5px solid var(--ink);
+    padding: 24px 26px 22px;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .tool::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+  .tool:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px -20px rgba(0,0,0,0.3);
+  }
+  .tool .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .tool h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144;
+  }
+  .tool h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  .tool .desc {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-2);
+    line-height: 1.4;
+    margin-bottom: 16px;
+    flex: 1;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .tool .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--hair);
+  }
+  .tool .features {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+  }
+  .tool .open-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ========= PROGRESS CHECKLIST ========= */
+  .phase-block {
+    margin-bottom: 36px;
+  }
+  .phase-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .phase-heading h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 24;
+  }
+  .phase-heading h3 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .phase-heading .dates {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .phase-heading .count-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 3px 10px;
+    letter-spacing: 0.08em;
+    margin-left: auto;
+  }
+  .problem-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 6px 18px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .problem-list li {
+    padding: 8px 14px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink-2);
+    transition: all 0.15s ease-out;
+  }
+  .problem-list li.clickable {
+    cursor: pointer;
+  }
+  .problem-list li.clickable:hover {
+    background: var(--paper-3);
+    transform: translateX(3px);
+    box-shadow: -2px 0 0 var(--accent-2);
+  }
+  .problem-list li.unavailable {
+    opacity: 0.55;
+    border-left-color: var(--hair);
+  }
+  .problem-list li .name { flex: 1; }
+  .problem-list li .open-icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .problem-list li.clickable:hover .open-icon {
+    opacity: 1;
+  }
+  .problem-list li .num-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+  }
+
+  /* ========= MODAL ========= */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+  }
+  .modal.open { display: block; }
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 20, 16, 0.78);
+    backdrop-filter: blur(3px);
+  }
+  .modal-panel {
+    position: relative;
+    background: var(--paper);
+    width: min(960px, 96vw);
+    max-height: 92vh;
+    margin: 4vh auto;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6), 0 8px 20px -10px rgba(0,0,0,0.3);
+  }
+  .modal-header {
+    padding: 20px 28px;
+    border-bottom: 1.5px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--paper-2);
+    position: relative;
+  }
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .modal-header h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 26px;
+    margin: 0;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 24;
+  }
+  .modal-header h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .modal-close {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 8px 16px;
+    letter-spacing: 0.08em;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--accent); }
+  .modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 36px 40px;
+  }
+  .modal-loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--ink-3);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 17px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ========= MARKDOWN RENDERED CONTENT ========= */
+  .markdown-content h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 38px;
+    letter-spacing: -0.03em;
+    margin: 0 0 18px;
+    color: var(--ink);
+    line-height: 1;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  .markdown-content h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 24px;
+    margin: 30px 0 12px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    border-bottom: 1px solid var(--hair);
+    padding-bottom: 6px;
+    font-variation-settings: "opsz" 24;
+  }
+  .markdown-content h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 19px;
+    margin: 22px 0 8px;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+    font-style: italic;
+  }
+  .markdown-content h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 16px 0 6px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 14;
+  }
+  .markdown-content p {
+    margin: 10px 0;
+    line-height: 1.6;
+    color: var(--ink-2);
+    font-size: 15.5px;
+  }
+  .markdown-content strong { color: var(--ink); font-weight: 700; }
+  .markdown-content em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+    color: var(--ink);
+  }
+  .markdown-content :not(pre) > code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 6px;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .markdown-content pre {
+    background: var(--ink);
+    padding: 18px 22px;
+    overflow-x: auto;
+    border-left: 4px solid var(--accent);
+    margin: 14px 0;
+  }
+  .markdown-content pre code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--paper);
+    background: transparent;
+    padding: 0;
+    display: block;
+    white-space: pre;
+  }
+  .markdown-content blockquote {
+    border-left: 4px solid var(--accent);
+    background: rgba(139, 44, 28, 0.05);
+    padding: 12px 18px;
+    margin: 14px 0;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 15.5px;
+    line-height: 1.55;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .markdown-content blockquote p {
+    margin: 6px 0;
+  }
+  .markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 13.5px;
+  }
+  .markdown-content table th {
+    background: var(--ink);
+    color: var(--paper);
+    text-align: left;
+    padding: 9px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .markdown-content table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--hair);
+    vertical-align: top;
+    color: var(--ink-2);
+  }
+  .markdown-content table tr:nth-child(even) td {
+    background: var(--paper-2);
+  }
+  .markdown-content ul,
+  .markdown-content ol {
+    padding-left: 24px;
+    margin: 10px 0;
+  }
+  .markdown-content li {
+    margin: 5px 0;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .markdown-content a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+    transition: background 0.15s;
+  }
+  .markdown-content a:hover {
+    background: var(--gold);
+  }
+  .markdown-content hr {
+    border: none;
+    border-top: 1px solid var(--hair);
+    margin: 24px 0;
+  }
+
+  /* ========= SCRIPTS LINK ========= */
+  .scripts-block {
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .scripts-block h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 18px;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .scripts-block p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--ink-2);
+    line-height: 1.45;
+    margin: 0;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .scripts-block .scripts-list {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .scripts-block .script-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 4px 10px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .scripts-block .script-pill:hover {
+    background: var(--gold-2);
+  }
+
+  /* ========= FOOTER ========= */
+  footer {
+    margin-top: 50px;
+    padding-top: 22px;
+    border-top: 1px solid var(--hair);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+  footer .accent { color: var(--accent); font-weight: 700; }
+  footer .deploy {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  footer .deploy code {
+    background: rgba(243,237,220,0.15);
+    color: var(--gold);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 11px;
+  }
+  footer .deploy h4 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 14px;
+    margin: 0 0 8px;
+    letter-spacing: 0;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+    text-transform: none;
+  }
+  footer .deploy ol {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--paper-2);
+  }
+  footer .deploy ol li {
+    padding: 2px 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 24px 14px 40px; }
+    header h1 { font-size: 48px; }
+    header.top { grid-template-columns: 1fr; }
+    header .meta { text-align: left; }
+    header .meta .countdown-row { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- =================== HEADER =================== -->
+  <header class="top">
+    <div>
+      <h1>Prep<em>.</em> Hub</h1>
+      <div class="sub">— FDE / SWE Coding Interview Prep. Visual tools, pattern drills, and the path through Phase A → C.</div>
+    </div>
+    <div class="meta">
+      <div class="dim">VISUAL LEARNING HUB</div>
+      <div class="countdown-row">
+        <div class="countdown">
+          <span class="num" id="cd-coding">—</span>
+          <span class="lbl">Coding · Jun 3</span>
+        </div>
+        <div class="countdown">
+          <span class="num" id="cd-design">—</span>
+          <span class="lbl">Sys Design · Jun 8</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =================== TOOLS =================== -->
+  <div class="section-label"><span class="num">i.</span> Visual learning tools</div>
+  <section class="tools">
+
+    <a href="patterns_cheatsheet.html" class="tool">
+      <div class="tag">Reference · Printable</div>
+      <h2>Patterns Cheatsheet<em>.</em></h2>
+      <div class="desc">— Dense single-page map of every pattern. Print landscape A4 and keep beside you while you code.</div>
+      <div class="footer-row">
+        <div class="features">12 cards · idiom shapes · bugs · phrases</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+    <a href="pattern_flashcards.html" class="tool">
+      <div class="tag">Interactive · Drill</div>
+      <h2>Pattern Flashcards<em>.</em></h2>
+      <div class="desc">— 33 signal-to-pattern cards. Click to flip. Mark as known. Filter by category. Build the recognition reflex.</div>
+      <div class="footer-row">
+        <div class="features">33 cards · 9 categories · localStorage</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+    <a href="3sum_skip_visual.html" class="tool">
+      <div class="tag">Walkthrough · 3Sum</div>
+      <h2>3Sum Skip Logic<em>.</em></h2>
+      <div class="desc">— Step through the dedup invariant side by side: WITHOUT skip vs WITH skip. Watch the duplicate triplet appear in one panel and not the other.</div>
+      <div class="footer-row">
+        <div class="features">step-through · paired panels · auto-play</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+    <a href="sliding_window_visual.html" class="tool">
+      <div class="tag">Walkthrough · Sliding Window</div>
+      <h2>Sliding Window<em>.</em></h2>
+      <div class="desc">— Watch the window grow on the right and shrink on the left for Longest Substring Without Repeating. Both pointers move forward — see why.</div>
+      <div class="footer-row">
+        <div class="features">step-through · window animation · set view</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+    <a href="stack_visual.html" class="tool">
+      <div class="tag">Walkthrough · Stack</div>
+      <h2>Stack Ops<em>.</em></h2>
+      <div class="desc">— Push, pop, and peek visualized. Two scenes: Valid Parentheses matching, and Min Stack with its auxiliary stack synced in parallel.</div>
+      <div class="footer-row">
+        <div class="features">two scenarios · LIFO visual · sync view</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+  </section>
+
+  <!-- =================== PHASE A =================== -->
+  <div class="section-label"><span class="num">ii.</span> Phase A — Recovery + Foundations</div>
+  <div class="phase-block">
+    <div class="phase-heading">
+      <h3>Phase A<em>.</em></h3>
+      <span class="dates">May 13 → May 19</span>
+      <span class="count-pill">17 problems</span>
+    </div>
+    <ul class="problem-list" id="phase-a-list"></ul>
+  </div>
+
+  <!-- =================== PHASE B =================== -->
+  <div class="section-label"><span class="num">iii.</span> Phase B — Depth + Extensions</div>
+  <div class="phase-block">
+    <div class="phase-heading">
+      <h3>Phase B<em>.</em></h3>
+      <span class="dates">May 20 → May 26</span>
+      <span class="count-pill">15 problems</span>
+    </div>
+    <ul class="problem-list" id="phase-b-list"></ul>
+  </div>
+
+  <!-- =================== PHASE C =================== -->
+  <div class="section-label"><span class="num">iv.</span> Phase C — Mock mode</div>
+  <div class="phase-block">
+    <div class="phase-heading">
+      <h3>Phase C<em>.</em></h3>
+      <span class="dates">May 27 → Jun 2</span>
+      <span class="count-pill">7 problems</span>
+    </div>
+    <ul class="problem-list" id="phase-c-list"></ul>
+  </div>
+
+  <!-- =================== MODAL (markdown viewer) =================== -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2 id="modal-title">—</h2>
+        <button class="modal-close" id="modal-close" aria-label="Close">CLOSE ✕</button>
+      </div>
+      <div class="modal-content markdown-content" id="modal-content">
+        <div class="modal-loading">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== FOOTER =================== -->
+  <footer>
+    <div><span class="accent">FDE PREP</span> · <span class="dim">visual learning hub</span> · <span class="dim">v1.0</span></div>
+    <div class="deploy">
+      <h4>Deploy to GitHub Pages — one-time setup</h4>
+      <ol>
+        <li>Push this repo to GitHub.</li>
+        <li>Repo settings → Pages → Source: <code>main</code> branch, folder: <code>/docs</code>.</li>
+        <li>Wait ~1 min for build. URL will be: <code>https://&lt;username&gt;.github.io/&lt;repo&gt;/</code></li>
+        <li>This index page is the entry — all other HTMLs link relatively.</li>
+        <li>Markdown files render as raw text on Pages; use the GitHub repo view for rendered versions.</li>
+      </ol>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ===== Countdown ===== */
+function daysUntil(dateStr) {
+  const target = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const ms = target - today;
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+}
+document.getElementById('cd-coding').textContent = daysUntil('2026-06-03');
+document.getElementById('cd-design').textContent = daysUntil('2026-06-08');
+
+/* ===== Problem lists (stateless — just the canonical list per phase) ===== */
+const PHASE_A = [
+  'Two Sum',
+  'Contains Duplicate',
+  'Valid Anagram',
+  'Valid Palindrome',
+  'Best Time to Buy and Sell Stock',
+  'Maximum Subarray',
+  'Two Sum Sorted',
+  'Three Sum',
+  'Three Sum Closest',
+  'Longest Substring',
+  'Binary Search',
+  'Search Insert Position',
+  'Find First and Last Position',
+  'Valid Parentheses',
+  'Min Stack',
+  'LRU Cache',
+  'Top K Frequent Elements',
+];
+
+const PHASE_B = [
+  'Group Anagrams',
+  'Longest Consecutive Sequence',
+  'Container With Most Water',
+  'Merge Intervals',
+  'Longest Repeating Character Replacement',
+  'Daily Temperatures',
+  'Find Minimum in Rotated Sorted Array',
+  'Search in Rotated Sorted Array',
+  'Reverse Linked List',
+  'Remove Nth Node From End',
+  'Maximum Depth of Binary Tree',
+  'Invert Binary Tree',
+  'Insert Delete GetRandom O(1)',
+  'Design HashMap',
+  'Logger Rate Limit',
+];
+
+const PHASE_C = [
+  'Number of Islands',
+  'Coin Change',
+  'Word Search',
+  'Binary Tree Level Order Traversal',
+  'Product of Array Except Self',
+  'Longest Palindromic Substring',
+  'Merge Strings Alternately',
+];
+
+/* ===== Practice script paths (only Phase A has written walkthroughs so far) ===== */
+const SCRIPTS = {
+  'Two Sum':                          'exercise_scripts/LC1_TwoSum_practice.md',
+  'Contains Duplicate':               'exercise_scripts/LC217_ContainsDuplicate_practice.md',
+  'Valid Anagram':                    'exercise_scripts/LC242_ValidAnagram_practice.md',
+  'Valid Palindrome':                 'exercise_scripts/LC125_ValidPalindrome_practice.md',
+  'Best Time to Buy and Sell Stock':  'exercise_scripts/LC121_BestTimeToBuyStock_practice.md',
+  'Maximum Subarray':                 'exercise_scripts/LC53_MaximumSubarray_practice.md',
+  'Two Sum Sorted':                   'exercise_scripts/LC167_TwoSumSorted_practice.md',
+  'Three Sum':                        'exercise_scripts/LC15_3Sum_practice.md',
+  'Three Sum Closest':                'exercise_scripts/LC16_3SumClosest_practice.md',
+  'Longest Substring':                'exercise_scripts/LC3_LongestSubstring_practice.md',
+  'Binary Search':                    'exercise_scripts/LC704_BinarySearch_practice.md',
+  'Search Insert Position':           'exercise_scripts/LC35_SearchInsertPosition_practice.md',
+  'Find First and Last Position':     'exercise_scripts/LC34_FindFirstAndLastPosition_practice.md',
+  'Valid Parentheses':                'exercise_scripts/LC20_ValidParentheses_practice.md',
+  'Min Stack':                        'exercise_scripts/LC155_MinStack_practice.md',
+  'LRU Cache':                        'exercise_scripts/LC146_LRUCache_practice.md',
+  'Top K Frequent Elements':          'exercise_scripts/LC347_TopKFrequent_practice.md',
+  'Group Anagrams':                   'exercise_scripts/LC49_GroupAnagrams_practice.md',
+  'Longest Consecutive Sequence':     'exercise_scripts/LC128_LongestConsecutive_practice.md',
+  'Container With Most Water':        'exercise_scripts/LC11_ContainerWithMostWater_practice.md',
+  'Merge Intervals':                  'exercise_scripts/LC56_MergeIntervals_practice.md',
+  'Longest Repeating Character Replacement': 'exercise_scripts/LC424_LongestRepeatingCharReplacement_practice.md',
+  'Daily Temperatures':               'exercise_scripts/LC739_DailyTemperatures_practice.md',
+  'Find Minimum in Rotated Sorted Array': 'exercise_scripts/LC153_FindMinInRotatedSortedArray_practice.md',
+  'Search in Rotated Sorted Array':   'exercise_scripts/LC33_SearchInRotatedSortedArray_practice.md',
+  'Reverse Linked List':              'exercise_scripts/LC206_ReverseLinkedList_practice.md',
+  'Remove Nth Node From End':         'exercise_scripts/LC19_RemoveNthFromEnd_practice.md',
+  'Maximum Depth of Binary Tree':     'exercise_scripts/LC104_MaximumDepthBinaryTree_practice.md',
+  'Invert Binary Tree':               'exercise_scripts/LC226_InvertBinaryTree_practice.md',
+  'Insert Delete GetRandom O(1)':     'exercise_scripts/LC380_InsertDeleteGetRandom_practice.md',
+  'Design HashMap':                   'exercise_scripts/LC706_DesignHashMap_practice.md',
+  'Logger Rate Limit':                'exercise_scripts/LC359_LoggerRateLimit_practice.md',
+  'Number of Islands':                'exercise_scripts/LC200_NumberOfIslands_practice.md',
+  'Coin Change':                      'exercise_scripts/LC322_CoinChange_practice.md',
+  'Word Search':                      'exercise_scripts/LC79_WordSearch_practice.md',
+  'Binary Tree Level Order Traversal':'exercise_scripts/LC102_BinaryTreeLevelOrder_practice.md',
+  'Product of Array Except Self':     'exercise_scripts/LC238_ProductExceptSelf_practice.md',
+  'Longest Palindromic Substring':    'exercise_scripts/LC5_LongestPalindromicSubstring_practice.md',
+  'Merge Strings Alternately':        'exercise_scripts/LC1768_MergeStringsAlternately_practice.md',
+};
+
+/* ===== Modal logic ===== */
+const modalEl       = document.getElementById('modal');
+const modalTitleEl  = document.getElementById('modal-title');
+const modalContentEl= document.getElementById('modal-content');
+
+async function openScript(name, path) {
+  modalTitleEl.textContent = name;
+  modalContentEl.innerHTML = '<div class="modal-loading">Loading practice script…</div>';
+  modalEl.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const md = await response.text();
+    modalContentEl.innerHTML = marked.parse(md);
+    modalContentEl.scrollTop = 0;
+  } catch (err) {
+    modalContentEl.innerHTML = `<div class="modal-loading" style="color:var(--accent);">
+      Could not load script.<br><br>
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; font-style:normal;">
+        ${path}<br>${err.message}
+      </span>
+    </div>`;
+  }
+}
+
+function closeModal() {
+  modalEl.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', closeModal);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modalEl.classList.contains('open')) closeModal();
+});
+
+/* ===== Render lists with clickable items ===== */
+function renderList(elId, items) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = items.map((name, i) => {
+    const path = SCRIPTS[name];
+    const cls = path ? 'clickable' : 'unavailable';
+    return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
+      <span class="name">${name}</span>
+      <span class="open-icon">OPEN →</span>
+      <span class="num-tag">${(i+1).toString().padStart(2,'0')}</span>
+    </li>`;
+  }).join('');
+
+  el.querySelectorAll('li.clickable').forEach(li => {
+    li.addEventListener('click', () => {
+      openScript(li.dataset.name, li.dataset.path);
+    });
+  });
+}
+renderList('phase-a-list', PHASE_A);
+renderList('phase-b-list', PHASE_B);
+renderList('phase-c-list', PHASE_C);
+</script>
+</body>
+</html>

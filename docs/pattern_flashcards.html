@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern Flashcards — Recognize before coding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:     #f3eddc;
+    --paper-2:   #ebe2cc;
+    --paper-3:   #e3d8bd;
+    --ink:       #1a1410;
+    --ink-2:     #3c352d;
+    --ink-3:     #6b6155;
+    --accent:    #8b2c1c;
+    --accent-2:  #b34a2a;
+    --tan:       #a07c52;
+    --gold:      #f4dfa8;
+    --gold-2:    #ead09a;
+    --muted:     #5a5147;
+    --hair:      #c8bea4;
+    --good:      #4a6b3a;
+    --good-soft: #d9e3cf;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+
+  /* home nav link */
+  .home-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    z-index: 100;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: var(--accent); }
+
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 12% 8%, rgba(139,44,28,0.04), transparent 60%),
+      radial-gradient(ellipse at 88% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .wrap { max-width: 880px; width: 100%; }
+
+  /* ========= HEADER ========= */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  header.top .x-link {
+    position: absolute;
+    top: 4px;
+    right: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 4px 8px;
+    border: 1px solid var(--accent);
+    transition: all 0.15s;
+  }
+  header.top .x-link:hover {
+    background: var(--accent);
+    color: var(--paper);
+  }
+  header.top::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 52px;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0 0 6px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 18px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ========= CATEGORY FILTER ========= */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .filter-row .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .filter-row .chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 11px;
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px solid var(--hair);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: all 0.15s;
+  }
+  .filter-row .chip:hover { background: var(--paper-2); }
+  .filter-row .chip.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* ========= COUNTER ========= */
+  .counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-2);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .counter .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 700;
+    font-style: normal;
+    font-size: 18px;
+  }
+  .counter .known-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--good);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ========= CARD (with flip) ========= */
+  .card-stage {
+    perspective: 1500px;
+    margin-bottom: 24px;
+    min-height: 380px;
+  }
+  .card {
+    position: relative;
+    width: 100%;
+    min-height: 380px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .card .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 38px 44px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 60px -28px rgba(0,0,0,0.35), 0 8px 20px -10px rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+  .card .face::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+  .card .front::before { background: var(--accent); }
+  .card .back {
+    transform: rotateY(180deg);
+    background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 70%);
+  }
+  .card .back::before { background: var(--ink); }
+
+  /* known indicator */
+  .card .known-mark {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-size: 22px;
+    line-height: 1;
+    user-select: none;
+    color: var(--hair);
+    transition: color 0.2s;
+    z-index: 10;
+  }
+  .card[data-known="true"] .known-mark {
+    color: var(--good);
+  }
+
+  /* category tag */
+  .category-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .category-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--hair);
+  }
+  .category-tag .num-tag {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: 0;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+    margin-left: auto;
+    padding-left: 6px;
+  }
+
+  /* front content */
+  .front .signal-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .front .signal {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .front .quote-style { font-style: italic; }
+  .front .quote-style::before {
+    content: '"';
+    color: var(--accent);
+    margin-right: 2px;
+  }
+  .front .quote-style::after {
+    content: '"';
+    color: var(--accent);
+  }
+  .front .examples-front {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dotted var(--hair);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: baseline;
+  }
+  .front .examples-front .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-right: 4px;
+  }
+  .front .examples-front .pill {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-2);
+    background: transparent;
+    padding: 0 3px;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .front .examples-front .pill:not(:last-child)::after {
+    content: ' ·';
+    color: var(--ink-3);
+    margin-left: 4px;
+  }
+  .front .hint {
+    margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+  .front .hint .key {
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 8px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 2px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+
+  /* back content */
+  .back .pattern-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+    margin-bottom: 4px;
+  }
+  .back .pattern-name em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  .back .ds-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .back .complexity-row {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .back .complexity-block {
+    flex: 1;
+  }
+  .back .complexity-block .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 3px;
+  }
+  .back .complexity-block .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .back .memory-hook {
+    background: rgba(139, 44, 28, 0.08);
+    border-left: 3px solid var(--accent);
+    padding: 9px 14px;
+    margin: 0 0 14px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 15.5px;
+    color: var(--ink);
+    line-height: 1.3;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .back .memory-hook .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 8.5px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    font-variation-settings: "opsz" 14;
+    display: block;
+  }
+  .back .why {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin-bottom: 12px;
+    flex: 1;
+  }
+  .back .why .key-phrase {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--ink);
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .back .pitfall {
+    background: rgba(163, 38, 28, 0.07);
+    border-left: 3px solid var(--bad);
+    padding: 8px 12px;
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.35;
+  }
+  .back .pitfall .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.22em;
+    color: var(--bad);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    display: block;
+  }
+  .back .pitfall code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bad-soft, rgba(163,38,28,0.15));
+    padding: 0 4px;
+    font-size: 12px;
+    color: var(--bad);
+  }
+  .back .examples-row {
+    border-top: 1px solid var(--hair);
+    padding-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .back .examples-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-right: 4px;
+  }
+  .back .example-pill {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 3px 10px;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ========= CONTROLS ========= */
+  .controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .controls button {
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--accent-2); }
+  .controls button.ghost {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid var(--paper);
+  }
+  .controls button.ghost:hover { background: rgba(243,237,220,0.12); }
+  .controls .spacer { flex: 1; }
+  .controls .hint-text {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--paper-2);
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .controls .hint-text .k {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(243,237,220,0.15);
+    padding: 1px 6px;
+    margin: 0 2px;
+    font-style: normal;
+    border-radius: 2px;
+    font-size: 10px;
+  }
+
+  /* known mark button */
+  .controls .star-btn {
+    background: var(--gold);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .controls .star-btn:hover { background: var(--gold-2); }
+  .controls .star-btn.is-known {
+    background: var(--good);
+    color: var(--paper);
+  }
+
+  /* ========= RESPONSIVE ========= */
+  @media (max-width: 600px) {
+    body { padding: 18px 12px 40px; }
+    header h1 { font-size: 38px; }
+    header .sub { font-size: 15px; }
+    .card .face { padding: 28px 26px; }
+    .front .signal { font-size: 22px; }
+    .back .pattern-name { font-size: 24px; }
+    .back .why { font-size: 14px; }
+    .controls { padding: 10px 12px; }
+    .controls button { padding: 7px 11px; font-size: 10px; }
+  }
+
+  /* ========= EMPTY STATE ========= */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-3);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+</style>
+</head>
+<body>
+<a href="index.html" class="home-link">↶ Home</a>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Patterns<em>.</em></h1>
+    <div class="sub">— Flashcards. See the signal, name the pattern, before any code.</div>
+    <a href="patterns_cheatsheet.html" class="x-link">↗ Cheatsheet</a>
+  </header>
+
+  <!-- CATEGORY FILTER -->
+  <div class="filter-row" id="filter-row">
+    <div class="label">filter</div>
+    <button class="chip active" data-cat="all">All</button>
+    <button class="chip" data-cat="hashmap">Hash Map</button>
+    <button class="chip" data-cat="two-pointers">Two Pointers</button>
+    <button class="chip" data-cat="sliding-window">Sliding Window</button>
+    <button class="chip" data-cat="binary-search">Binary Search</button>
+    <button class="chip" data-cat="heap">Heap</button>
+    <button class="chip" data-cat="stack">Stack</button>
+    <button class="chip" data-cat="linked-list">Linked List</button>
+    <button class="chip" data-cat="tree-graph">Tree / Graph</button>
+    <button class="chip" data-cat="array-misc">Array / Misc</button>
+    <button class="chip" data-cat="unknown">Unknown only</button>
+  </div>
+
+  <!-- COUNTER -->
+  <div class="counter">
+    <div>Card <span class="num" id="cur-idx">1</span> of <span class="num" id="total">—</span></div>
+    <div class="known-count">★ <span id="known-count">0</span> known</div>
+  </div>
+
+  <!-- CARD STAGE -->
+  <div class="card-stage">
+    <div class="card" id="card">
+      <!-- front and back faces injected dynamically -->
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button id="prev-btn">← Prev</button>
+    <button id="flip-btn">Flip</button>
+    <button id="next-btn">Next →</button>
+    <button class="ghost" id="shuffle-btn">Shuffle</button>
+    <button class="star-btn" id="mark-btn">★ Mark known</button>
+    <div class="spacer"></div>
+    <div class="hint-text">
+      <span class="k">space</span>flip ·
+      <span class="k">←</span> <span class="k">→</span>navigate ·
+      <span class="k">k</span>mark
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ===================== CARD DATA ===================== */
+const CARDS = [
+  // ----- HASH MAP / SET (7) -----
+  {
+    cat: 'hashmap', catLabel: 'Hash Map',
+    signal: 'Find a pair of numbers that sum to target — input is UNSORTED.',
+    pattern: 'Hash map of complements',
+    memoryHook: 'The "magic notebook" — write x as you pass, look up <code>target − x</code> instantly.',
+    ds: 'dict: value → index',
+    time: 'O(n)', space: 'O(n)',
+    why: 'Walk once. For each <code>x</code>, ask the dict: <span class="key-phrase">"have I seen target − x?"</span> If yes, return the pair. If no, store x with its index.',
+    pitfall: 'Check the dict BEFORE adding x. Otherwise x could pair with itself, e.g. <code>[3, 3]</code> target 6.',
+    examples: ['Two Sum']
+  },
+  {
+    cat: 'hashmap', catLabel: 'Hash Map',
+    signal: 'Detect duplicates / "has X been seen before?"',
+    pattern: 'Set existence check',
+    memoryHook: 'The "bouncer\'s guest list" — already on it = duplicate. Otherwise: add and walk past.',
+    ds: 'set',
+    time: 'O(n)', space: 'O(n)',
+    why: 'Walk the input. For each item, is it in the set? Yes → duplicate found, return True. No → add it. Stop on first hit for fast exit.',
+    pitfall: 'Use <code>set()</code> for empty, NOT <code>{}</code> (that\'s an empty dict).',
+    examples: ['Contains Duplicate']
+  },
+  {
+    cat: 'hashmap', catLabel: 'Hash Map',
+    signal: 'Are two strings anagrams of each other?',
+    pattern: 'Counter equality',
+    memoryHook: '"Same letter recipe" — both strings reduce to the same frequency map.',
+    ds: 'collections.Counter',
+    time: 'O(n)', space: 'O(k)',
+    why: '<code>Counter(s) == Counter(t)</code>. Both strings reduced to the same <code>{char: count}</code> map iff they\'re anagrams of each other.',
+    pitfall: 'Check lengths first — if they differ, immediate False. Saves the Counter build.',
+    examples: ['Valid Anagram']
+  },
+  {
+    cat: 'hashmap', catLabel: 'Hash Map',
+    signal: 'Group items by a derived key (e.g., anagrams together).',
+    pattern: 'Hash map of lists',
+    memoryHook: '"Auto-bucket on first sight" — defaultdict creates the list when needed.',
+    ds: 'defaultdict(list)',
+    time: 'O(n · k)', space: 'O(n)',
+    why: 'Compute a stable key per item (sorted letters, frequency tuple, etc.). <code>groups[key].append(item)</code>. <span class="key-phrase">defaultdict auto-creates the bucket</span> on first sight — no <code>if key not in dict</code> dance.',
+    pitfall: 'Create the defaultdict ONCE outside the loop. Inside-the-loop creation resets state every iteration.',
+    examples: ['Group Anagrams']
+  },
+  {
+    cat: 'hashmap', catLabel: 'Hash Map',
+    signal: 'Frequency / count of each item in a sequence.',
+    pattern: 'Counter / defaultdict(int)',
+    memoryHook: '"One walk, +1 per item." Counter(seq) does it in one call.',
+    ds: 'Counter or defaultdict(int)',
+    time: 'O(n)', space: 'O(k)',
+    why: 'One walk, increment. <code>counts[c] += 1</code> with <code>defaultdict(int)</code> or <code>Counter(seq)</code> in one line. Bonus: <code>.most_common(k)</code> gives top-K for free.',
+    pitfall: 'With plain dict: default is 0, not 1. <code>counts.get(c, 0) + 1</code>. Default 1 gives off-by-one.',
+    examples: ['Top K Frequent', 'Valid Anagram']
+  },
+  {
+    cat: 'hashmap', catLabel: 'Hash Map',
+    signal: 'Longest consecutive run in an UNSORTED array.',
+    pattern: 'Set + anchor check',
+    memoryHook: '"Only start counting at the floor of a chain" — if x−1 in set, x is mid-chain.',
+    ds: 'set',
+    time: 'O(n)', space: 'O(n)',
+    why: 'Put all numbers in a set. For each <code>x</code>, <span class="key-phrase">only start counting a chain at x if x−1 is NOT in the set</span> — otherwise x is mid-chain and would be counted by a smaller anchor. Each chain visited once → O(n).',
+    pitfall: 'Without the anchor check, every element would walk its whole chain → O(n²).',
+    examples: ['Longest Consecutive Sequence']
+  },
+  {
+    cat: 'hashmap', catLabel: 'Hash Map',
+    signal: 'Design a structure with O(1) insert, delete, AND getRandom.',
+    pattern: 'Hash map + array (swap-and-pop)',
+    memoryHook: '"Swap-and-pop the target." Dict gives O(1) find, array gives O(1) random.',
+    ds: 'dict + list',
+    time: 'O(1) each op', space: 'O(n)',
+    why: 'List gives O(1) random access by index. Dict maps value → index for O(1) lookup. <span class="key-phrase">Delete: swap the target with the last element, pop the last.</span> Update the dict for the moved element.',
+    pitfall: 'After swap, UPDATE the dict entry for the element you moved. Easy to forget — silent corruption.',
+    examples: ['Insert Delete GetRandom O(1)']
+  },
+
+  // ----- TWO POINTERS (5) -----
+  {
+    cat: 'two-pointers', catLabel: 'Two Pointers',
+    signal: 'Find a pair summing to target — input is SORTED.',
+    pattern: 'Converging two pointers',
+    memoryHook: '"Squeeze from both ends." Sorted = direction is informative.',
+    ds: 'two indices (L at start, R at end)',
+    time: 'O(n)', space: 'O(1)',
+    why: '<span class="key-phrase">Sorted unlocks direction.</span> Sum too small → L++. Sum too big → R−−. No backtrack needed because moving past a pointer eliminates it from any future answer.',
+    pitfall: '<code>while L &lt; R</code> NOT <code>&lt;=</code> — same element can\'t be used twice.',
+    examples: ['Two Sum Sorted']
+  },
+  {
+    cat: 'two-pointers', catLabel: 'Two Pointers',
+    signal: 'Find triplet (or k-tuple) summing to target.',
+    pattern: 'Sort + outer loop + two pointers',
+    memoryHook: '"3Sum = Two Sum Sorted with an anchor." Fix one, two-pointer the rest.',
+    ds: 'sorted array + indices',
+    time: 'O(n²)', space: 'O(1)',
+    why: 'Sort first. Outer loop picks an anchor. For each anchor, run two pointers on the remaining slice — find pair summing to <code>−anchor</code>. <span class="key-phrase">Skip duplicate anchors and duplicate pointer values</span> after matches to avoid emitting the same triplet twice.',
+    pitfall: 'Reset L and R INSIDE the outer loop. Defining them outside leaves stale state per anchor.',
+    examples: ['3Sum', '3Sum Closest', '4Sum']
+  },
+  {
+    cat: 'two-pointers', catLabel: 'Two Pointers',
+    signal: 'Is this a palindrome (ignore case / non-alphanumeric)?',
+    pattern: 'Converging two pointers on string',
+    memoryHook: '"Meet in the middle" — mismatch on the way = not a palindrome.',
+    ds: 'two indices',
+    time: 'O(n)', space: 'O(1)',
+    why: 'L at start, R at end. Skip non-alphanumeric. Compare lowercased chars. Move both inward. <span class="key-phrase">Mismatch → not a palindrome. Meet in middle → yes.</span>',
+    pitfall: 'Skip non-alphanumeric on BOTH sides BEFORE comparing — otherwise spaces fail the equality check.',
+    examples: ['Valid Palindrome']
+  },
+  {
+    cat: 'two-pointers', catLabel: 'Two Pointers',
+    signal: 'Find two lines / boundaries with maximum area / volume.',
+    pattern: 'Two pointers, move the shorter side',
+    memoryHook: '"Always move the shorter side inward." Moving the taller never helps.',
+    ds: 'two indices',
+    time: 'O(n)', space: 'O(1)',
+    why: 'Area = min(h[L], h[R]) × (R − L). <span class="key-phrase">Moving the taller side never helps</span> (width shrinks; min height can\'t exceed the shorter). Always move the shorter side inward. Greedy + provably optimal.',
+    pitfall: 'Don\'t move BOTH sides per step — only the shorter one. Otherwise you skip the optimum.',
+    examples: ['Container With Most Water']
+  },
+  {
+    cat: 'two-pointers', catLabel: 'Two Pointers',
+    signal: 'Merge two sorted lists / strings / arrays.',
+    pattern: 'Two pointers, walk both forward',
+    memoryHook: '"Step from whichever is smaller." Both pointers forward, never converge.',
+    ds: 'two indices on two sequences',
+    time: 'O(n + m)', space: 'O(n + m) for output',
+    why: 'Pointer per sequence, both start at 0. Compare current values; <span class="key-phrase">take the smaller (or whichever fits the rule), advance ITS pointer</span>. Continue until either is exhausted, then append the rest of the other.',
+    pitfall: 'After the main loop, REMEMBER to append the leftover tail of the non-exhausted sequence.',
+    examples: ['Merge Sorted Array', 'Merge Strings Alternately']
+  },
+
+  // ----- SLIDING WINDOW (3) -----
+  {
+    cat: 'sliding-window', catLabel: 'Sliding Window',
+    signal: 'Longest substring with no repeating characters.',
+    pattern: 'Sliding window with set',
+    memoryHook: '"Stretch R, shrink L on duplicate." Both pointers forward.',
+    ds: 'set + L, R indices (both move forward)',
+    time: 'O(n)', space: 'O(min(n, alphabet))',
+    why: 'R walks every char. Before adding <code>s[R]</code>, if it\'s already in the window, <span class="key-phrase">shrink from L until the duplicate is gone</span>. Then add s[R]. Update best. Each char visited at most twice → linear.',
+    pitfall: 'NOT converging two-pointer — both go forward. Don\'t reach for <code>L,R = 0, n-1</code>.',
+    examples: ['Longest Substring Without Repeating Characters']
+  },
+  {
+    cat: 'sliding-window', catLabel: 'Sliding Window',
+    signal: 'Longest substring with at most K distinct characters.',
+    pattern: 'Sliding window with count dict',
+    memoryHook: '"Shrink while distinct count > K." Count, expand, shrink as needed.',
+    ds: 'dict of char → count + L, R',
+    time: 'O(n)', space: 'O(k)',
+    why: 'R expands the window, incrementing counts. <span class="key-phrase">If distinct-keys count > k</span>, shrink from L — decrement and del key when count hits 0. Update best whenever the window is valid.',
+    pitfall: 'When decrementing on shrink, DELETE the key when count hits 0 — otherwise distinct count is wrong.',
+    examples: ['Longest Substring with At Most K Distinct']
+  },
+  {
+    cat: 'sliding-window', catLabel: 'Sliding Window',
+    signal: 'Longest block of one letter if you can replace K characters.',
+    pattern: 'Sliding window with max-count tracker',
+    memoryHook: '"Window valid iff size − max_count ≤ K." Track the most-frequent char.',
+    ds: 'count dict + L, R + max_freq',
+    time: 'O(n)', space: 'O(k)',
+    why: 'Track count of each char in window. Window is valid iff <span class="key-phrase">window_size − max_count ≤ K</span> (you can afford to replace the non-majority chars). When invalid, shrink from L. Best answer = largest valid window seen.',
+    pitfall: 'max_count doesn\'t need to be decremented on shrink — stale value still works (only affects best, which only grows).',
+    examples: ['Longest Repeating Character Replacement']
+  },
+
+  // ----- BINARY SEARCH (4) -----
+  {
+    cat: 'binary-search', catLabel: 'Binary Search',
+    signal: 'Find an element in a SORTED array — O(log n) required.',
+    pattern: 'Binary Search',
+    memoryHook: '"Halve the range every step." Peek mid, eliminate one half.',
+    ds: 'L, R indices on sorted array',
+    time: 'O(log n)', space: 'O(1)',
+    why: 'Peek the middle. <span class="key-phrase">Eliminate the half that can\'t contain target.</span> Repeat. For find-exact-match: <code>while L &lt;= R</code> with <code>=</code> so the last single element gets checked.',
+    pitfall: '<code>mid + 1</code> and <code>mid - 1</code> for bounds update — mid is already checked. Without +1/-1, infinite loop on 2-element ranges.',
+    examples: ['Binary Search']
+  },
+  {
+    cat: 'binary-search', catLabel: 'Binary Search',
+    signal: 'Where would target go in a sorted array (insertion point)?',
+    pattern: 'Binary Search + return left',
+    memoryHook: '"Same skeleton — return left when loop exits."',
+    ds: 'L, R indices',
+    time: 'O(log n)', space: 'O(1)',
+    why: 'Same skeleton as plain Binary Search. <span class="key-phrase">The only change is the final return: <code>left</code> instead of <code>-1</code>.</span> When the loop exits, <code>left</code> sits at the first position holding ≥ target — exactly the insertion point.',
+    pitfall: 'On <code>==</code> return mid. Don\'t conflate <code>==</code> with <code>&gt;</code> — that gives the wrong index when target IS in the array.',
+    examples: ['Search Insert Position']
+  },
+  {
+    cat: 'binary-search', catLabel: 'Binary Search',
+    signal: 'First AND last occurrence of target in sorted array with duplicates.',
+    pattern: 'Two biased binary searches',
+    memoryHook: '"Record-and-keep-narrowing." On match, don\'t return — record and continue.',
+    ds: 'L, R indices × 2 passes',
+    time: 'O(log n)', space: 'O(1)',
+    why: 'Plain binary search returns SOME match. With duplicates, you need leftmost AND rightmost. <span class="key-phrase">On match, don\'t return — record and keep narrowing</span> in the biased direction. find_left narrows right after match; find_right narrows left.',
+    pitfall: 'Don\'t use adjacency checks (<code>nums[mid-1] == target</code>) — breaks on blocks wider than 2.',
+    examples: ['Find First and Last Position']
+  },
+  {
+    cat: 'binary-search', catLabel: 'Binary Search',
+    signal: 'Rotated sorted array — find min or search for target.',
+    pattern: 'Binary Search with pivot detection',
+    memoryHook: '"One half is always sorted." Detect which, recurse there.',
+    ds: 'L, R indices',
+    time: 'O(log n)', space: 'O(1)',
+    why: '<span class="key-phrase">Even rotated, one HALF is always sorted.</span> Compare <code>nums[mid]</code> to <code>nums[right]</code> (or <code>nums[left]</code>) to figure out which. Recurse into the half that could contain target.',
+    pitfall: 'Comparison to the WRONG endpoint can give the wrong half. Pick one (right is common) and use consistently.',
+    examples: ['Find Min in Rotated Sorted Array', 'Search in Rotated Sorted Array']
+  },
+
+  // ----- HEAP (2) -----
+  {
+    cat: 'heap', catLabel: 'Heap',
+    signal: 'Top K most frequent / largest / smallest elements.',
+    pattern: 'Min-heap of size K (or bucket sort)',
+    memoryHook: '"Keep the K best in a tiny heap." Push, pop if oversized.',
+    ds: 'heapq',
+    time: 'O(n log k)', space: 'O(k)',
+    why: 'Keep a heap of the best K seen so far. <span class="key-phrase">When size > K, pop the smallest (the heap\'s root).</span> What survives = top K. Python heapq is min only; negate values for max-heap behavior.',
+    pitfall: 'Python only ships min-heap. For "K largest," negate values OR push (count, value) tuples so count is compared first.',
+    examples: ['Top K Frequent Elements', 'Kth Largest Element']
+  },
+  {
+    cat: 'heap', catLabel: 'Heap',
+    signal: 'Kth smallest / largest element overall.',
+    pattern: 'Heap of size K',
+    memoryHook: '"Min-heap size K → root = Kth largest." Same shape as top-K, return just one.',
+    ds: 'heapq',
+    time: 'O(n log k)', space: 'O(k)',
+    why: 'Same shape as top-K — but you return only one element instead of all K. For <span class="key-phrase">Kth largest</span>: maintain a min-heap of size K. After processing, the root IS the Kth largest.',
+    pitfall: '"Kth largest" wants the K-th from biggest. Min-heap of size K works because root = smallest IN the heap = K-th largest overall.',
+    examples: ['Kth Largest Element']
+  },
+
+  // ----- STACK (3) -----
+  {
+    cat: 'stack', catLabel: 'Stack',
+    signal: 'Balanced parentheses / brackets / matching expressions.',
+    pattern: 'Stack',
+    memoryHook: '"Push openers, pop on closers — LIFO matching."',
+    ds: 'list (used as stack)',
+    time: 'O(n)', space: 'O(n)',
+    why: '<span class="key-phrase">Push openers, pop on closers</span>. On a closer: stack empty → invalid. Top doesn\'t match the type → invalid. After scanning, stack should be empty for "all matched."',
+    pitfall: 'Use a dict <code>{closer: opener}</code> for matching. On closer, check <code>stack and stack.pop() == pairs[c]</code> — fails fast if stack is empty.',
+    examples: ['Valid Parentheses']
+  },
+  {
+    cat: 'stack', catLabel: 'Stack',
+    signal: 'Find the next greater (or smaller) element / span for each position.',
+    pattern: 'Monotonic stack',
+    memoryHook: '"Pop everything smaller when a new big value walks in." Each item pushed/popped once → linear.',
+    ds: 'list (kept monotonic)',
+    time: 'O(n)', space: 'O(n)',
+    why: 'Walk the array. Keep a stack of indices with values in decreasing (or increasing) order. <span class="key-phrase">New value bigger than top → pop, and pair the popped index with this one.</span> Each index pushed and popped at most once → linear.',
+    pitfall: 'Store INDICES on the stack, not values. You usually need the index to compute the answer (e.g., days waited).',
+    examples: ['Daily Temperatures', 'Next Greater Element']
+  },
+  {
+    cat: 'stack', catLabel: 'Stack',
+    signal: 'Design a stack with O(1) min query.',
+    pattern: 'Stack + auxiliary min-stack',
+    memoryHook: '"Two stacks synced — min sits beside the value at each level."',
+    ds: 'two lists',
+    time: 'O(1) per op', space: 'O(n)',
+    why: 'Main stack stores values normally. <span class="key-phrase">Parallel "min stack" tracks the minimum AT each level.</span> On push: also push <code>min(new_val, current_min)</code> to min stack. On pop: pop both. <code>getMin()</code> peeks min stack.',
+    pitfall: 'Pop BOTH stacks together on every pop. Forgetting de-syncs the min stack and corrupts getMin.',
+    examples: ['Min Stack']
+  },
+
+  // ----- LINKED LIST (3) -----
+  {
+    cat: 'linked-list', catLabel: 'Linked List',
+    signal: 'Find middle / detect cycle / Nth node from end of linked list.',
+    pattern: 'Slow + fast pointers',
+    memoryHook: '"Fast 2×, slow 1×." Fast hits end → slow is at middle. Both in cycle → they meet.',
+    ds: 'two pointers, different speeds',
+    time: 'O(n)', space: 'O(1)',
+    why: 'Fast moves 2 steps; slow moves 1. <span class="key-phrase">When fast hits the end, slow is at the middle.</span> If there\'s a cycle, they\'ll meet inside it. For Nth-from-end: advance fast N steps first, then walk both until fast hits end.',
+    pitfall: 'Check both <code>fast</code> AND <code>fast.next</code> before advancing — fast moves 2 steps, both must exist.',
+    examples: ['Linked List Cycle', 'Middle of LL', 'Remove Nth From End']
+  },
+  {
+    cat: 'linked-list', catLabel: 'Linked List',
+    signal: 'Reverse a linked list (or a part of it).',
+    pattern: 'Iterative prev / curr / next',
+    memoryHook: '"Save next → flip curr.next backward → advance." Three pointers dance.',
+    ds: 'three pointers',
+    time: 'O(n)', space: 'O(1)',
+    why: 'Walk through. At each node: <span class="key-phrase">save next, point curr.next backward to prev, then advance prev = curr; curr = next</span>. When curr is None, prev is the new head.',
+    pitfall: 'SAVE <code>curr.next</code> BEFORE flipping the pointer. Otherwise you lose access to the rest of the list.',
+    examples: ['Reverse Linked List']
+  },
+  {
+    cat: 'linked-list', catLabel: 'Linked List',
+    signal: 'Cache with O(1) get and put, evicting least recently used.',
+    pattern: 'Hash map + doubly-linked list (or OrderedDict)',
+    memoryHook: '"OrderedDict in one method call." move_to_end on access; popitem(last=False) on overflow.',
+    ds: 'collections.OrderedDict (or dict + custom DLL)',
+    time: 'O(1) per op', space: 'O(capacity)',
+    why: 'Use <code>OrderedDict</code> — Python\'s stdlib already provides hash map + linked list combined. <span class="key-phrase"><code>move_to_end(key)</code> marks most recent; <code>popitem(last=False)</code> evicts oldest.</span> Both O(1).',
+    pitfall: 'On <code>get</code> AND on <code>put</code> for an existing key, MOVE-TO-END FIRST. Otherwise the LRU order stays stale.',
+    examples: ['LRU Cache']
+  },
+
+  // ----- TREE / GRAPH (3) -----
+  {
+    cat: 'tree-graph', catLabel: 'Tree / Graph',
+    signal: 'Tree depth / shape / path / max value / invert / mirror.',
+    pattern: 'DFS (recursion)',
+    memoryHook: '"Solve root from its subtrees." Recursion is the natural fit.',
+    ds: 'call stack',
+    time: 'O(n)', space: 'O(h) — height of tree',
+    why: 'Recursive natural fit: <span class="key-phrase">solve for root using solutions to left + right subtrees</span>. Base case: null node returns sentinel (0, None, etc.). Combine subresults at each node.',
+    pitfall: 'Base case (<code>if not node: return ...</code>) FIRST in the function. Missing it = stack overflow on the leaves.',
+    examples: ['Maximum Depth of Binary Tree', 'Invert Binary Tree']
+  },
+  {
+    cat: 'tree-graph', catLabel: 'Tree / Graph',
+    signal: 'Level-by-level traversal / shortest distance in unweighted graph / grid.',
+    pattern: 'BFS with queue',
+    memoryHook: '"Ripples in a pond." Process nodes in waves; first reach = shortest.',
+    ds: 'collections.deque',
+    time: 'O(V + E)', space: 'O(V)',
+    why: '<span class="key-phrase">Process nodes in waves — all at distance d before any at d+1.</span> First time you reach a node = shortest distance. Use <code>deque.popleft()</code> (O(1)) not <code>list.pop(0)</code> (O(n)).',
+    pitfall: 'Mark a node as <code>visited</code> WHEN YOU ENQUEUE it, not when you dequeue. Otherwise you can enqueue the same node multiple times.',
+    examples: ['Binary Tree Level Order', 'Number of Islands', 'Word Ladder']
+  },
+  {
+    cat: 'tree-graph', catLabel: 'Tree / Graph',
+    signal: 'Word search / generate all combinations / N-queens / permutations.',
+    pattern: 'Backtracking (DFS with undo)',
+    memoryHook: '"Try → recurse → undo on the way out." Explore one branch fully before the next.',
+    ds: 'recursion + state mutation',
+    time: 'exponential', space: 'O(depth)',
+    why: '<span class="key-phrase">Try a choice → recurse → undo the choice (backtrack)</span>. Each recursion explores one branch fully before trying the next. Common pattern: mark cell visited / append to path → recurse → unmark / pop.',
+    pitfall: 'UNDO state BEFORE returning from the recursive call. Otherwise sibling branches see corrupted state.',
+    examples: ['Word Search', 'Combinations', 'Permutations']
+  },
+
+  // ----- ARRAY / DP / MISC (3) -----
+  {
+    cat: 'array-misc', catLabel: 'Array / Misc',
+    signal: 'Maximum contiguous subarray sum.',
+    pattern: 'Kadane\'s algorithm',
+    memoryHook: '"Running sum, reset if it dips negative." A negative carry can only hurt the future.',
+    ds: 'two integers — running and best',
+    time: 'O(n)', space: 'O(1)',
+    why: 'Walk the array. Keep a running sum. <span class="key-phrase">If running sum drops below zero, reset it to the current number</span> (a negative running sum can only hurt future sums). Track the max running sum seen.',
+    pitfall: 'Reset to CURRENT NUM (not to 0) so arrays of all-negatives still work — the answer is the single largest negative.',
+    examples: ['Maximum Subarray']
+  },
+  {
+    cat: 'array-misc', catLabel: 'Array / Misc',
+    signal: 'Max profit from ONE buy and one later sell.',
+    pattern: 'One-pass min tracker',
+    memoryHook: '"Best profit = today − min so far." Two variables, one walk.',
+    ds: 'two integers — min and best',
+    time: 'O(n)', space: 'O(1)',
+    why: 'Walk left to right. <span class="key-phrase">Track the minimum price seen so far.</span> At each day, profit = current price − min so far. Update best profit. Update min if today\'s price is lower.',
+    pitfall: 'Compute profit FIRST, then update min. Otherwise you might subtract today\'s price from itself → 0.',
+    examples: ['Best Time to Buy and Sell Stock']
+  },
+  {
+    cat: 'array-misc', catLabel: 'Array / Misc',
+    signal: 'Merge overlapping intervals / collapse adjacent ranges.',
+    pattern: 'Sort by start + sweep',
+    memoryHook: '"Sorted = adjacency exposed." Then walk once, extend or append.',
+    ds: 'list',
+    time: 'O(n log n)', space: 'O(n) for output',
+    why: 'Sort intervals by start. Walk through. <span class="key-phrase">Adjacent intervals overlap iff current.start ≤ last.end</span>. If so, extend last.end to <code>max(last.end, current.end)</code>. Otherwise, append current as a new interval.',
+    pitfall: 'Use <code>≤</code> (not <code>&lt;</code>) for the overlap check — touching intervals like [1,3] and [3,5] should merge.',
+    examples: ['Merge Intervals', 'Insert Interval']
+  }
+];
+
+/* ===================== STATE ===================== */
+let state = {
+  filteredCards: [...CARDS],
+  currentIdx: 0,
+  knownIds: new Set(JSON.parse(localStorage.getItem('flashcard_known') || '[]')),
+  activeFilter: 'all',
+  flipped: false
+};
+
+function saveKnown() {
+  localStorage.setItem('flashcard_known', JSON.stringify([...state.knownIds]));
+}
+
+function cardKey(card) {
+  // Stable key based on the signal text
+  return card.signal;
+}
+
+/* ===================== DOM REFS ===================== */
+const cardEl = document.getElementById('card');
+const curIdxEl = document.getElementById('cur-idx');
+const totalEl = document.getElementById('total');
+const knownCountEl = document.getElementById('known-count');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const flipBtn = document.getElementById('flip-btn');
+const shuffleBtn = document.getElementById('shuffle-btn');
+const markBtn = document.getElementById('mark-btn');
+
+/* ===================== FILTERS ===================== */
+function applyFilter(cat) {
+  state.activeFilter = cat;
+  if (cat === 'all') {
+    state.filteredCards = [...CARDS];
+  } else if (cat === 'unknown') {
+    state.filteredCards = CARDS.filter(c => !state.knownIds.has(cardKey(c)));
+  } else {
+    state.filteredCards = CARDS.filter(c => c.cat === cat);
+  }
+  state.currentIdx = 0;
+  state.flipped = false;
+  render();
+}
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    applyFilter(chip.dataset.cat);
+  });
+});
+
+/* ===================== RENDER ===================== */
+function render() {
+  totalEl.textContent = state.filteredCards.length;
+  knownCountEl.textContent = state.knownIds.size;
+
+  if (state.filteredCards.length === 0) {
+    cardEl.innerHTML = `
+      <div class="face front" style="position:relative; transform:none;">
+        <div class="empty-state">
+          No cards match this filter.<br>
+          Try a different category.
+        </div>
+      </div>
+    `;
+    curIdxEl.textContent = '0';
+    return;
+  }
+
+  const card = state.filteredCards[state.currentIdx];
+  const isKnown = state.knownIds.has(cardKey(card));
+
+  curIdxEl.textContent = state.currentIdx + 1;
+  cardEl.dataset.known = isKnown ? 'true' : 'false';
+  cardEl.classList.toggle('flipped', state.flipped);
+
+  markBtn.textContent = isKnown ? '★ Known' : '☆ Mark known';
+  markBtn.classList.toggle('is-known', isKnown);
+
+  const examplesHTML = card.examples.map(e => `<span class="example-pill">${e}</span>`).join('');
+  const examplesHTMLFront = card.examples.map(e => `<span class="pill">${e}</span>`).join('');
+
+  cardEl.innerHTML = `
+    <div class="face front">
+      <div class="known-mark">${isKnown ? '★' : '☆'}</div>
+      <div class="category-tag">
+        <span>${card.catLabel}</span>
+        <span class="num-tag">card ${state.currentIdx + 1} of ${state.filteredCards.length}</span>
+      </div>
+      <div class="signal-label">The signal</div>
+      <div class="signal"><span class="quote-style">${card.signal}</span></div>
+      <div class="examples-front">
+        <span class="label">Maps to</span>
+        ${examplesHTMLFront}
+      </div>
+      <div class="hint">
+        <span class="key">space</span> reveal the pattern
+      </div>
+    </div>
+    <div class="face back">
+      <div class="known-mark">${isKnown ? '★' : '☆'}</div>
+      <div class="category-tag">
+        <span>${card.catLabel}</span>
+        <span class="num-tag">card ${state.currentIdx + 1} of ${state.filteredCards.length}</span>
+      </div>
+      <div class="pattern-name">${card.pattern}<em>.</em></div>
+      ${card.memoryHook ? `<div class="memory-hook"><span class="lbl">Memory hook</span>${card.memoryHook}</div>` : ''}
+      <div class="ds-line">${card.ds}</div>
+      <div class="complexity-row">
+        <div class="complexity-block">
+          <div class="label">Time</div>
+          <div class="value">${card.time}</div>
+        </div>
+        <div class="complexity-block">
+          <div class="label">Space</div>
+          <div class="value">${card.space}</div>
+        </div>
+      </div>
+      <div class="why">${card.why}</div>
+      ${card.pitfall ? `<div class="pitfall"><span class="lbl">⚠ Watch out</span>${card.pitfall}</div>` : ''}
+      <div class="examples-row">
+        <div class="examples-label">Examples</div>
+        ${examplesHTML}
+      </div>
+    </div>
+  `;
+}
+
+/* ===================== NAVIGATION ===================== */
+function next() {
+  if (state.filteredCards.length === 0) return;
+  state.currentIdx = (state.currentIdx + 1) % state.filteredCards.length;
+  state.flipped = false;
+  render();
+}
+function prev() {
+  if (state.filteredCards.length === 0) return;
+  state.currentIdx = (state.currentIdx - 1 + state.filteredCards.length) % state.filteredCards.length;
+  state.flipped = false;
+  render();
+}
+function flip() {
+  state.flipped = !state.flipped;
+  render();
+}
+function shuffle() {
+  // Fisher-Yates
+  const arr = state.filteredCards;
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  state.currentIdx = 0;
+  state.flipped = false;
+  render();
+}
+function toggleKnown() {
+  if (state.filteredCards.length === 0) return;
+  const card = state.filteredCards[state.currentIdx];
+  const key = cardKey(card);
+  if (state.knownIds.has(key)) {
+    state.knownIds.delete(key);
+  } else {
+    state.knownIds.add(key);
+  }
+  saveKnown();
+  render();
+}
+
+/* ===================== EVENTS ===================== */
+cardEl.addEventListener('click', flip);
+flipBtn.addEventListener('click', flip);
+nextBtn.addEventListener('click', next);
+prevBtn.addEventListener('click', prev);
+shuffleBtn.addEventListener('click', shuffle);
+markBtn.addEventListener('click', toggleKnown);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ') { e.preventDefault(); flip(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  else if (e.key === 'k' || e.key === 'K') { e.preventDefault(); toggleKnown(); }
+  else if (e.key === 's' || e.key === 'S') { e.preventDefault(); shuffle(); }
+});
+
+/* ===================== INIT ===================== */
+render();
+</script>
+</body>
+</html>

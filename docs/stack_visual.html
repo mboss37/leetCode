@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack Ops — Valid Parens + Min Stack · interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:     #f3eddc;
+    --paper-2:   #ebe2cc;
+    --paper-3:   #e3d8bd;
+    --ink:       #1a1410;
+    --ink-2:     #3c352d;
+    --ink-3:     #6b6155;
+    --accent:    #8b2c1c;
+    --accent-2:  #b34a2a;
+    --tan:       #a07c52;
+    --gold:      #f4dfa8;
+    --gold-2:    #ead09a;
+    --muted:     #5a5147;
+    --hair:      #c8bea4;
+    --good:      #4a6b3a;
+    --good-soft: #d9e3cf;
+    --bad:       #a3261c;
+    --bad-soft:  #f0d6d0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 5%, rgba(139,44,28,0.04), transparent 55%),
+      radial-gradient(ellipse at 90% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 24px 60px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  .home-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    z-index: 100;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: var(--accent); }
+
+  /* ===== HEADER ===== */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  header.top::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 54px;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0 0 6px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 18px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===== MODE TABS ===== */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .tab {
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    border-bottom: none;
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .tab .num {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 5px;
+  }
+  .tab.active .num { color: var(--gold); }
+
+  /* ===== INPUT ROW ===== */
+  .input-row {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 16px 22px;
+    margin-bottom: 22px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .input-row::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+  .input-row label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .preset-btn {
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px solid var(--hair);
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover { background: var(--paper); border-color: var(--ink); }
+  .preset-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* ===== CONTROLS ===== */
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    background: var(--ink);
+    color: var(--paper);
+    margin-bottom: 22px;
+  }
+  .controls button {
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--accent-2); }
+  .controls button:disabled { background: var(--ink-3); cursor: not-allowed; }
+  .controls button.ghost {
+    background: transparent;
+    border: 1px solid var(--paper);
+  }
+  .controls .step-info {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    margin-left: auto;
+    font-size: 16px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .controls .step-info .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold);
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* ===== STAGE ===== */
+  .stage {
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 28px 32px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+
+  /* string row (Valid Parens mode) */
+  .input-string-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin: 14px 0 30px;
+    flex-wrap: nowrap;
+  }
+  .input-string-row .ch {
+    width: 38px;
+    height: 42px;
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    background: var(--paper);
+    transition: all 0.25s;
+    position: relative;
+  }
+  .input-string-row .ch .idx {
+    position: absolute;
+    bottom: -18px;
+    font-size: 9px;
+    color: var(--ink-3);
+  }
+  .input-string-row .ch.processed { opacity: 0.4; }
+  .input-string-row .ch.current {
+    border-color: var(--accent);
+    border-width: 2px;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px -4px rgba(139,44,28,0.4);
+  }
+
+  /* op log (Min Stack mode) */
+  .op-log-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin: 14px 0 30px;
+    flex-wrap: wrap;
+  }
+  .op-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 5px 11px;
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    color: var(--ink-3);
+    transition: all 0.25s;
+  }
+  .op-pill.done { opacity: 0.4; }
+  .op-pill.current {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px -3px rgba(139,44,28,0.4);
+  }
+
+  /* stacks container */
+  .stacks-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 30px 0 20px;
+  }
+  .stacks-row.single {
+    grid-template-columns: 1fr;
+  }
+
+  .stack-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .stack-col .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 19px;
+    margin-bottom: 12px;
+    letter-spacing: -0.015em;
+    font-variation-settings: "opsz" 24;
+  }
+  .stack-col .name em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .stack-container {
+    width: 120px;
+    min-height: 220px;
+    border-left: 2px solid var(--ink);
+    border-right: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper-2);
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 6px;
+    gap: 5px;
+    position: relative;
+  }
+  .stack-container::before {
+    content: 'TOP →';
+    position: absolute;
+    top: 6px;
+    right: -54px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+  }
+  .stack-container .stack-item {
+    height: 36px;
+    background: var(--gold);
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: var(--ink);
+    transition: all 0.3s;
+    animation: pop-in 0.3s ease-out;
+  }
+  .stack-container .stack-item.popping {
+    animation: pop-out 0.3s ease-out forwards;
+  }
+  @keyframes pop-in {
+    0% { transform: translateY(-30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes pop-out {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-30px); opacity: 0; }
+  }
+  .stack-container .stack-item.top {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .stack-container .empty-label {
+    color: var(--ink-3);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    text-align: center;
+    padding: 80px 0;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* info panel */
+  .info-panel {
+    background: var(--paper-2);
+    border-left: 4px solid var(--ink-3);
+    padding: 14px 20px;
+    margin-top: 20px;
+    transition: all 0.2s;
+  }
+  .info-panel.push { border-left-color: var(--accent); }
+  .info-panel.pop  { border-left-color: var(--tan); background: rgba(160,124,82,0.1); }
+  .info-panel.match { border-left-color: var(--good); background: var(--good-soft); }
+  .info-panel.mismatch { border-left-color: var(--bad); background: var(--bad-soft); }
+  .info-panel.done { background: var(--paper-3); }
+
+  .info-panel .action {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .info-panel .action-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .info-panel.push .action-val { color: var(--accent); }
+  .info-panel.pop .action-val { color: var(--tan); }
+  .info-panel.match .action-val { color: var(--good); }
+  .info-panel.mismatch .action-val { color: var(--bad); }
+  .info-panel .msg {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-2);
+    line-height: 1.4;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* result row */
+  .result-row {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .result-row .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .result-row .value {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 26px;
+    color: var(--gold);
+    line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+  .result-row .value.invalid { color: #f0a890; }
+  .result-row .value.valid { color: var(--gold); }
+
+  /* takeaway */
+  .takeaway {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 22px 26px;
+    position: relative;
+  }
+  .takeaway::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+  .takeaway h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0 0 12px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 24;
+  }
+  .takeaway h3 em {
+    color: var(--accent);
+    font-style: italic;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .takeaway p {
+    margin: 8px 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .takeaway code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 6px;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="home-link">↶ Home</a>
+
+<div class="wrap">
+
+  <header class="top">
+    <h1>Stack Ops<em>.</em></h1>
+    <div class="sub">— Push, pop, peek visualized. Watch LIFO matching in Valid Parentheses, then see the auxiliary min-stack sync in parallel.</div>
+  </header>
+
+  <!-- TAB SELECTOR -->
+  <div class="tabs">
+    <button class="tab active" data-mode="parens"><span class="num">1.</span> Valid Parentheses</button>
+    <button class="tab" data-mode="minstack"><span class="num">2.</span> Min Stack</button>
+  </div>
+
+  <!-- INPUT PRESETS -->
+  <div class="input-row" id="input-row">
+    <!-- populated by JS based on mode -->
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button id="reset-btn" class="ghost">Reset</button>
+    <button id="prev-btn">← Prev</button>
+    <button id="next-btn">Next →</button>
+    <button id="play-btn" class="ghost">▶ Auto-play</button>
+    <div class="step-info">
+      Step <span class="num" id="step-cur">0</span>
+      <span style="color:var(--ink-3);"> / </span>
+      <span class="num" id="step-max">—</span>
+    </div>
+  </div>
+
+  <!-- STAGE -->
+  <div class="stage">
+    <!-- Top: input string OR op log -->
+    <div id="top-row"></div>
+
+    <!-- Stacks display -->
+    <div class="stacks-row" id="stacks-row"></div>
+
+    <!-- Info panel -->
+    <div class="info-panel" id="info-panel">
+      <div class="action">Action</div>
+      <div class="action-val" id="info-action">—</div>
+      <div class="msg" id="info-msg">Press <code style="background:var(--gold); padding:1px 5px; font-family:'JetBrains Mono',monospace;">Next →</code> to start.</div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-row">
+    <div class="label" id="result-label">Result so far</div>
+    <div class="value" id="result-value">—</div>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <section class="takeaway" id="takeaway">
+    <h3>The takeaway<em>.</em></h3>
+    <p id="takeaway-content"></p>
+  </section>
+
+</div>
+
+<script>
+/* ========================================================== */
+/*                  VALID PARENTHESES MODE                     */
+/* ========================================================== */
+
+const PARENS_PAIRS = { ')': '(', ']': '[', '}': '{' };
+const PARENS_PRESETS = {
+  '()[]{}':    '()[]{}',
+  '{[]}':      '{[]}',
+  '([)]':      '([)]',
+  '()[]{})':   '()[]{})',
+  '(((':       '(((',
+};
+
+function buildParensSteps(s) {
+  const steps = [];
+  const stack = [];
+
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    const isOpener = '([{'.includes(c);
+    if (isOpener) {
+      stack.push(c);
+      steps.push({
+        type: 'push',
+        idx: i,
+        char: c,
+        stack: [...stack],
+        action: 'PUSH ' + c,
+        msg: `'${c}' is an opener. Push to stack. Stack now: [${stack.map(x => "'" + x + "'").join(', ')}]`,
+        actionClass: 'push',
+        valid: true,
+        done: false,
+      });
+    } else {
+      // closer
+      const expected = PARENS_PAIRS[c];
+      if (stack.length === 0) {
+        // mismatch: empty stack
+        steps.push({
+          type: 'mismatch',
+          idx: i,
+          char: c,
+          stack: [...stack],
+          action: 'MISMATCH',
+          msg: `'${c}' is a closer but stack is empty — no opener to match. INVALID.`,
+          actionClass: 'mismatch',
+          valid: false,
+          done: true,
+        });
+        return steps;
+      }
+      const top = stack[stack.length - 1];
+      if (top !== expected) {
+        steps.push({
+          type: 'mismatch',
+          idx: i,
+          char: c,
+          stack: [...stack],
+          action: 'MISMATCH',
+          msg: `'${c}' expects '${expected}' on top, but top is '${top}'. INVALID.`,
+          actionClass: 'mismatch',
+          valid: false,
+          done: true,
+        });
+        return steps;
+      }
+      // match → pop
+      stack.pop();
+      steps.push({
+        type: 'pop',
+        idx: i,
+        char: c,
+        stack: [...stack],
+        action: 'POP (match ' + top + ')',
+        msg: `'${c}' matches top '${top}'. Pop. Stack now: [${stack.length ? stack.map(x => "'" + x + "'").join(', ') : 'empty'}]`,
+        actionClass: 'pop',
+        valid: true,
+        done: false,
+      });
+    }
+  }
+
+  // Done
+  const valid = stack.length === 0;
+  steps.push({
+    type: 'done',
+    idx: s.length - 1,
+    char: '',
+    stack: [...stack],
+    action: valid ? 'DONE — VALID' : 'DONE — INVALID',
+    msg: valid
+      ? 'All openers matched. Stack is empty. String is VALID.'
+      : `Stack still has ${stack.length} unmatched opener(s): [${stack.join(', ')}]. INVALID.`,
+    actionClass: valid ? 'match' : 'mismatch',
+    valid,
+    done: true,
+  });
+
+  return steps;
+}
+
+/* ========================================================== */
+/*                       MIN STACK MODE                        */
+/* ========================================================== */
+
+const MINSTACK_PRESETS = {
+  'default':  [['push', -2], ['push', 0], ['push', -3], ['getMin'], ['pop'], ['top'], ['getMin']],
+  'asc':      [['push', 1], ['push', 2], ['push', 3], ['getMin'], ['pop'], ['getMin'], ['pop'], ['getMin']],
+  'desc':     [['push', 3], ['push', 2], ['push', 1], ['getMin'], ['pop'], ['getMin']],
+};
+
+function buildMinStackSteps(ops) {
+  const steps = [];
+  const stack = [];
+  const minStack = [];
+
+  for (let i = 0; i < ops.length; i++) {
+    const [op, val] = ops[i];
+
+    if (op === 'push') {
+      stack.push(val);
+      const newMin = minStack.length === 0 ? val : Math.min(val, minStack[minStack.length - 1]);
+      minStack.push(newMin);
+      steps.push({
+        idx: i,
+        op: `push(${val})`,
+        stack: [...stack],
+        minStack: [...minStack],
+        action: 'PUSH ' + val,
+        msg: `Push ${val} to main stack. Compute new min = min(${val}, ${minStack.length > 1 ? minStack[minStack.length - 2] : val}) = ${newMin}. Push ${newMin} to min stack.`,
+        actionClass: 'push',
+        result: null,
+        done: false,
+      });
+    } else if (op === 'pop') {
+      const popped = stack.pop();
+      minStack.pop();
+      steps.push({
+        idx: i,
+        op: 'pop()',
+        stack: [...stack],
+        minStack: [...minStack],
+        action: 'POP ' + popped,
+        msg: `Pop from BOTH stacks. Main stack lost ${popped}; min stack lost its top too. Stacks stay synchronized.`,
+        actionClass: 'pop',
+        result: null,
+        done: false,
+      });
+    } else if (op === 'top') {
+      const top = stack[stack.length - 1];
+      steps.push({
+        idx: i,
+        op: 'top()',
+        stack: [...stack],
+        minStack: [...minStack],
+        action: 'TOP → ' + top,
+        msg: `Peek main stack[-1] = ${top}. Just a read — no modification.`,
+        actionClass: 'match',
+        result: top,
+        done: false,
+      });
+    } else if (op === 'getMin') {
+      const mn = minStack[minStack.length - 1];
+      steps.push({
+        idx: i,
+        op: 'getMin()',
+        stack: [...stack],
+        minStack: [...minStack],
+        action: 'GETMIN → ' + mn,
+        msg: `Peek min stack[-1] = ${mn}. The running min for the current state of the main stack. O(1).`,
+        actionClass: 'match',
+        result: mn,
+        done: false,
+      });
+    }
+  }
+
+  // Done step
+  steps.push({
+    idx: ops.length - 1,
+    op: 'done',
+    stack: [...stack],
+    minStack: [...minStack],
+    action: 'DONE',
+    msg: `All operations executed. Each was O(1). The min stack always held the running minimum at every level — that's the invariant.`,
+    actionClass: 'done',
+    result: null,
+    done: true,
+  });
+
+  return steps;
+}
+
+/* ========================================================== */
+/*                          STATE                              */
+/* ========================================================== */
+
+let state = {
+  mode: 'parens',
+  parens: {
+    input: '()[]{}',
+    steps: [],
+    current: 0,
+  },
+  minstack: {
+    presetKey: 'default',
+    ops: MINSTACK_PRESETS['default'],
+    steps: [],
+    current: 0,
+  },
+  autoplay: null,
+};
+
+/* ========================================================== */
+/*                          RENDER                             */
+/* ========================================================== */
+
+const inputRowEl = document.getElementById('input-row');
+const topRowEl = document.getElementById('top-row');
+const stacksRowEl = document.getElementById('stacks-row');
+const infoPanelEl = document.getElementById('info-panel');
+const infoActionEl = document.getElementById('info-action');
+const infoMsgEl = document.getElementById('info-msg');
+const stepCurEl = document.getElementById('step-cur');
+const stepMaxEl = document.getElementById('step-max');
+const resultLabelEl = document.getElementById('result-label');
+const resultValueEl = document.getElementById('result-value');
+const takeawayContentEl = document.getElementById('takeaway-content');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const resetBtn = document.getElementById('reset-btn');
+const playBtn = document.getElementById('play-btn');
+
+function renderInputRow() {
+  inputRowEl.innerHTML = '';
+  const label = document.createElement('label');
+  label.textContent = 'Input';
+  inputRowEl.appendChild(label);
+
+  if (state.mode === 'parens') {
+    Object.keys(PARENS_PRESETS).forEach(k => {
+      const b = document.createElement('button');
+      b.className = 'preset-btn' + (state.parens.input === k ? ' active' : '');
+      b.textContent = `"${k}"`;
+      b.addEventListener('click', () => {
+        state.parens.input = k;
+        state.parens.current = 0;
+        state.parens.steps = buildParensSteps(k);
+        stopAutoplay();
+        renderAll();
+      });
+      inputRowEl.appendChild(b);
+    });
+  } else {
+    Object.keys(MINSTACK_PRESETS).forEach(k => {
+      const b = document.createElement('button');
+      b.className = 'preset-btn' + (state.minstack.presetKey === k ? ' active' : '');
+      const ops = MINSTACK_PRESETS[k];
+      const opSummary = ops.map(o => o[0] === 'push' ? `push(${o[1]})` : `${o[0]}()`).join(' → ');
+      b.textContent = k === 'default' ? 'Canonical example' : (k === 'asc' ? 'ascending: 1,2,3' : 'descending: 3,2,1');
+      b.addEventListener('click', () => {
+        state.minstack.presetKey = k;
+        state.minstack.ops = ops;
+        state.minstack.current = 0;
+        state.minstack.steps = buildMinStackSteps(ops);
+        stopAutoplay();
+        renderAll();
+      });
+      inputRowEl.appendChild(b);
+    });
+  }
+}
+
+function renderTopRow(step) {
+  topRowEl.innerHTML = '';
+  if (state.mode === 'parens') {
+    const row = document.createElement('div');
+    row.className = 'input-string-row';
+    const s = state.parens.input;
+    for (let i = 0; i < s.length; i++) {
+      const ch = document.createElement('div');
+      ch.className = 'ch';
+      ch.innerHTML = `${s[i]}<span class="idx">${i}</span>`;
+      if (step) {
+        if (i < step.idx) ch.classList.add('processed');
+        else if (i === step.idx && !step.done) ch.classList.add('current');
+        else if (step.done) ch.classList.add('processed');
+      }
+      row.appendChild(ch);
+    }
+    topRowEl.appendChild(row);
+  } else {
+    const row = document.createElement('div');
+    row.className = 'op-log-row';
+    state.minstack.ops.forEach((op, i) => {
+      const pill = document.createElement('div');
+      pill.className = 'op-pill';
+      const label = op[0] === 'push' ? `push(${op[1]})` : `${op[0]}()`;
+      pill.textContent = label;
+      if (step) {
+        if (i < step.idx) pill.classList.add('done');
+        else if (i === step.idx && !step.done) pill.classList.add('current');
+        else if (step.done) pill.classList.add('done');
+      }
+      row.appendChild(pill);
+    });
+    topRowEl.appendChild(row);
+  }
+}
+
+function buildStackCol(name, items, accent) {
+  const col = document.createElement('div');
+  col.className = 'stack-col';
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'name';
+  nameEl.innerHTML = name;
+  col.appendChild(nameEl);
+
+  const container = document.createElement('div');
+  container.className = 'stack-container';
+  if (items.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-label';
+    empty.textContent = '— empty —';
+    container.appendChild(empty);
+  } else {
+    items.forEach((item, i) => {
+      const itemEl = document.createElement('div');
+      itemEl.className = 'stack-item' + (i === items.length - 1 ? ' top' : '');
+      itemEl.textContent = item;
+      container.appendChild(itemEl);
+    });
+  }
+  col.appendChild(container);
+  return col;
+}
+
+function renderStacks(step) {
+  stacksRowEl.innerHTML = '';
+  stacksRowEl.classList.toggle('single', state.mode === 'parens');
+
+  if (state.mode === 'parens') {
+    const stackItems = step ? step.stack : [];
+    stacksRowEl.appendChild(buildStackCol('Stack<em>.</em>', stackItems, true));
+  } else {
+    const stackItems = step ? step.stack : [];
+    const minStackItems = step ? step.minStack : [];
+    stacksRowEl.appendChild(buildStackCol('Stack<em>.</em>', stackItems, true));
+    stacksRowEl.appendChild(buildStackCol('Min Stack<em>.</em>', minStackItems, true));
+  }
+}
+
+function renderInfo(step) {
+  infoPanelEl.className = 'info-panel';
+  if (step?.actionClass) infoPanelEl.classList.add(step.actionClass);
+  infoActionEl.textContent = step?.action || '—';
+  infoMsgEl.textContent = step?.msg || 'Press Next → to start.';
+}
+
+function renderResult(step) {
+  if (state.mode === 'parens') {
+    resultLabelEl.textContent = step?.done ? 'Result' : 'Result so far';
+    if (!step || !step.done) {
+      resultValueEl.textContent = 'pending';
+      resultValueEl.className = 'value';
+    } else if (step.valid) {
+      resultValueEl.textContent = 'VALID ✓';
+      resultValueEl.className = 'value valid';
+    } else {
+      resultValueEl.textContent = 'INVALID ✗';
+      resultValueEl.className = 'value invalid';
+    }
+  } else {
+    if (step?.result != null) {
+      resultLabelEl.textContent = 'Last returned';
+      resultValueEl.textContent = step.result;
+      resultValueEl.className = 'value valid';
+    } else if (step?.done) {
+      resultLabelEl.textContent = 'Result';
+      resultValueEl.textContent = 'all O(1) ✓';
+      resultValueEl.className = 'value valid';
+    } else {
+      resultLabelEl.textContent = 'Returns (most recent)';
+      resultValueEl.textContent = '—';
+      resultValueEl.className = 'value';
+    }
+  }
+}
+
+function renderTakeaway() {
+  if (state.mode === 'parens') {
+    takeawayContentEl.innerHTML = `
+      <strong>Brackets nest LIFO</strong> — last opened, first closed. That's exactly what a stack provides.
+      <br><br>
+      Walk the string. Openers (<code>(</code>, <code>[</code>, <code>{</code>) get pushed.
+      On a closer, check the top of the stack — if it's the matching opener, pop. If not (or stack is empty),
+      the string is <strong>invalid</strong>.
+      <br><br>
+      After the loop, the stack must be <strong>empty</strong> — anything left means an opener went unmatched.
+      <br><br>
+      <strong>O(n)</strong> time, <strong>O(n)</strong> space (worst case all openers).
+    `;
+  } else {
+    takeawayContentEl.innerHTML = `
+      <strong>Two stacks running in parallel.</strong> Main stack holds values. Auxiliary "min stack" holds the
+      <em>running minimum at each level</em> — <code>minStack[i]</code> is always the min of the main stack's
+      first <code>i+1</code> elements.
+      <br><br>
+      Push to BOTH on push; pop BOTH on pop. They stay synchronized in length. So <code>getMin()</code> is just
+      a peek at <code>minStack[-1]</code>.
+      <br><br>
+      <strong>All four operations are O(1).</strong> Space is O(n).
+    `;
+  }
+}
+
+function renderAll() {
+  const steps = state.mode === 'parens' ? state.parens.steps : state.minstack.steps;
+  const idx = state.mode === 'parens' ? state.parens.current : state.minstack.current;
+  const step = steps[idx - 1] || null;
+
+  renderInputRow();
+  renderTopRow(step);
+  renderStacks(step);
+  renderInfo(step);
+  renderResult(step);
+  renderTakeaway();
+
+  stepCurEl.textContent = idx;
+  stepMaxEl.textContent = steps.length;
+  prevBtn.disabled = idx === 0;
+  nextBtn.disabled = idx >= steps.length;
+}
+
+/* ========================================================== */
+/*                       CONTROLS                              */
+/* ========================================================== */
+
+function next() {
+  const obj = state.mode === 'parens' ? state.parens : state.minstack;
+  if (obj.current < obj.steps.length) obj.current++;
+  renderAll();
+}
+function prev() {
+  const obj = state.mode === 'parens' ? state.parens : state.minstack;
+  if (obj.current > 0) obj.current--;
+  renderAll();
+}
+function reset() {
+  const obj = state.mode === 'parens' ? state.parens : state.minstack;
+  obj.current = 0;
+  stopAutoplay();
+  renderAll();
+}
+function toggleAutoplay() {
+  if (state.autoplay) { stopAutoplay(); return; }
+  playBtn.textContent = '⏸ Pause';
+  state.autoplay = setInterval(() => {
+    const obj = state.mode === 'parens' ? state.parens : state.minstack;
+    if (obj.current >= obj.steps.length) { stopAutoplay(); return; }
+    next();
+  }, 1100);
+}
+function stopAutoplay() {
+  if (state.autoplay) clearInterval(state.autoplay);
+  state.autoplay = null;
+  playBtn.textContent = '▶ Auto-play';
+}
+
+prevBtn.addEventListener('click', prev);
+nextBtn.addEventListener('click', next);
+resetBtn.addEventListener('click', reset);
+playBtn.addEventListener('click', toggleAutoplay);
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    state.mode = t.dataset.mode;
+    stopAutoplay();
+    if (state.mode === 'parens' && state.parens.steps.length === 0) {
+      state.parens.steps = buildParensSteps(state.parens.input);
+    }
+    if (state.mode === 'minstack' && state.minstack.steps.length === 0) {
+      state.minstack.steps = buildMinStackSteps(state.minstack.ops);
+    }
+    renderAll();
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  else if (e.key === 'r' || e.key === 'R') { reset(); }
+});
+
+/* INIT */
+state.parens.steps = buildParensSteps(state.parens.input);
+state.minstack.steps = buildMinStackSteps(state.minstack.ops);
+renderAll();
+</script>
+</body>
+</html>

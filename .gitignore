@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Local scratch
+playground.py
+
+# Internal — never publish (personal prep state)
+docs/prep_plan.md
+TASKS.md
+CLAUDE.md
+.claude/

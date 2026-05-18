@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3Sum — Why the duplicate-skip works · interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:    #f3eddc;
+    --paper-2:  #ebe2cc;
+    --paper-3:  #e3d8bd;
+    --ink:      #1a1410;
+    --ink-2:    #3c352d;
+    --ink-3:    #6b6155;
+    --accent:   #8b2c1c;
+    --accent-2: #b34a2a;
+    --gold:     #f4dfa8;
+    --gold-2:   #ead09a;
+    --tan:      #a07c52;
+    --good:     #4a6b3a;
+    --good-soft:#d9e3cf;
+    --bad:      #a3261c;
+    --bad-soft: #f0d6d0;
+    --skip:     #c08930;
+    --skip-soft:#f6e6c0;
+    --hair:     #c8bea4;
+    --muted:    #5a5147;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  /* home nav link */
+  .home-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    z-index: 100;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: var(--accent); }
+
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 5%, rgba(139,44,28,0.04), transparent 55%),
+      radial-gradient(ellipse at 90% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 36px 24px 60px;
+  }
+
+  .wrap { max-width: 1240px; margin: 0 auto; }
+
+  /* ---- header ---- */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  header.top::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0 0 6px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 19px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  header .stamp {
+    position: absolute;
+    top: 4px; right: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    text-align: right;
+  }
+  header .stamp .key { color: var(--accent); font-weight: 700; }
+
+  /* ---- setup card ---- */
+  .setup {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 18px 22px;
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px 30px;
+    align-items: center;
+    position: relative;
+  }
+  .setup::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+  .setup .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .setup .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .setup .display-array {
+    display: flex;
+    gap: 4px;
+  }
+  .setup .display-array .box {
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    position: relative;
+  }
+  .setup .display-array .box.anchor {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .setup .display-array .box .idx {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .setup .display-array .box.anchor .idx { color: var(--accent); font-weight: 700; }
+  .setup .anchor-mark {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 4px;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ---- controls ---- */
+  .controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 28px;
+    padding: 14px 18px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .controls button {
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    padding: 8px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--accent-2); }
+  .controls button:disabled {
+    background: var(--ink-3);
+    cursor: not-allowed;
+  }
+  .controls button.ghost {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid var(--paper);
+  }
+  .controls button.ghost:hover { background: rgba(243,237,220,0.12); }
+  .controls .step-info {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    margin-left: auto;
+    font-size: 17px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .controls .step-info .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold);
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* ---- comparison panels ---- */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  .panel {
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 0 0 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel.bad::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--bad);
+  }
+  .panel.good::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--good);
+  }
+  .panel-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--hair);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .panel h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: -0.015em;
+    font-variation-settings: "opsz" 24;
+  }
+  .panel.bad h2 em { color: var(--bad); font-style: italic; font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1; }
+  .panel.good h2 em { color: var(--good); font-style: italic; font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1; }
+  .panel-header .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+  }
+  .panel.bad .tag { background: var(--bad-soft); color: var(--bad); }
+  .panel.good .tag { background: var(--good-soft); color: var(--good); }
+
+  .panel-body { padding: 24px 22px 0; }
+
+  /* ---- array row in panel ---- */
+  .array-stage {
+    position: relative;
+    padding: 30px 0 36px;
+  }
+  .array {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+  }
+  .cell {
+    width: 42px;
+    height: 48px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    position: relative;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .cell .idx {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--ink-3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cell.anchor {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .cell.anchor .idx { color: var(--accent); font-weight: 700; }
+  .cell.left-ptr {
+    background: var(--gold);
+    border-color: var(--ink);
+    border-width: 2px;
+  }
+  .cell.right-ptr {
+    background: var(--gold-2);
+    border-color: var(--ink);
+    border-width: 2px;
+  }
+  .cell.match-glow {
+    box-shadow: 0 0 0 3px var(--good), 0 6px 14px -6px rgba(74,107,58,0.5);
+  }
+  .cell.duplicate-glow {
+    box-shadow: 0 0 0 3px var(--bad), 0 6px 14px -6px rgba(163,38,28,0.5);
+  }
+  .cell.skip-glow {
+    box-shadow: 0 0 0 3px var(--skip);
+  }
+  .cell.skipped {
+    opacity: 0.4;
+    text-decoration: line-through;
+    text-decoration-color: var(--bad);
+  }
+
+  /* pointer labels */
+  .ptr-label {
+    position: absolute;
+    bottom: 4px;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+    text-align: center;
+    width: 42px;
+    z-index: 10;
+    transition: left 0.3s;
+  }
+  .ptr-label.L { color: var(--accent); }
+  .ptr-label.R { color: var(--tan); }
+  .ptr-label .ar { display: block; font-size: 11px; line-height: 1; }
+
+  /* ---- info bar ---- */
+  .info-bar {
+    margin-top: 6px;
+    padding: 14px 18px;
+    background: var(--paper-2);
+    border-left: 4px solid var(--ink-3);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .info-bar.match { border-left-color: var(--good); background: var(--good-soft); }
+  .info-bar.duplicate { border-left-color: var(--bad); background: var(--bad-soft); }
+  .info-bar.skip { border-left-color: var(--skip); background: var(--skip-soft); }
+  .info-bar.exit { border-left-color: var(--ink); background: var(--paper-3); }
+
+  .info-bar .info-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 8px 14px;
+    font-size: 13.5px;
+    padding: 3px 0;
+    align-items: baseline;
+  }
+  .info-bar .info-row .ilabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+  .info-bar .info-row .ival {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .info-bar .info-row .ival.match { color: var(--good); font-weight: 700; }
+  .info-bar .info-row .ival.duplicate { color: var(--bad); font-weight: 700; }
+  .info-bar .info-row .ival.skip { color: var(--skip); font-weight: 700; }
+  .info-bar .msg {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-top: 4px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ---- result list ---- */
+  .results-row {
+    margin-top: 16px;
+    padding: 14px 18px 16px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .results-row .rlabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .triplets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .triplet {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 4px 9px;
+    border-radius: 0;
+    transition: transform 0.3s;
+  }
+  .triplet.new {
+    animation: pop 0.4s ease-out;
+  }
+  .triplet.duplicate {
+    background: var(--bad-soft);
+    color: var(--bad);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .triplets .empty {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 14px;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ---- footer / explanation ---- */
+  .takeaway {
+    margin-top: 24px;
+    padding: 22px 26px;
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+    position: relative;
+  }
+  .takeaway::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+  .takeaway h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0 0 8px;
+    letter-spacing: -0.015em;
+    font-variation-settings: "opsz" 24;
+  }
+  .takeaway h3 em {
+    color: var(--accent);
+    font-style: italic;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .takeaway p {
+    margin: 8px 0;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .takeaway code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 5px;
+    font-size: 13px;
+  }
+
+  /* legend */
+  .legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .legend .key {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .legend .swatch {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--ink);
+    display: inline-block;
+  }
+  .legend .swatch.anchor { background: var(--accent); }
+  .legend .swatch.L { background: var(--gold); }
+  .legend .swatch.R { background: var(--gold-2); }
+  .legend .swatch.match { background: var(--paper); box-shadow: 0 0 0 2px var(--good); }
+  .legend .swatch.duplicate { background: var(--paper); box-shadow: 0 0 0 2px var(--bad); }
+  .legend .swatch.skip { background: var(--paper); box-shadow: 0 0 0 2px var(--skip); }
+</style>
+</head>
+<body>
+<a href="index.html" class="home-link">↶ Home</a>
+<div class="wrap">
+
+  <header class="top">
+    <h1>3Sum dedup<em>.</em></h1>
+    <div class="sub">Why the duplicate-skip works — step through both algorithms side by side.</div>
+    <div class="stamp">
+      <div><span class="key">INTERACTIVE</span> · CLICK NEXT</div>
+      <div>M.B. PREP · LC 15</div>
+    </div>
+  </header>
+
+  <!-- SETUP -->
+  <section class="setup">
+    <div>
+      <div class="label">Sorted input</div>
+      <div class="display-array" id="setup-array"></div>
+    </div>
+    <div>
+      <div class="label">Anchor (this round)</div>
+      <div class="value">i = 0 · value -1</div>
+      <div style="font-family:'Fraunces',serif; font-style:italic; font-size:13px; color:var(--ink-3); margin-top:4px; font-variation-settings: 'opsz' 14, 'SOFT' 100, 'WONK' 1;">
+        Inner two-pointer searches L+R = 1 (to cancel the -1 anchor).
+      </div>
+    </div>
+    <div>
+      <div class="label">Goal</div>
+      <div class="value">find all unique triplets</div>
+    </div>
+  </section>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="key"><span class="swatch anchor"></span> anchor (i)</div>
+    <div class="key"><span class="swatch L"></span> L pointer</div>
+    <div class="key"><span class="swatch R"></span> R pointer</div>
+    <div class="key"><span class="swatch match"></span> match found</div>
+    <div class="key"><span class="swatch duplicate"></span> duplicate</div>
+    <div class="key"><span class="swatch skip"></span> skip in progress</div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls" style="margin-top:18px;">
+    <button id="reset-btn" class="ghost">Reset</button>
+    <button id="prev-btn">← Prev</button>
+    <button id="next-btn">Next →</button>
+    <button id="play-btn" class="ghost">▶ Auto-play</button>
+    <div class="step-info">
+      Step <span class="num" id="step-cur">0</span>
+      <span style="color:var(--ink-3);"> / </span>
+      <span class="num" id="step-max">0</span>
+    </div>
+  </div>
+
+  <!-- COMPARISON PANELS -->
+  <section class="compare">
+
+    <!-- WITHOUT SKIP -->
+    <div class="panel bad" id="panel-noskip">
+      <div class="panel-header">
+        <h2>Without skip<em>.</em></h2>
+        <div class="tag">naive · finds duplicates</div>
+      </div>
+      <div class="panel-body">
+        <div class="array-stage">
+          <div class="array" id="noskip-array"></div>
+        </div>
+        <div class="info-bar" id="noskip-info">
+          <div class="info-row"><div class="ilabel">step</div><div class="ival" id="noskip-step">—</div></div>
+          <div class="info-row"><div class="ilabel">L · R</div><div class="ival" id="noskip-lr">—</div></div>
+          <div class="info-row"><div class="ilabel">sum</div><div class="ival" id="noskip-sum">—</div></div>
+          <div class="msg" id="noskip-msg">Press <code style="font-family:'JetBrains Mono',monospace; background:var(--gold); padding:1px 5px; font-size:13px;">Next →</code> to begin.</div>
+        </div>
+      </div>
+      <div class="results-row">
+        <div class="rlabel">triplets recorded</div>
+        <div class="triplets" id="noskip-triplets"><span class="empty">—  none yet  —</span></div>
+      </div>
+    </div>
+
+    <!-- WITH SKIP -->
+    <div class="panel good" id="panel-skip">
+      <div class="panel-header">
+        <h2>With skip<em>.</em></h2>
+        <div class="tag">canonical · no duplicates</div>
+      </div>
+      <div class="panel-body">
+        <div class="array-stage">
+          <div class="array" id="skip-array"></div>
+        </div>
+        <div class="info-bar" id="skip-info">
+          <div class="info-row"><div class="ilabel">step</div><div class="ival" id="skip-step">—</div></div>
+          <div class="info-row"><div class="ilabel">L · R</div><div class="ival" id="skip-lr">—</div></div>
+          <div class="info-row"><div class="ilabel">sum</div><div class="ival" id="skip-sum">—</div></div>
+          <div class="msg" id="skip-msg">Press <code style="font-family:'JetBrains Mono',monospace; background:var(--gold); padding:1px 5px; font-size:13px;">Next →</code> to begin.</div>
+        </div>
+      </div>
+      <div class="results-row">
+        <div class="rlabel">triplets recorded</div>
+        <div class="triplets" id="skip-triplets"><span class="empty">—  none yet  —</span></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- TAKEAWAY -->
+  <section class="takeaway">
+    <h3>The takeaway<em>.</em></h3>
+    <p><strong>Without skip:</strong> when the two pointers land on duplicate values after a match, they emit the same triplet again. The set silently drops it, but the CPU still did the work.</p>
+    <p><strong>With skip:</strong> after a match, we walk L past any equal neighbors (look-ahead: <code>nums[L] == nums[L+1]</code>) and walk R past its equal neighbors (look-behind: <code>nums[R] == nums[R-1]</code>). Then we advance both into fresh territory.</p>
+    <p><strong>Net effect:</strong> no duplicate triplet is ever even reached. No set needed. Result is deterministic in order.</p>
+  </section>
+
+</div>
+
+<script>
+const NUMS = [-1, -1, -1, 0, 0, 1, 1, 2];
+const ANCHOR_I = 0;
+const ANCHOR_VAL = NUMS[ANCHOR_I]; // -1
+
+/* ---------- step definitions ---------- */
+// Each step describes the state BEFORE → action → AFTER.
+// `pointers` reflects state at the END of the step.
+// `highlight` describes the visual mode for THIS step.
+// `triplets` is the cumulative result list at end of step.
+
+const noSkipSteps = [
+  {
+    L: 1, R: 7,
+    sum: -1 + -1 + 2,
+    sumText: '-1 + (-1) + 2 = 0',
+    label: 'compute & match',
+    highlight: 'match',
+    msg: 'L=1 (-1) + R=7 (2) + anchor(-1) = 0 → MATCH. Record [-1, -1, 2]. Advance both: L→2, R→6.',
+    triplets: [[-1, -1, 2]],
+    newIdx: 0
+  },
+  {
+    L: 2, R: 6,
+    sum: -1 + -1 + 1,
+    sumText: '-1 + (-1) + 1 = -1',
+    label: 'sum < 0',
+    highlight: 'normal',
+    msg: 'Sum = -1, too small. L → 3.',
+    triplets: [[-1, -1, 2]],
+    newIdx: -1
+  },
+  {
+    L: 3, R: 6,
+    sum: -1 + 0 + 1,
+    sumText: '-1 + 0 + 1 = 0',
+    label: 'compute & match',
+    highlight: 'match',
+    msg: 'Match! Record [-1, 0, 1]. Advance both: L→4, R→5.',
+    triplets: [[-1, -1, 2], [-1, 0, 1]],
+    newIdx: 1
+  },
+  {
+    L: 4, R: 5,
+    sum: -1 + 0 + 1,
+    sumText: '-1 + 0 + 1 = 0',
+    label: 'DUPLICATE',
+    highlight: 'duplicate',
+    msg: 'Sum is 0 → "match" — BUT this is the same triplet [-1, 0, 1] we just recorded! L=4 holds 0 (same as L=3 did), R=5 holds 1 (same as R=6 did). Set silently rejects, but the CPU still did this work.',
+    triplets: [[-1, -1, 2], [-1, 0, 1], [-1, 0, 1]],
+    newIdx: 2,
+    duplicate: true
+  },
+  {
+    L: 5, R: 4,
+    sum: null,
+    sumText: '—',
+    label: 'exit',
+    highlight: 'exit',
+    msg: 'L = 5, R = 4. L ≥ R → exit loop. Inner scan finished.',
+    triplets: [[-1, -1, 2], [-1, 0, 1], [-1, 0, 1]],
+    newIdx: -1
+  }
+];
+
+const skipSteps = [
+  {
+    L: 1, R: 7,
+    sum: -1 + -1 + 2,
+    sumText: '-1 + (-1) + 2 = 0',
+    label: 'compute & match',
+    highlight: 'match',
+    msg: 'L=1 (-1) + R=7 (2) + anchor(-1) = 0 → MATCH. Record [-1, -1, 2]. Now run the skip-loops BEFORE advancing.',
+    triplets: [[-1, -1, 2]],
+    newIdx: 0
+  },
+  {
+    L: 1, R: 7,
+    sum: null, sumText: '—',
+    label: 'skip-L check',
+    highlight: 'skip',
+    skipLook: 'L+1',
+    msg: 'Skip-L: nums[L=1] = -1, nums[L+1=2] = -1. EQUAL. Advance L → 2.',
+    triplets: [[-1, -1, 2]],
+    newIdx: -1
+  },
+  {
+    L: 2, R: 7,
+    sum: null, sumText: '—',
+    label: 'skip-L check',
+    highlight: 'skip',
+    skipLook: 'L+1',
+    msg: 'Skip-L: nums[L=2] = -1, nums[L+1=3] = -1. EQUAL. Advance L → 3.',
+    triplets: [[-1, -1, 2]],
+    newIdx: -1
+  },
+  {
+    L: 3, R: 7,
+    sum: null, sumText: '—',
+    label: 'skip-L stops',
+    highlight: 'normal',
+    msg: 'Skip-L: nums[L=3] = -1, nums[L+1=4] = 0. NOT EQUAL. Stop skipping L.',
+    triplets: [[-1, -1, 2]],
+    newIdx: -1
+  },
+  {
+    L: 3, R: 7,
+    sum: null, sumText: '—',
+    label: 'skip-R stops',
+    highlight: 'normal',
+    msg: 'Skip-R: nums[R=7] = 2, nums[R-1=6] = 1. NOT EQUAL. Stop skipping R.',
+    triplets: [[-1, -1, 2]],
+    newIdx: -1
+  },
+  {
+    L: 4, R: 6,
+    sum: null, sumText: '—',
+    label: 'advance both',
+    highlight: 'normal',
+    msg: 'Skip-loops done. Now advance the normal step: L += 1, R -= 1 → L=4, R=6.',
+    triplets: [[-1, -1, 2]],
+    newIdx: -1
+  },
+  {
+    L: 4, R: 6,
+    sum: -1 + 0 + 1,
+    sumText: '-1 + 0 + 1 = 0',
+    label: 'compute & match',
+    highlight: 'match',
+    msg: 'L=4 (0) + R=6 (1) + anchor(-1) = 0 → MATCH. Record [-1, 0, 1]. Now run skip-loops.',
+    triplets: [[-1, -1, 2], [-1, 0, 1]],
+    newIdx: 1
+  },
+  {
+    L: 4, R: 6,
+    sum: null, sumText: '—',
+    label: 'skip-L stops',
+    highlight: 'normal',
+    msg: 'Skip-L: nums[L=4] = 0, nums[L+1=5] = 1. NOT EQUAL. Nothing to skip.',
+    triplets: [[-1, -1, 2], [-1, 0, 1]],
+    newIdx: -1
+  },
+  {
+    L: 4, R: 6,
+    sum: null, sumText: '—',
+    label: 'skip-R check',
+    highlight: 'skip',
+    skipLook: 'R-1',
+    msg: 'Skip-R: nums[R=6] = 1, nums[R-1=5] = 1. EQUAL. Advance R → 5.',
+    triplets: [[-1, -1, 2], [-1, 0, 1]],
+    newIdx: -1
+  },
+  {
+    L: 4, R: 5,
+    sum: null, sumText: '—',
+    label: 'skip-R stops',
+    highlight: 'normal',
+    msg: 'Skip-R: nums[R=5] = 1, nums[R-1=4] = 0. NOT EQUAL. Stop skipping R.',
+    triplets: [[-1, -1, 2], [-1, 0, 1]],
+    newIdx: -1
+  },
+  {
+    L: 5, R: 4,
+    sum: null, sumText: '—',
+    label: 'advance both',
+    highlight: 'normal',
+    msg: 'Skip-loops done. Advance: L → 5, R → 4.',
+    triplets: [[-1, -1, 2], [-1, 0, 1]],
+    newIdx: -1
+  },
+  {
+    L: 5, R: 4,
+    sum: null, sumText: '—',
+    label: 'exit',
+    highlight: 'exit',
+    msg: 'L = 5, R = 4. L ≥ R → exit loop. Inner scan finished. NO duplicate ever found.',
+    triplets: [[-1, -1, 2], [-1, 0, 1]],
+    newIdx: -1
+  }
+];
+
+const MAX_STEPS = Math.max(noSkipSteps.length, skipSteps.length);
+
+/* ---------- state ---------- */
+let currentStep = 0;
+let autoplayTimer = null;
+
+/* ---------- DOM refs ---------- */
+const setupArray = document.getElementById('setup-array');
+const noskipArray = document.getElementById('noskip-array');
+const skipArray   = document.getElementById('skip-array');
+const noskipInfo  = document.getElementById('noskip-info');
+const skipInfo    = document.getElementById('skip-info');
+const noskipStep  = document.getElementById('noskip-step');
+const skipStep    = document.getElementById('skip-step');
+const noskipLR    = document.getElementById('noskip-lr');
+const skipLR      = document.getElementById('skip-lr');
+const noskipSum   = document.getElementById('noskip-sum');
+const skipSum     = document.getElementById('skip-sum');
+const noskipMsg   = document.getElementById('noskip-msg');
+const skipMsg     = document.getElementById('skip-msg');
+const noskipTrips = document.getElementById('noskip-triplets');
+const skipTrips   = document.getElementById('skip-triplets');
+
+const stepCur = document.getElementById('step-cur');
+const stepMax = document.getElementById('step-max');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const resetBtn= document.getElementById('reset-btn');
+const playBtn = document.getElementById('play-btn');
+
+stepMax.textContent = MAX_STEPS;
+
+/* ---------- helpers ---------- */
+function renderSetupArray() {
+  setupArray.innerHTML = '';
+  NUMS.forEach((v, i) => {
+    const box = document.createElement('div');
+    box.className = 'box' + (i === ANCHOR_I ? ' anchor' : '');
+    box.innerHTML = `<span class="idx">${i}</span>${v}`;
+    setupArray.appendChild(box);
+  });
+}
+
+function renderArray(container, step) {
+  container.innerHTML = '';
+  if (!step) {
+    NUMS.forEach((v, i) => {
+      const box = document.createElement('div');
+      box.className = 'cell' + (i === ANCHOR_I ? ' anchor' : '');
+      box.innerHTML = `<span class="idx">${i}</span>${v}`;
+      container.appendChild(box);
+    });
+    return;
+  }
+  NUMS.forEach((v, i) => {
+    const box = document.createElement('div');
+    let cls = 'cell';
+    if (i === ANCHOR_I) cls += ' anchor';
+    if (i === step.L) cls += ' left-ptr';
+    if (i === step.R) cls += ' right-ptr';
+
+    // highlight glow on the pointer cells based on step state
+    if (step.highlight === 'match' && (i === step.L || i === step.R || i === ANCHOR_I)) {
+      cls += ' match-glow';
+    } else if (step.highlight === 'duplicate' && (i === step.L || i === step.R || i === ANCHOR_I)) {
+      cls += ' duplicate-glow';
+    } else if (step.highlight === 'skip' && step.skipLook === 'L+1' && i === step.L + 1) {
+      cls += ' skip-glow';
+    } else if (step.highlight === 'skip' && step.skipLook === 'L+1' && i === step.L) {
+      cls += ' skip-glow';
+    } else if (step.highlight === 'skip' && step.skipLook === 'R-1' && i === step.R - 1) {
+      cls += ' skip-glow';
+    } else if (step.highlight === 'skip' && step.skipLook === 'R-1' && i === step.R) {
+      cls += ' skip-glow';
+    }
+
+    box.className = cls;
+    let label = '';
+    if (i === step.L) label += `<div class="ptr-label L">↑<span class="ar">L</span></div>`;
+    if (i === step.R) label += `<div class="ptr-label R">↑<span class="ar">R</span></div>`;
+    box.innerHTML = `<span class="idx">${i}</span>${v}${label}`;
+    container.appendChild(box);
+  });
+}
+
+function renderInfo(info, stepEl, lrEl, sumEl, msgEl, step, idx) {
+  // clear classes
+  info.className = 'info-bar';
+  if (step.highlight) info.classList.add(step.highlight);
+
+  stepEl.textContent = `${idx} — ${step.label}`;
+  stepEl.className = 'ival ' + (step.highlight || '');
+
+  lrEl.textContent = (step.L != null && step.R != null) ? `L=${step.L}  R=${step.R}` : '—';
+  sumEl.textContent = step.sumText;
+  msgEl.textContent = step.msg;
+}
+
+function renderTriplets(container, triplets, newIdx, isDupePanel, dupeAtIdx) {
+  container.innerHTML = '';
+  if (triplets.length === 0) {
+    container.innerHTML = '<span class="empty">—  none yet  —</span>';
+    return;
+  }
+  triplets.forEach((t, idx) => {
+    const span = document.createElement('span');
+    span.className = 'triplet';
+    if (idx === newIdx) span.classList.add('new');
+    if (isDupePanel && dupeAtIdx === idx) span.classList.add('duplicate');
+    span.textContent = `[${t.join(', ')}]`;
+    container.appendChild(span);
+  });
+}
+
+function clamp(n, lo, hi) { return Math.max(lo, Math.min(n, hi)); }
+
+function render() {
+  if (currentStep === 0) {
+    // initial state — no step yet
+    renderArray(noskipArray, null);
+    renderArray(skipArray, null);
+    noskipInfo.className = 'info-bar';
+    skipInfo.className   = 'info-bar';
+    noskipStep.textContent = '—';
+    skipStep.textContent   = '—';
+    noskipLR.textContent = '—';
+    skipLR.textContent   = '—';
+    noskipSum.textContent = '—';
+    skipSum.textContent   = '—';
+    noskipMsg.textContent = 'Press Next → to begin.';
+    skipMsg.textContent   = 'Press Next → to begin.';
+    noskipTrips.innerHTML = '<span class="empty">—  none yet  —</span>';
+    skipTrips.innerHTML   = '<span class="empty">—  none yet  —</span>';
+    stepCur.textContent = 0;
+    return;
+  }
+
+  const idx = currentStep - 1; // step number 1..N → array index 0..N-1
+  const noStep = noSkipSteps[clamp(idx, 0, noSkipSteps.length - 1)];
+  const ySte = skipSteps[clamp(idx, 0, skipSteps.length - 1)];
+
+  // freeze no-skip after its last step
+  if (idx >= noSkipSteps.length) {
+    const last = noSkipSteps[noSkipSteps.length - 1];
+    renderArray(noskipArray, last);
+    renderInfo(noskipInfo, noskipStep, noskipLR, noskipSum, noskipMsg, last, noSkipSteps.length);
+    renderTriplets(noskipTrips, last.triplets, -1, true, 2);
+  } else {
+    renderArray(noskipArray, noStep);
+    renderInfo(noskipInfo, noskipStep, noskipLR, noskipSum, noskipMsg, noStep, idx + 1);
+    // duplicate flag only after step 3 (4th step is the duplicate one)
+    const dupIdx = noStep.duplicate ? 2 : -1;
+    renderTriplets(noskipTrips, noStep.triplets, noStep.newIdx, true, dupIdx);
+  }
+
+  // skip panel
+  if (idx >= skipSteps.length) {
+    const last = skipSteps[skipSteps.length - 1];
+    renderArray(skipArray, last);
+    renderInfo(skipInfo, skipStep, skipLR, skipSum, skipMsg, last, skipSteps.length);
+    renderTriplets(skipTrips, last.triplets, -1, false, -1);
+  } else {
+    renderArray(skipArray, ySte);
+    renderInfo(skipInfo, skipStep, skipLR, skipSum, skipMsg, ySte, idx + 1);
+    renderTriplets(skipTrips, ySte.triplets, ySte.newIdx, false, -1);
+  }
+
+  stepCur.textContent = currentStep;
+
+  prevBtn.disabled = currentStep === 0;
+  nextBtn.disabled = currentStep >= MAX_STEPS;
+}
+
+/* ---------- controls ---------- */
+nextBtn.addEventListener('click', () => {
+  if (currentStep < MAX_STEPS) currentStep++;
+  render();
+});
+prevBtn.addEventListener('click', () => {
+  if (currentStep > 0) currentStep--;
+  render();
+});
+resetBtn.addEventListener('click', () => {
+  stopAutoplay();
+  currentStep = 0;
+  render();
+});
+playBtn.addEventListener('click', () => {
+  if (autoplayTimer) { stopAutoplay(); return; }
+  playBtn.textContent = '⏸ Pause';
+  autoplayTimer = setInterval(() => {
+    if (currentStep >= MAX_STEPS) { stopAutoplay(); return; }
+    currentStep++;
+    render();
+  }, 1500);
+});
+function stopAutoplay() {
+  if (autoplayTimer) clearInterval(autoplayTimer);
+  autoplayTimer = null;
+  playBtn.textContent = '▶ Auto-play';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
+  if (e.key === 'r' || e.key === 'R') resetBtn.click();
+});
+
+/* ---------- init ---------- */
+renderSetupArray();
+render();
+</script>
+</body>
+</html>

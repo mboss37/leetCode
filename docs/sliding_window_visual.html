@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sliding Window — Longest Substring · interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:     #f3eddc;
+    --paper-2:   #ebe2cc;
+    --paper-3:   #e3d8bd;
+    --ink:       #1a1410;
+    --ink-2:     #3c352d;
+    --ink-3:     #6b6155;
+    --accent:    #8b2c1c;
+    --accent-2:  #b34a2a;
+    --tan:       #a07c52;
+    --gold:      #f4dfa8;
+    --gold-2:    #ead09a;
+    --muted:     #5a5147;
+    --hair:      #c8bea4;
+    --good:      #4a6b3a;
+    --good-soft: #d9e3cf;
+    --bad:       #a3261c;
+    --bad-soft:  #f0d6d0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 5%, rgba(139,44,28,0.04), transparent 55%),
+      radial-gradient(ellipse at 90% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 24px 60px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  /* ===== top nav home link ===== */
+  .home-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    z-index: 100;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: var(--accent); }
+
+  /* ===== HEADER ===== */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  header.top::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 54px;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0 0 6px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 18px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===== INPUT SELECTOR ===== */
+  .input-row {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 16px 22px;
+    margin-bottom: 22px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .input-row::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+  .input-row label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .input-row .preset-btn {
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px solid var(--hair);
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .input-row .preset-btn:hover {
+    background: var(--paper);
+    border-color: var(--ink);
+  }
+  .input-row .preset-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* ===== CONTROLS ===== */
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    background: var(--ink);
+    color: var(--paper);
+    margin-bottom: 22px;
+  }
+  .controls button {
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--accent-2); }
+  .controls button:disabled { background: var(--ink-3); cursor: not-allowed; }
+  .controls button.ghost {
+    background: transparent;
+    border: 1px solid var(--paper);
+  }
+  .controls .step-info {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    margin-left: auto;
+    font-size: 16px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .controls .step-info .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold);
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* ===== STAGE ===== */
+  .stage {
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 30px 32px 26px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+
+  .string-row {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin: 30px 0 50px;
+    position: relative;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 30px;
+  }
+  .cell {
+    min-width: 46px;
+    width: 46px;
+    height: 52px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    position: relative;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s;
+    flex-shrink: 0;
+  }
+  .cell .idx {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--ink-3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cell.in-window {
+    background: var(--good-soft);
+    border-color: var(--good);
+    border-width: 2px;
+  }
+  .cell.duplicate {
+    background: var(--bad-soft);
+    border-color: var(--bad);
+    border-width: 2px;
+    box-shadow: 0 0 0 3px var(--bad-soft);
+  }
+  .cell.about-to-add {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px -4px rgba(139,44,28,0.4);
+    border-color: var(--accent);
+    border-width: 2px;
+  }
+  .cell.dropped {
+    opacity: 0.35;
+    text-decoration: line-through;
+    text-decoration-color: var(--bad);
+  }
+
+  /* pointer arrows */
+  .ptr-label {
+    position: absolute;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+    text-align: center;
+    transition: all 0.3s ease-out;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .ptr-label .ar {
+    display: block;
+    font-size: 13px;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+  .ptr-label.L { color: var(--accent); top: 58px; }
+  .ptr-label.R { color: var(--tan); top: 58px; }
+
+  /* window box overlay */
+  .window-box {
+    position: absolute;
+    border: 2px solid var(--accent);
+    background: rgba(139,44,28,0.08);
+    transition: all 0.3s ease-out;
+    pointer-events: none;
+    top: -4px;
+    height: 60px;
+  }
+  .window-box .label {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--paper);
+    padding: 1px 6px;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== INFO ROW ===== */
+  .info-row {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 0.8fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .info-card {
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    padding: 14px 16px;
+  }
+  .info-card.match { border-color: var(--good); background: var(--good-soft); }
+  .info-card.shrink { border-color: var(--bad); background: var(--bad-soft); }
+  .info-card.expand { border-color: var(--accent); }
+  .info-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .info-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .info-card.match .value { color: var(--good); }
+  .info-card.shrink .value { color: var(--bad); }
+  .info-card .desc {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.35;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* set view */
+  .set-view {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .set-view .item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 3px 8px;
+  }
+  .set-view .empty {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===== BEST TRACKER ===== */
+  .best-tracker {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .best-tracker .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .best-tracker .value {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 32px;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144;
+  }
+  .best-tracker .substring {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--paper);
+    background: rgba(243,237,220,0.1);
+    padding: 4px 10px;
+  }
+  .best-tracker .substring .empty {
+    color: var(--ink-3);
+    font-style: italic;
+  }
+
+  /* ===== TAKEAWAY ===== */
+  .takeaway {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 22px 26px;
+    position: relative;
+  }
+  .takeaway::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+  .takeaway h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0 0 12px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 24;
+  }
+  .takeaway h3 em {
+    color: var(--accent);
+    font-style: italic;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .takeaway p {
+    margin: 8px 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .takeaway code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 6px;
+    font-size: 13px;
+  }
+
+  /* ===== LEGEND ===== */
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--ink-2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .legend .key {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend .swatch {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--ink);
+    display: inline-block;
+  }
+  .legend .swatch.in-w { background: var(--good-soft); border-color: var(--good); border-width: 2px; }
+  .legend .swatch.dup  { background: var(--bad-soft); border-color: var(--bad); border-width: 2px; }
+  .legend .swatch.add  { background: var(--paper); border-color: var(--accent); border-width: 2px; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="home-link">↶ Home</a>
+
+<div class="wrap">
+
+  <header class="top">
+    <h1>Sliding Window<em>.</em></h1>
+    <div class="sub">— Longest Substring Without Repeating. Step through the window growing on the right and shrinking on the left.</div>
+  </header>
+
+  <!-- INPUT -->
+  <div class="input-row">
+    <label>Input</label>
+    <button class="preset-btn active" data-input="abcabcbb">"abcabcbb"</button>
+    <button class="preset-btn" data-input="bbbbb">"bbbbb"</button>
+    <button class="preset-btn" data-input="pwwkew">"pwwkew"</button>
+    <button class="preset-btn" data-input="dvdf">"dvdf"</button>
+    <button class="preset-btn" data-input="tmmzuxt">"tmmzuxt"</button>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="key"><span class="swatch in-w"></span> in window</div>
+    <div class="key"><span class="swatch add"></span> about to add</div>
+    <div class="key"><span class="swatch dup"></span> duplicate detected</div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button id="reset-btn" class="ghost">Reset</button>
+    <button id="prev-btn">← Prev</button>
+    <button id="next-btn">Next →</button>
+    <button id="play-btn" class="ghost">▶ Auto-play</button>
+    <div class="step-info">
+      Step <span class="num" id="step-cur">0</span>
+      <span style="color:var(--ink-3);"> / </span>
+      <span class="num" id="step-max">—</span>
+    </div>
+  </div>
+
+  <!-- STAGE -->
+  <div class="stage">
+    <div class="string-row" id="string-row"></div>
+
+    <div class="info-row">
+      <div class="info-card" id="info-action">
+        <div class="label">Action</div>
+        <div class="value" id="info-action-val">—</div>
+        <div class="desc" id="info-action-desc">Press <code style="background:var(--gold); padding:1px 5px; font-family:'JetBrains Mono',monospace;">Next →</code> to start.</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Pointers</div>
+        <div class="value" id="info-pointers">L=0, R=0</div>
+        <div class="desc">Window: <span id="info-window-text">empty</span></div>
+      </div>
+      <div class="info-card">
+        <div class="label">Set (chars in window)</div>
+        <div class="set-view" id="info-set">
+          <span class="empty">— empty —</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEST -->
+  <div class="best-tracker">
+    <div>
+      <div class="label">Longest valid window so far</div>
+    </div>
+    <div class="value" id="best-value">0</div>
+    <div class="substring" id="best-substring"><span class="empty">none yet</span></div>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <section class="takeaway">
+    <h3>The takeaway<em>.</em></h3>
+    <p><strong>R walks forward through every character exactly once.</strong> When adding the next character would create a duplicate, <strong>L shrinks from the left</strong> — removing characters until the duplicate is gone. Then add the new character.</p>
+    <p><strong>Each character is visited at most twice</strong> — once by R (when added), once by L (when removed). That's <code>O(n)</code> time. Both pointers move FORWARD; they never converge.</p>
+    <p><strong>This is what makes sliding window distinct from converging two-pointer</strong> — sliding window is for "longest/shortest contiguous range with some property," converging is for "find a pair in a sorted array."</p>
+  </section>
+
+</div>
+
+<script>
+const PRESETS = {
+  'abcabcbb': 'abcabcbb',
+  'bbbbb':    'bbbbb',
+  'pwwkew':   'pwwkew',
+  'dvdf':     'dvdf',
+  'tmmzuxt':  'tmmzuxt',
+};
+
+let state = {
+  s: 'abcabcbb',
+  steps: [],
+  current: 0,
+  autoplay: null,
+};
+
+/* ===== Build all the steps for a given string ===== */
+function buildSteps(s) {
+  const steps = [];
+  const window = new Set();
+  let left = 0;
+  let best = 0;
+  let bestSlice = '';
+
+  for (let right = 0; right < s.length; right++) {
+    const c = s[right];
+
+    // Initial state for THIS R (before any action)
+    // Step: "about to look at s[right]"
+    steps.push({
+      type: 'examine',
+      L: left,
+      R: right,
+      char: c,
+      window: new Set(window),
+      best,
+      bestSlice,
+      msg: `R = ${right} (char '${c}'). Check: is '${c}' already in the window?`,
+      action: 'EXAMINE',
+      actionClass: 'expand',
+    });
+
+    // If duplicate, shrink loop
+    while (window.has(c)) {
+      const dropped = s[left];
+      window.delete(dropped);
+      left++;
+      steps.push({
+        type: 'shrink',
+        L: left,
+        R: right,
+        char: c,
+        droppedChar: dropped,
+        droppedIdx: left - 1,
+        window: new Set(window),
+        best,
+        bestSlice,
+        msg: `Duplicate '${c}' was in window. Drop s[${left-1}]='${dropped}', L moves to ${left}.`,
+        action: 'SHRINK FROM LEFT',
+        actionClass: 'shrink',
+      });
+    }
+
+    // Add s[right]
+    window.add(c);
+    const size = right - left + 1;
+    const slice = s.substring(left, right + 1);
+    const newBest = size > best;
+    if (newBest) {
+      best = size;
+      bestSlice = slice;
+    }
+    steps.push({
+      type: 'add',
+      L: left,
+      R: right,
+      char: c,
+      window: new Set(window),
+      best,
+      bestSlice,
+      msg: `Add '${c}' to window. Window is now "${slice}" (length ${size}).${newBest ? ' New best!' : ''}`,
+      action: newBest ? 'ADD + NEW BEST' : 'ADD',
+      actionClass: newBest ? 'match' : 'expand',
+    });
+  }
+
+  // Final
+  steps.push({
+    type: 'done',
+    L: left,
+    R: s.length - 1,
+    char: '',
+    window: new Set(window),
+    best,
+    bestSlice,
+    msg: `Done. R has visited every character. Longest valid window: "${bestSlice}" — length ${best}.`,
+    action: 'DONE',
+    actionClass: 'match',
+  });
+
+  return steps;
+}
+
+/* ===== DOM refs ===== */
+const stringRowEl = document.getElementById('string-row');
+const stepCurEl = document.getElementById('step-cur');
+const stepMaxEl = document.getElementById('step-max');
+const infoActionEl = document.getElementById('info-action');
+const infoActionValEl = document.getElementById('info-action-val');
+const infoActionDescEl = document.getElementById('info-action-desc');
+const infoPointersEl = document.getElementById('info-pointers');
+const infoWindowTextEl = document.getElementById('info-window-text');
+const infoSetEl = document.getElementById('info-set');
+const bestValueEl = document.getElementById('best-value');
+const bestSubstringEl = document.getElementById('best-substring');
+
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const resetBtn = document.getElementById('reset-btn');
+const playBtn = document.getElementById('play-btn');
+
+/* ===== Render ===== */
+function renderStringRow(step) {
+  stringRowEl.innerHTML = '';
+  const s = state.s;
+  for (let i = 0; i < s.length; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.innerHTML = `<span class="idx">${i}</span>${s[i]}`;
+
+    if (step) {
+      const inWindow = i >= step.L && i <= step.R && step.type !== 'examine';
+      // for 'examine' the new char isn't in window yet
+      const inWindowForExamine = step.type === 'examine' && i >= step.L && i < step.R;
+
+      if (step.type === 'shrink' && i === step.droppedIdx) {
+        cell.classList.add('dropped');
+      } else if (step.type === 'examine' && i === step.R) {
+        // about to add — check if duplicate
+        if (step.window.has(step.char)) {
+          cell.classList.add('duplicate');
+        } else {
+          cell.classList.add('about-to-add');
+        }
+      } else if (inWindow || inWindowForExamine) {
+        cell.classList.add('in-window');
+      }
+    }
+    stringRowEl.appendChild(cell);
+  }
+
+  // Pointer arrows
+  if (step) {
+    requestAnimationFrame(() => {
+      // Get position of L and R cells
+      const cells = stringRowEl.children;
+      if (cells[step.L]) {
+        const Lcell = cells[step.L];
+        const Lrect = Lcell.getBoundingClientRect();
+        const rowRect = stringRowEl.getBoundingClientRect();
+        const Lptr = document.createElement('div');
+        Lptr.className = 'ptr-label L';
+        Lptr.style.left = (Lrect.left - rowRect.left) + 'px';
+        Lptr.style.width = Lrect.width + 'px';
+        Lptr.innerHTML = '↑<span class="ar">L</span>';
+        stringRowEl.appendChild(Lptr);
+      }
+      if (cells[step.R]) {
+        const Rcell = cells[step.R];
+        const Rrect = Rcell.getBoundingClientRect();
+        const rowRect = stringRowEl.getBoundingClientRect();
+        const Rptr = document.createElement('div');
+        Rptr.className = 'ptr-label R';
+        Rptr.style.left = (Rrect.left - rowRect.left) + 'px';
+        Rptr.style.width = Rrect.width + 'px';
+        Rptr.innerHTML = '↑<span class="ar">R</span>';
+        stringRowEl.appendChild(Rptr);
+      }
+    });
+  }
+}
+
+function renderInfo(step) {
+  infoActionEl.className = 'info-card ' + (step?.actionClass || '');
+  infoActionValEl.textContent = step?.action || '—';
+  infoActionDescEl.textContent = step?.msg || '';
+
+  infoPointersEl.textContent = step ? `L=${step.L}, R=${step.R}` : 'L=0, R=0';
+  const windowText = step && step.R >= step.L && step.type !== 'examine'
+    ? `"${state.s.substring(step.L, step.R + 1)}"`
+    : (step && step.type === 'examine'
+        ? `"${state.s.substring(step.L, step.R)}"`
+        : 'empty');
+  infoWindowTextEl.innerHTML = `<code style="font-family:'JetBrains Mono',monospace; background:var(--gold); padding:1px 5px;">${windowText}</code>`;
+
+  // Set view
+  if (!step || step.window.size === 0) {
+    infoSetEl.innerHTML = '<span class="empty">— empty —</span>';
+  } else {
+    infoSetEl.innerHTML = '';
+    [...step.window].forEach(c => {
+      const item = document.createElement('span');
+      item.className = 'item';
+      item.textContent = c;
+      infoSetEl.appendChild(item);
+    });
+  }
+
+  bestValueEl.textContent = step?.best || 0;
+  if (step?.bestSlice) {
+    bestSubstringEl.innerHTML = `"${step.bestSlice}"`;
+  } else {
+    bestSubstringEl.innerHTML = '<span class="empty">none yet</span>';
+  }
+}
+
+function render() {
+  const step = state.steps[state.current - 1] || null;
+  renderStringRow(step);
+  renderInfo(step);
+  stepCurEl.textContent = state.current;
+  stepMaxEl.textContent = state.steps.length;
+  prevBtn.disabled = state.current === 0;
+  nextBtn.disabled = state.current >= state.steps.length;
+}
+
+/* ===== Controls ===== */
+function loadInput(s) {
+  state.s = s;
+  state.steps = buildSteps(s);
+  state.current = 0;
+  stopAutoplay();
+  render();
+}
+
+function next() {
+  if (state.current < state.steps.length) state.current++;
+  render();
+}
+function prev() {
+  if (state.current > 0) state.current--;
+  render();
+}
+function reset() {
+  state.current = 0;
+  stopAutoplay();
+  render();
+}
+function toggleAutoplay() {
+  if (state.autoplay) { stopAutoplay(); return; }
+  playBtn.textContent = '⏸ Pause';
+  state.autoplay = setInterval(() => {
+    if (state.current >= state.steps.length) { stopAutoplay(); return; }
+    next();
+  }, 900);
+}
+function stopAutoplay() {
+  if (state.autoplay) clearInterval(state.autoplay);
+  state.autoplay = null;
+  playBtn.textContent = '▶ Auto-play';
+}
+
+nextBtn.addEventListener('click', next);
+prevBtn.addEventListener('click', prev);
+resetBtn.addEventListener('click', reset);
+playBtn.addEventListener('click', toggleAutoplay);
+
+document.querySelectorAll('.preset-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.preset-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    loadInput(b.dataset.input);
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  else if (e.key === 'r' || e.key === 'R') { reset(); }
+});
+
+/* INIT */
+loadInput('abcabcbb');
+</script>
+</body>
+</html>

@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patterns — A Coding Cheatsheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  /* ---------- print + page ---------- */
+  @page { size: A4 landscape; margin: 0; }
+  @media print {
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .page { box-shadow: none !important; margin: 0 !important; }
+  }
+
+  /* ---------- tokens ---------- */
+  :root {
+    --paper:      #f3eddc;
+    --paper-2:    #ebe2cc;
+    --paper-3:    #e3d8bd;
+    --ink:        #1a1410;
+    --ink-2:      #3c352d;
+    --ink-3:      #6b6155;
+    --accent:     #8b2c1c;
+    --accent-2:   #b34a2a;
+    --tan:        #a07c52;
+    --muted:      #5a5147;
+    --hair:       #c8bea4;
+    --hair-2:     #d8cdb1;
+    --gold:       #f4dfa8;
+    --gold-2:     #ead09a;
+  }
+
+  /* ---------- reset ---------- */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: #d8cca8;
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-optical-sizing: auto;
+    font-size: 9pt;
+    line-height: 1.38;
+    -webkit-font-smoothing: antialiased;
+    padding: 20px 0;
+  }
+
+  /* ---------- page ---------- */
+  .page {
+    width: 297mm;
+    min-height: 210mm;
+    margin: 14px auto;
+    padding: 11mm 13mm 9mm;
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 12% 8%, rgba(139,44,28,0.04), transparent 60%),
+      radial-gradient(ellipse at 88% 95%, rgba(160,124,82,0.06), transparent 55%);
+    box-shadow: 0 30px 60px -25px rgba(0,0,0,0.35), 0 8px 20px -10px rgba(0,0,0,0.2);
+    position: relative;
+    page-break-after: always;
+    overflow: hidden;
+  }
+  .page::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1   0 0 0 0 0.08   0 0 0 0 0.06   0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.5;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- banner ---------- */
+  .banner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: flex-end;
+    padding-bottom: 5mm;
+    margin-bottom: 6mm;
+    border-bottom: 0.6mm solid var(--ink);
+    position: relative;
+  }
+  .banner::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1.6mm;
+    height: 0.15mm;
+    background: var(--accent);
+  }
+  .banner .title-block { display: flex; align-items: baseline; gap: 8px; }
+  .banner .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 44pt;
+    line-height: 0.85;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  .banner .title em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    font-weight: 700;
+    margin-left: -4px;
+  }
+  .banner .kicker {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11pt;
+    font-weight: 400;
+    color: var(--ink-2);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+    letter-spacing: -0.005em;
+  }
+  .banner .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    color: var(--muted);
+    text-align: right;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+  .banner .meta .date { color: var(--accent); font-weight: 600; }
+  .banner .meta .dim { color: var(--ink-3); }
+  .banner .meta .x-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .banner .meta .x-link:hover { text-decoration: underline; }
+
+  /* ---------- top strip: complexity ladder + opener ---------- */
+  .top-strip {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 6mm;
+    margin-bottom: 6mm;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.5pt;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2.5mm;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 0.2mm;
+    background: var(--hair);
+  }
+  .section-label .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 9pt;
+    letter-spacing: 0;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  .complexity-ladder { display: grid; grid-template-columns: 1fr 1fr; gap: 0 5mm; }
+  .complexity-ladder.one-col { grid-template-columns: 1fr; }
+  .complexity-ladder .row {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 6px;
+    padding: 1.6mm 0;
+    border-bottom: 1px dotted var(--hair-2);
+    align-items: baseline;
+  }
+  .complexity-ladder .row:last-child { border-bottom: none; }
+  .complexity-ladder .big-o {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .complexity-ladder .desc {
+    font-size: 7.6pt;
+    color: var(--ink-2);
+    line-height: 1.35;
+  }
+  .complexity-ladder .desc b {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 7.8pt;
+    font-style: italic;
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+  }
+  .complexity-ladder .desc code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.6pt;
+    background: var(--gold);
+    padding: 0 2px;
+    color: var(--ink);
+  }
+  .complexity-ladder .desc em {
+    font-style: italic;
+    color: var(--ink-3);
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+    display: block;
+    margin-top: 0.5mm;
+  }
+
+  /* verbal opener */
+  .opener ol {
+    margin: 0; padding: 0; list-style: none;
+    counter-reset: beat;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1mm 4mm;
+  }
+  .opener li {
+    counter-increment: beat;
+    position: relative;
+    padding-left: 7mm;
+    padding-block: 0.7mm;
+    font-size: 7.8pt;
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+  .opener li::before {
+    content: counter(beat);
+    position: absolute;
+    left: 0; top: -0.3mm;
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 13pt;
+    color: var(--accent);
+    line-height: 1;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  .opener li b {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 8.5pt;
+    letter-spacing: -0.005em;
+    display: block;
+    margin-bottom: 0.2mm;
+  }
+
+  /* ---------- main: pattern grid ---------- */
+  .patterns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3.5mm;
+  }
+  .card {
+    border: 0.4mm solid var(--ink);
+    background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 70%);
+    padding: 2.6mm 3mm 3mm;
+    display: grid;
+    grid-template-rows: auto auto auto 1fr;
+    gap: 1.5mm;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 1mm;
+    background: var(--accent);
+  }
+  .card .signal {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 7.8pt;
+    color: var(--muted);
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+    line-height: 1.2;
+    padding-left: 2px;
+  }
+  .card .signal::before {
+    content: '"';
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 0;
+  }
+  .card .signal::after {
+    content: '"';
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card .head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 6px;
+    border-top: 0.15mm solid var(--hair);
+    padding-top: 1.3mm;
+  }
+  .card .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 11.5pt;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    line-height: 0.95;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  .card .ds {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.3pt;
+    color: var(--accent);
+    text-align: right;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+  .card .ds .t { color: var(--ink); display: block; font-weight: 700; }
+  .card .viz {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5mm 0;
+  }
+  .card .viz svg { width: 100%; height: 100%; display: block; }
+  .card .why {
+    font-size: 7.6pt;
+    line-height: 1.32;
+    color: var(--ink-2);
+  }
+  .card .why b {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 7.8pt;
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+    font-style: italic;
+  }
+  .card code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.5pt;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 0 2px;
+    border-radius: 0;
+  }
+
+  /* ---------- footer strip ---------- */
+  .footer-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5mm;
+    margin-top: 5mm;
+    padding-top: 3mm;
+    border-top: 0.15mm solid var(--hair);
+  }
+  .footer-strip .col h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 9pt;
+    margin: 0 0 1.5mm;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 24, "SOFT" 0, "WONK" 0;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .footer-strip .col h3 .accent-dot {
+    width: 5px; height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .footer-strip ul {
+    margin: 0; padding: 0; list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 4mm;
+  }
+  .footer-strip li {
+    position: relative;
+    padding-left: 8px;
+    font-size: 7.4pt;
+    line-height: 1.35;
+    padding-block: 0.4mm;
+    color: var(--ink-2);
+  }
+  .footer-strip li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 5px;
+    width: 4px; height: 0.4mm;
+    background: var(--accent);
+  }
+  .footer-strip li code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.6pt;
+    background: var(--gold);
+    padding: 0 2px;
+  }
+
+  /* phrases footer is a special two-column with red and green */
+  .phrases-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3mm;
+    margin-top: 1.5mm;
+  }
+  .phrases-block .pgroup {
+    border-left: 0.4mm solid var(--accent);
+    padding-left: 2mm;
+    background: rgba(139,44,28,0.04);
+    padding-top: 0.5mm;
+    padding-bottom: 0.5mm;
+  }
+  .phrases-block .pgroup.good {
+    border-left-color: var(--ink);
+    background: rgba(106,90,76,0.05);
+  }
+  .phrases-block .ptitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.6pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6mm;
+    display: block;
+  }
+  .phrases-block .pgroup.good .ptitle { color: var(--ink); }
+  .phrases-block .pitem {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 7.6pt;
+    color: var(--ink-2);
+    line-height: 1.25;
+    padding-block: 0.2mm;
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ---------- corner stamp ---------- */
+  .stamp {
+    position: absolute;
+    top: 14mm; right: 13mm;
+    transform: rotate(7deg);
+    border: 0.3mm solid var(--accent);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.4pt;
+    letter-spacing: 0.18em;
+    padding: 1.5mm 2.5mm 1.2mm;
+    line-height: 1.1;
+    text-transform: uppercase;
+    text-align: center;
+    background: rgba(243,237,220,0.4);
+  }
+  .stamp .big {
+    font-family: 'Fraunces', serif;
+    font-size: 8pt;
+    font-weight: 900;
+    letter-spacing: 0;
+    display: block;
+  }
+
+  /* ---------- inline visualization styles ---------- */
+  svg .ink { fill: var(--ink); }
+  svg .ink-line { stroke: var(--ink); fill: none; }
+  svg .accent { fill: var(--accent); }
+  svg .accent-line { stroke: var(--accent); fill: none; }
+  svg .muted { fill: var(--ink-3); }
+  svg .muted-line { stroke: var(--ink-3); fill: none; }
+  svg .gold { fill: var(--gold); }
+  svg text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    fill: var(--ink);
+  }
+  svg .lbl {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 8px;
+    fill: var(--accent);
+  }
+
+  /* ---------- page 2 specific ---------- */
+  .page-2 .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+    margin-bottom: 5mm;
+  }
+  .pattern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.6pt;
+  }
+  .pattern-table th, .pattern-table td {
+    text-align: left;
+    padding: 1.4mm 2mm 1.4mm 0;
+    border-bottom: 0.12mm solid var(--hair);
+    vertical-align: top;
+  }
+  .pattern-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.8pt;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 0.3mm solid var(--ink);
+    padding-bottom: 1.5mm;
+  }
+  .pattern-table td.sig {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+    width: 36%;
+  }
+  .pattern-table td.pat {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 8.2pt;
+    letter-spacing: -0.01em;
+    width: 22%;
+    font-variation-settings: "opsz" 14, "SOFT" 0, "WONK" 0;
+  }
+  .pattern-table td.cmp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.8pt;
+    color: var(--accent);
+    width: 14%;
+  }
+  .pattern-table td.cmp .s { color: var(--ink-3); display: block; font-size: 6.4pt; }
+  .pattern-table td.why {
+    font-size: 7.4pt;
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+  .pattern-table td.why code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.6pt;
+    background: var(--gold);
+    padding: 0 2px;
+  }
+
+  /* idioms block */
+  .idioms .row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 4mm;
+    padding: 1.4mm 0;
+    border-bottom: 0.12mm solid var(--hair-2);
+    align-items: baseline;
+  }
+  .idioms .row:last-child { border-bottom: none; }
+  .idioms .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .idioms .use {
+    font-size: 7.6pt;
+    color: var(--ink-2);
+    line-height: 1.3;
+  }
+  .idioms .use em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+    color: var(--ink-3);
+  }
+
+  /* mega code box for idiom shapes — stacked vertically to fill column height */
+  .shapes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5mm;
+    margin-top: 4mm;
+  }
+  .shape {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2.5mm 3mm 3mm;
+    position: relative;
+  }
+  .shape .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.6pt;
+    letter-spacing: 0.2em;
+    color: var(--accent-2);
+    text-transform: uppercase;
+    margin-bottom: 1.5mm;
+  }
+  .shape pre {
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.8pt;
+    line-height: 1.4;
+    color: var(--paper);
+    white-space: pre;
+    overflow: hidden;
+  }
+  .shape pre .kw  { color: #e8b04a; }
+  .shape pre .fn  { color: #f4dfa8; }
+  .shape pre .str { color: #c69a6f; }
+  .shape pre .com { color: #8a8175; font-style: italic; }
+  .shape pre .var { color: #f3eddc; }
+  .shape pre .num { color: #e88a6a; }
+
+  /* containers grid (list / set / dict / tuple) */
+  .containers-row { margin-top: 5mm; }
+  .container-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3mm;
+  }
+  .container-card {
+    border: 0.4mm solid var(--ink);
+    background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 70%);
+    padding: 2.6mm 3mm 2.8mm;
+    display: grid;
+    gap: 1.2mm;
+    position: relative;
+    overflow: hidden;
+  }
+  .container-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1mm;
+    background: var(--accent);
+  }
+  .container-card .cname-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px;
+    border-bottom: 0.15mm solid var(--hair);
+    padding-bottom: 1mm;
+    margin-top: 0.8mm;
+  }
+  .container-card .cname {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 14pt;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+    line-height: 1;
+  }
+  .container-card .cname em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    margin-left: 1px;
+  }
+  .container-card .csyntax {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.8pt;
+    color: var(--ink);
+    background: var(--gold);
+    padding: 0.4mm 1.4mm;
+    display: inline-block;
+    width: fit-content;
+  }
+  .container-card .ckey {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 7.6pt;
+    color: var(--ink-2);
+    line-height: 1.25;
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+  }
+  .container-card .crow {
+    display: grid;
+    grid-template-columns: 18mm 1fr;
+    gap: 4px;
+    align-items: baseline;
+    font-size: 7.2pt;
+    color: var(--ink-2);
+    line-height: 1.3;
+  }
+  .container-card .clabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.7pt;
+    color: var(--accent);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .container-card .crow code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.6pt;
+    background: var(--gold);
+    padding: 0 2px;
+  }
+  .container-card .crow .fast {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 6.4pt;
+  }
+  .container-card .crow .slow {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.4pt;
+  }
+  .container-card .cwarn {
+    font-size: 6.9pt;
+    color: var(--accent);
+    line-height: 1.3;
+    border-top: 0.12mm solid var(--hair);
+    padding-top: 1.1mm;
+    margin-top: 0.5mm;
+  }
+  .container-card .cwarn::before {
+    content: '⊘ ';
+    font-weight: 700;
+    margin-right: 1px;
+  }
+  .container-card .cwarn code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.4pt;
+    background: transparent;
+    color: var(--accent);
+    padding: 0;
+  }
+  .container-card .cwarn b {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* naming conventions row */
+  .naming-row { margin-top: 5mm; }
+  .interview-names {
+    margin-top: 3.5mm;
+    padding: 2.5mm 3.5mm 3mm;
+    background: var(--paper-3);
+    border-left: 1mm solid var(--accent);
+  }
+  .interview-names .ins-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6pt;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.8mm;
+  }
+  .interview-names .ins-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.4mm 5mm;
+  }
+  .interview-names .ins-item {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 7pt;
+  }
+  .interview-names .ins-item code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.2pt;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 0.5px 4px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .interview-names .ins-item .ins-desc {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 7pt;
+    color: var(--ink-3);
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===================== PAGE 3 — COMPLEXITY VISUAL PRIMER ===================== */
+
+  .cx-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 6mm;
+    margin-bottom: 2mm;
+  }
+
+  .cx-chart {
+    background: var(--paper-2);
+    padding: 4mm 5mm;
+    border-left: 1mm solid var(--accent);
+  }
+  .cx-chart-caption {
+    margin-top: 2mm;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 7.4pt;
+    color: var(--ink-2);
+    line-height: 1.4;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .cx-chart-caption b {
+    font-style: normal;
+    color: var(--ink);
+  }
+
+  .cx-numbers {
+    display: flex;
+    flex-direction: column;
+  }
+  .cx-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.4pt;
+    margin-bottom: 3mm;
+  }
+  .cx-table th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.8pt;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    text-transform: uppercase;
+    padding: 1.5mm 2mm 1.5mm 0;
+    border-bottom: 0.3mm solid var(--ink);
+  }
+  .cx-table td {
+    padding: 1.4mm 2mm 1.4mm 0;
+    border-bottom: 0.12mm solid var(--hair);
+    vertical-align: top;
+    color: var(--ink-2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.2pt;
+  }
+  .cx-table td.big-o {
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .cx-table td.bad {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .cx-rule {
+    padding: 2.5mm 3.5mm;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 7.4pt;
+    line-height: 1.4;
+    border-left: 1mm solid var(--gold);
+  }
+  .cx-rule .rule-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.6pt;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    margin-bottom: 1.5mm;
+  }
+  .cx-rule b { color: var(--gold); }
+
+  /* Mental models grid */
+  .mental-models {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    margin-bottom: 5mm;
+  }
+  .mm-card {
+    background: var(--paper-2);
+    border: 0.4mm solid var(--ink);
+    padding: 3mm 4mm 3mm;
+    position: relative;
+    overflow: hidden;
+  }
+  .mm-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1mm;
+    background: var(--accent);
+  }
+  .mm-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    border-bottom: 0.15mm solid var(--hair);
+    padding-bottom: 2mm;
+    margin-bottom: 2mm;
+  }
+  .mm-bigo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .mm-name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 9pt;
+    color: var(--ink-2);
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .mm-svg {
+    margin: 1mm 0 2mm;
+  }
+  .mm-svg svg {
+    width: 100%;
+    height: auto;
+    max-height: 80px;
+  }
+  .mm-desc {
+    font-size: 7.4pt;
+    line-height: 1.4;
+    color: var(--ink-2);
+  }
+  .mm-desc b {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--ink);
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+  }
+
+  /* Time vs Space + Rules row */
+  .cx-bottom {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 6mm;
+    margin-bottom: 4mm;
+  }
+  .ts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3mm;
+    margin-bottom: 3mm;
+  }
+  .ts-block {
+    background: var(--paper-2);
+    padding: 3mm 4mm;
+    border-top: 1mm solid var(--accent);
+  }
+  .ts-head {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 2mm;
+    text-transform: uppercase;
+  }
+  .ts-text {
+    font-size: 7.4pt;
+    line-height: 1.4;
+    color: var(--ink-2);
+    margin-bottom: 1.5mm;
+  }
+  .ts-text b { color: var(--ink); font-weight: 700; }
+  .ts-text em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+  }
+  .ts-text code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 0 2px;
+    font-size: 6.6pt;
+    color: var(--ink);
+  }
+  .ts-bottom-note {
+    padding: 2.5mm 3mm;
+    background: var(--paper-3);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 7.4pt;
+    color: var(--ink-2);
+    line-height: 1.45;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+    border-left: 0.5mm solid var(--accent);
+  }
+  .ts-bottom-note b {
+    font-style: normal;
+    color: var(--ink);
+  }
+
+  .rules-list {
+    display: grid;
+    gap: 1mm;
+  }
+  .rule-item {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 8px;
+    align-items: start;
+    padding: 1.5mm 0;
+    border-bottom: 0.12mm dotted var(--hair-2);
+  }
+  .rule-item:last-child { border-bottom: none; }
+  .rule-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 18pt;
+    color: var(--accent);
+    line-height: 1;
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  .rule-text {
+    font-size: 7.4pt;
+    line-height: 1.4;
+    color: var(--ink-2);
+    padding-top: 1mm;
+  }
+  .rule-text b {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--ink);
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+  }
+  .rule-text code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 0 2px;
+    font-size: 6.6pt;
+  }
+  .rule-text em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-variation-settings: "opsz" 9, "SOFT" 100, "WONK" 1;
+    display: block;
+    margin-top: 1mm;
+    font-size: 7.2pt;
+  }
+
+  /* big folio numbers */
+  .folio {
+    position: absolute;
+    bottom: 6mm;
+    right: 14mm;
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 11pt;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 24;
+  }
+  .folio .sep { color: var(--ink-3); margin: 0 3px; font-weight: 400; }
+  .folio .of { color: var(--ink-3); }
+
+  .ribbon {
+    position: absolute;
+    bottom: 5mm; left: 13mm;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.8pt;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .ribbon .key { color: var(--accent); }
+
+  /* small editorial flourish */
+  .flourish {
+    text-align: center;
+    margin: 1.5mm 0;
+    color: var(--accent);
+    font-size: 10pt;
+    line-height: 0.5;
+    letter-spacing: 0.6em;
+  }
+
+  /* edge case grid: pretty checkbox style */
+  .edge-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 5mm;
+  }
+  .edge-list li::before {
+    content: '☐';
+    color: var(--accent);
+    font-size: 8pt;
+    background: transparent;
+    width: auto; height: auto;
+    position: static;
+    margin-right: 4px;
+  }
+  .edge-list li { padding-left: 0; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ PAGE 1 -->
+<article class="page page-1">
+
+  <div class="stamp">
+    <span class="big">FDE</span>
+    JUN 3 · 2026
+  </div>
+
+  <header class="banner">
+    <div class="title-block">
+      <div>
+        <div class="title">Patterns<em>.</em></div>
+        <div class="kicker">— a coding reference for the panic moments.</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="dim">CODING ROUND · CHEATSHEET</div>
+      <div><span class="date">Jun 03</span> &nbsp; 2026</div>
+      <div class="dim">PATTERNS · QUICK REFERENCE</div>
+      <div><a href="index.html" class="x-link">↶ home</a> &nbsp; <a href="pattern_flashcards.html" class="x-link">↗ flashcards</a></div>
+    </div>
+  </header>
+
+  <!-- top strip: complexity ladder + verbal opener -->
+  <section class="top-strip">
+
+    <div>
+      <div class="section-label"><span class="num">i.</span> Complexity — quick reference</div>
+      <div class="complexity-ladder">
+        <div class="row">
+          <div class="big-o">O(1)</div>
+          <div class="desc">Constant. Same work, any input size. <em>dict lookup, array index, ptr vars.</em></div>
+        </div>
+        <div class="row">
+          <div class="big-o">O(log n)</div>
+          <div class="desc">Halving each step. <em>binary search, bisect.</em></div>
+        </div>
+        <div class="row">
+          <div class="big-o">O(n)</div>
+          <div class="desc">Walk each item once. <em>one pass, Counter, Kadane's.</em></div>
+        </div>
+        <div class="row">
+          <div class="big-o">O(n log n)</div>
+          <div class="desc">Sort then sweep. <em>sorted(), merge intervals.</em></div>
+        </div>
+        <div class="row">
+          <div class="big-o">O(n²)</div>
+          <div class="desc">Every pair. <em>nested loops, brute force.</em></div>
+        </div>
+        <div class="row">
+          <div class="big-o">O(n + k)</div>
+          <div class="desc">Linear + buckets. <em>counting sort, bucket sort.</em></div>
+        </div>
+        <div class="row">
+          <div class="big-o">O(2ⁿ)</div>
+          <div class="desc">Exponential — every subset. <em>naive backtracking.</em></div>
+        </div>
+      </div>
+      <div style="margin-top: 2mm; font-family: 'Fraunces', serif; font-style: italic; font-size: 7.5pt; color: var(--ink-3); font-variation-settings: 'opsz' 9, 'SOFT' 100, 'WONK' 1;">
+        → Full visual primer with curves, mental models &amp; real numbers on <b style="color: var(--accent); font-style: normal;">page 3</b>.
+      </div>
+    </div>
+
+    <div class="opener">
+      <div class="section-label"><span class="num">ii.</span> The Verbal Opener — six beats, every problem</div>
+      <ol>
+        <li><b>Restate</b>"What I'm hearing is: given X, return Y. Did I get that right?"</li>
+        <li><b>Clarify</b>Size? Empty? Duplicates? No-answer return? Time vs space?</li>
+        <li><b>Examples</b>Walk 1–2 inputs by hand, out loud, before any code.</li>
+        <li><b>Approach</b>Brute force first, name its O. Then optimal, name its O.</li>
+        <li><b>Code</b>Narrate each line. State the invariant out loud.</li>
+        <li><b>Test</b>Trace fresh input. Sweep the edge-case checklist.</li>
+      </ol>
+    </div>
+
+  </section>
+
+  <div class="section-label" style="margin-bottom: 4mm;"><span class="num">iii.</span> The Patterns — When you see X, reach for Y</div>
+
+  <!-- pattern cards grid: 4 columns × 2 rows = 8 cards on page 1 -->
+  <section class="patterns">
+
+    <!-- 1. HASH MAP (UNSORTED PAIR) -->
+    <div class="card">
+      <div class="signal">find a pair summing to target — unsorted input</div>
+      <div class="head">
+        <div class="name">Hash Map of<br>Complements</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(n) space</span>
+          <span>dict</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- input boxes -->
+          <g>
+            <rect x="6"  y="4" width="18" height="18" class="ink-line" stroke-width="1" fill="#f3eddc"/>
+            <text x="15" y="17" text-anchor="middle">2</text>
+            <rect x="26" y="4" width="18" height="18" class="ink-line" stroke-width="1" fill="#f3eddc"/>
+            <text x="35" y="17" text-anchor="middle">7</text>
+            <rect x="46" y="4" width="18" height="18" class="ink-line" stroke-width="1" fill="#f3eddc"/>
+            <text x="55" y="17" text-anchor="middle">11</text>
+          </g>
+          <!-- arrow to notebook -->
+          <path d="M 70 13 L 92 13" class="accent-line" stroke-width="1"/>
+          <polygon points="92,13 88,11 88,15" class="accent"/>
+          <!-- notebook -->
+          <rect x="96" y="2" width="56" height="32" fill="#f4dfa8" class="ink-line" stroke-width="1"/>
+          <line x1="96" y1="11" x2="152" y2="11" class="ink-line" stroke-width="0.5"/>
+          <text x="101" y="20" font-size="6">2 → 0</text>
+          <text x="101" y="29" font-size="6">7 → 1</text>
+          <text x="124" y="9" class="lbl" font-size="6.5">seen</text>
+          <text x="160" y="22" class="lbl">→ {i,j}</text>
+        </svg>
+      </div>
+      <div class="why">For each <code>x</code>, ask the notebook: <b>have I seen <code>target − x</code>?</b> If yes, return the pair. If no, write <code>x</code> in. One pass.</div>
+    </div>
+
+    <!-- 2. TWO POINTERS (SORTED PAIR) -->
+    <div class="card">
+      <div class="signal">find a pair summing to target — sorted input</div>
+      <div class="head">
+        <div class="name">Two<br>Pointers</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(1) space</span>
+          <span>indices</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- array -->
+          <g>
+            <rect x="14" y="11" width="16" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="22" y="22" text-anchor="middle">2</text>
+            <rect x="34" y="11" width="16" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="42" y="22" text-anchor="middle">7</text>
+            <rect x="54" y="11" width="16" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="62" y="22" text-anchor="middle">11</text>
+            <rect x="74" y="11" width="16" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="82" y="22" text-anchor="middle">15</text>
+            <rect x="94" y="11" width="16" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="102" y="22" text-anchor="middle">19</text>
+            <rect x="114" y="11" width="16" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="122" y="22" text-anchor="middle">23</text>
+          </g>
+          <!-- L pointer -->
+          <text x="22" y="8" class="lbl" text-anchor="middle">L</text>
+          <path d="M 22 31 L 38 31" class="accent-line" stroke-width="1.2"/>
+          <polygon points="38,31 34,29 34,33" class="accent"/>
+          <!-- R pointer -->
+          <text x="122" y="8" class="lbl" text-anchor="middle">R</text>
+          <path d="M 122 31 L 106 31" class="accent-line" stroke-width="1.2"/>
+          <polygon points="106,31 110,29 110,33" class="accent"/>
+          <text x="148" y="20" class="lbl">converge</text>
+        </svg>
+      </div>
+      <div class="why">L at start, R at end. <b>Sum too small → L++. Sum too big → R−−.</b> Sorted means moving L only raises sum, R only lowers. Never backtrack.</div>
+    </div>
+
+    <!-- 3. SLIDING WINDOW -->
+    <div class="card">
+      <div class="signal">longest / shortest substring with property</div>
+      <div class="head">
+        <div class="name">Sliding<br>Window</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(k) space</span>
+          <span>dict + L,R</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- array of chars -->
+          <g font-size="7.5">
+            <rect x="8"   y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="15" y="22" text-anchor="middle">a</text>
+            <rect x="22"  y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="29" y="22" text-anchor="middle">b</text>
+            <rect x="36"  y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="43" y="22" text-anchor="middle">c</text>
+            <rect x="50"  y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="57" y="22" text-anchor="middle">a</text>
+            <rect x="64"  y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="71" y="22" text-anchor="middle">b</text>
+            <rect x="78"  y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="85" y="22" text-anchor="middle">c</text>
+            <rect x="92"  y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="99" y="22" text-anchor="middle">b</text>
+            <rect x="106" y="11" width="14" height="16" class="ink-line" stroke-width="1" fill="#f3eddc"/><text x="113" y="22" text-anchor="middle">b</text>
+          </g>
+          <!-- window bracket -->
+          <rect x="35" y="8" width="44" height="22" fill="rgba(139,44,28,0.10)" stroke="#8b2c1c" stroke-width="0.7"/>
+          <text x="57" y="6" class="lbl" text-anchor="middle" font-size="7">window</text>
+          <!-- arrows showing expand / contract -->
+          <path d="M 36 33 L 30 33" class="accent-line" stroke-width="1"/>
+          <polygon points="30,33 33,31.5 33,34.5" class="accent"/>
+          <path d="M 78 33 L 84 33" class="accent-line" stroke-width="1"/>
+          <polygon points="84,33 81,31.5 81,34.5" class="accent"/>
+          <text x="143" y="20" class="lbl">grow / shrink</text>
+        </svg>
+      </div>
+      <div class="why">R expands the window. When the invariant breaks (dup char, sum &gt; k, &lt;k distinct), L advances until it's repaired. Each index visited ≤ 2× → linear.</div>
+    </div>
+
+    <!-- 4. EXISTENCE CHECK (SET) -->
+    <div class="card">
+      <div class="signal">does anything repeat? has X been seen?</div>
+      <div class="head">
+        <div class="name">Set<br>Existence</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(n) space</span>
+          <span>set</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- guest list -->
+          <rect x="6" y="4" width="80" height="30" fill="#f4dfa8" class="ink-line" stroke-width="1"/>
+          <line x1="6" y1="14" x2="86" y2="14" class="ink-line" stroke-width="0.5"/>
+          <text x="46" y="11" text-anchor="middle" class="lbl" font-size="7">guest list</text>
+          <text x="12" y="22" font-size="6.5">• alice</text>
+          <text x="12" y="30" font-size="6.5">• bob</text>
+          <text x="50" y="22" font-size="6.5">• carol</text>
+          <!-- bouncer -->
+          <circle cx="116" cy="19" r="11" fill="none" class="ink-line" stroke-width="1"/>
+          <text x="116" y="22" text-anchor="middle" font-size="7" class="lbl">?</text>
+          <!-- result -->
+          <text x="146" y="14" font-size="6.5" class="accent">✓ in</text>
+          <text x="146" y="26" font-size="6.5" class="muted">✗ new</text>
+        </svg>
+      </div>
+      <div class="why">A <b>bouncer at a door</b> with a guest list. Walk the input — if the name is already on the list, that's the duplicate. Otherwise write it and move on.</div>
+    </div>
+
+    <!-- 5. FREQUENCY COUNT -->
+    <div class="card">
+      <div class="signal">how many of each? frequency map</div>
+      <div class="head">
+        <div class="name">Counter /<br>defaultdict</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(k) space</span>
+          <span>Counter</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <text x="8" y="14" font-size="7" class="muted">"hello"</text>
+          <path d="M 36 14 L 56 14" class="accent-line" stroke-width="1"/>
+          <polygon points="56,14 53,12.5 53,15.5" class="accent"/>
+          <!-- bars -->
+          <g transform="translate(62, 2)">
+            <rect x="0"  y="22" width="11" height="10" class="accent"/><text x="5.5" y="14" text-anchor="middle" font-size="6">h</text>
+            <rect x="14" y="22" width="11" height="10" class="accent"/><text x="19.5" y="14" text-anchor="middle" font-size="6">e</text>
+            <rect x="28" y="12" width="11" height="20" class="accent"/><text x="33.5" y="9" text-anchor="middle" font-size="6">l</text>
+            <rect x="42" y="22" width="11" height="10" class="accent"/><text x="47.5" y="14" text-anchor="middle" font-size="6">o</text>
+          </g>
+          <text x="146" y="20" class="lbl">{l: 2, …}</text>
+        </svg>
+      </div>
+      <div class="why">One walk, increment. <code>counts[c] += 1</code> with <code>defaultdict(int)</code>. <b>Counter(seq)</b> is the same in one call. <code>.most_common(k)</code> gives top-K for free.</div>
+    </div>
+
+    <!-- 6. HEAP TOP K -->
+    <div class="card">
+      <div class="signal">top K elements · K-th largest · streaming median</div>
+      <div class="head">
+        <div class="name">Min-Heap<br>of Size K</div>
+        <div class="ds">
+          <span class="t">O(n log k)</span>
+          <span>O(k) space</span>
+          <span>heapq</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- heap tree -->
+          <g>
+            <line x1="40" y1="10" x2="22" y2="22" class="ink-line" stroke-width="0.8"/>
+            <line x1="40" y1="10" x2="58" y2="22" class="ink-line" stroke-width="0.8"/>
+            <line x1="22" y1="22" x2="12" y2="33" class="ink-line" stroke-width="0.8"/>
+            <line x1="22" y1="22" x2="32" y2="33" class="ink-line" stroke-width="0.8"/>
+            <line x1="58" y1="22" x2="48" y2="33" class="ink-line" stroke-width="0.8"/>
+            <circle cx="40" cy="10" r="7" class="accent"/>
+            <circle cx="22" cy="22" r="6" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="58" cy="22" r="6" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="12" cy="33" r="5" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="32" cy="33" r="5" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="48" cy="33" r="5" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <text x="40" y="13" text-anchor="middle" font-size="6.5" fill="#f3eddc">3</text>
+            <text x="22" y="25" text-anchor="middle" font-size="6">5</text>
+            <text x="58" y="25" text-anchor="middle" font-size="6">7</text>
+            <text x="12" y="36" text-anchor="middle" font-size="5.5">9</text>
+            <text x="32" y="36" text-anchor="middle" font-size="5.5">8</text>
+            <text x="48" y="36" text-anchor="middle" font-size="5.5">9</text>
+          </g>
+          <text x="80" y="14" class="lbl">root = min</text>
+          <text x="80" y="26" font-size="6.5" class="muted">push → if smaller</text>
+          <text x="80" y="34" font-size="6.5" class="muted">than root, drop in</text>
+        </svg>
+      </div>
+      <div class="why">Hold the K best you've seen. <code>heappush</code> a new one, <code>heappop</code> the smallest if size &gt; K. <b>Python only ships min-heap</b> — negate values for max-heap.</div>
+    </div>
+
+    <!-- 7. BINARY SEARCH -->
+    <div class="card">
+      <div class="signal">sorted array — find element / boundary fast</div>
+      <div class="head">
+        <div class="name">Binary<br>Search</div>
+        <div class="ds">
+          <span class="t">O(log n)</span>
+          <span>O(1) space</span>
+          <span>bisect</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- full array, with right half greyed -->
+          <g>
+            <rect x="6"   y="13" width="16" height="14" fill="#f3eddc" class="ink-line" stroke-width="0.8"/>
+            <rect x="22"  y="13" width="16" height="14" fill="#f3eddc" class="ink-line" stroke-width="0.8"/>
+            <rect x="38"  y="13" width="16" height="14" fill="rgba(139,44,28,0.18)" stroke="#8b2c1c" stroke-width="1"/>
+            <rect x="54"  y="13" width="16" height="14" fill="#f3eddc" class="ink-line" stroke-width="0.8"/>
+            <rect x="70"  y="13" width="16" height="14" fill="#f3eddc" class="ink-line" stroke-width="0.8"/>
+            <!-- eliminated half -->
+            <rect x="86"  y="13" width="16" height="14" fill="rgba(0,0,0,0.06)" stroke="#c8bea4" stroke-width="0.5"/>
+            <rect x="102" y="13" width="16" height="14" fill="rgba(0,0,0,0.06)" stroke="#c8bea4" stroke-width="0.5"/>
+            <rect x="118" y="13" width="16" height="14" fill="rgba(0,0,0,0.06)" stroke="#c8bea4" stroke-width="0.5"/>
+            <rect x="134" y="13" width="16" height="14" fill="rgba(0,0,0,0.06)" stroke="#c8bea4" stroke-width="0.5"/>
+          </g>
+          <text x="46" y="10" class="lbl" text-anchor="middle" font-size="7">mid</text>
+          <text x="122" y="36" font-size="6.5" class="muted" text-anchor="middle">eliminated</text>
+          <text x="160" y="20" class="lbl">÷2</text>
+        </svg>
+      </div>
+      <div class="why">Peek the middle. Eliminate the half that can't contain the answer. Repeat. <b>Decide <code>low &lt;= high</code> vs <code>low &lt; high</code> intentionally</b> — bug-magnet otherwise.</div>
+    </div>
+
+    <!-- 8. MONOTONIC STACK -->
+    <div class="card">
+      <div class="signal">next greater / next smaller / span on the right</div>
+      <div class="head">
+        <div class="name">Monotonic<br>Stack</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(n) space</span>
+          <span>list</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- stack of decreasing -->
+          <g>
+            <rect x="20" y="4"  width="30" height="6"  fill="#8b2c1c"/>
+            <rect x="20" y="12" width="30" height="8"  fill="#a04030"/>
+            <rect x="20" y="22" width="30" height="12" fill="#b34a2a"/>
+            <text x="35" y="9.2" text-anchor="middle" font-size="5.5" fill="#f3eddc">9</text>
+            <text x="35" y="18.5" text-anchor="middle" font-size="6" fill="#f3eddc">7</text>
+            <text x="35" y="30" text-anchor="middle" font-size="6.5" fill="#f3eddc">4</text>
+            <text x="35" y="38" text-anchor="middle" font-size="5.5" class="muted">stack</text>
+          </g>
+          <!-- pop trigger -->
+          <text x="70" y="20" font-size="7" class="lbl">if new &gt; top: pop</text>
+          <!-- arrow -->
+          <path d="M 60 8 Q 80 4 95 8" class="accent-line" stroke-width="0.8"/>
+          <polygon points="95,8 92,6.5 92,9.5" class="accent"/>
+        </svg>
+      </div>
+      <div class="why">Stack stays monotonic (decreasing, say). New item comes in: <b>pop everything smaller</b> — each pop pairs that popped element with the new one. Each item pushed + popped at most once → linear.</div>
+    </div>
+
+  </section>
+
+  <div class="folio">PG <span class="sep">·</span> <span>01</span> <span class="of">/ 03</span></div>
+  <div class="ribbon">PATTERNS — <span class="key">PRINT LANDSCAPE</span> · M.B. PREP</div>
+
+</article>
+
+<!-- ============================================================ PAGE 2 -->
+<article class="page page-2">
+
+  <div class="stamp">
+    <span class="big">FDE</span>
+    JUN 3 · 2026
+  </div>
+
+  <header class="banner">
+    <div class="title-block">
+      <div>
+        <div class="title">Patterns<em>.</em></div>
+        <div class="kicker">— continued. linked data, design problems, and the discipline of finishing.</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="dim">CODING ROUND · CHEATSHEET</div>
+      <div><span class="date">Jun 03</span> &nbsp; 2026</div>
+      <div class="dim">PATTERNS · QUICK REFERENCE</div>
+      <div><a href="index.html" class="x-link">↶ home</a> &nbsp; <a href="pattern_flashcards.html" class="x-link">↗ flashcards</a></div>
+    </div>
+  </header>
+
+  <!-- ROW: more pattern cards (4) -->
+  <section class="patterns" style="margin-bottom: 5mm;">
+
+    <!-- 9. SLOW + FAST POINTERS -->
+    <div class="card">
+      <div class="signal">linked list — middle, cycle, n-th from end</div>
+      <div class="head">
+        <div class="name">Slow + Fast<br>Pointers</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(1) space</span>
+          <span>pointers</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <g>
+            <!-- nodes -->
+            <circle cx="14"  cy="18" r="7" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="38"  cy="18" r="7" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="62"  cy="18" r="7" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="86"  cy="18" r="7" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="110" cy="18" r="7" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="134" cy="18" r="7" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <line x1="21" y1="18" x2="31" y2="18" class="ink-line" stroke-width="0.8" marker-end=""/>
+            <line x1="45" y1="18" x2="55" y2="18" class="ink-line" stroke-width="0.8"/>
+            <line x1="69" y1="18" x2="79" y2="18" class="ink-line" stroke-width="0.8"/>
+            <line x1="93" y1="18" x2="103" y2="18" class="ink-line" stroke-width="0.8"/>
+            <line x1="117" y1="18" x2="127" y2="18" class="ink-line" stroke-width="0.8"/>
+          </g>
+          <!-- slow pointer arrow up to a node -->
+          <text x="38" y="6" class="lbl" text-anchor="middle" font-size="7">slow</text>
+          <path d="M 38 8 L 38 11" class="accent-line" stroke-width="1"/>
+          <!-- fast -->
+          <text x="86" y="6" class="lbl" text-anchor="middle" font-size="7">fast</text>
+          <path d="M 86 8 L 86 11" class="accent-line" stroke-width="1"/>
+          <text x="160" y="20" class="lbl">2× speed</text>
+        </svg>
+      </div>
+      <div class="why">Fast moves <b>two</b>, slow moves <b>one</b>. When fast hits the end, slow's at the <b>middle</b>. If there's a cycle, they meet inside it. Constant space — no extra set.</div>
+    </div>
+
+    <!-- 10. GROUP BY KEY -->
+    <div class="card">
+      <div class="signal">group items by some derived key</div>
+      <div class="head">
+        <div class="name">Hash Map<br>of Lists</div>
+        <div class="ds">
+          <span class="t">O(n·k)</span>
+          <span>O(n) space</span>
+          <span>defaultdict(list)</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <text x="8" y="18" font-size="7">eat tea ate</text>
+          <path d="M 50 18 L 70 18" class="accent-line" stroke-width="1"/>
+          <polygon points="70,18 67,16.5 67,19.5" class="accent"/>
+          <!-- groups -->
+          <g>
+            <rect x="76"  y="4"  width="80" height="12" fill="#f4dfa8" class="ink-line" stroke-width="0.8"/>
+            <text x="80" y="12" font-size="6.5">aet → [eat, tea, ate]</text>
+            <rect x="76"  y="22" width="80" height="12" fill="#f4dfa8" class="ink-line" stroke-width="0.8"/>
+            <text x="80" y="30" font-size="6.5">opt → [tan, nat]</text>
+          </g>
+        </svg>
+      </div>
+      <div class="why">Compute a stable key (sorted letters, frequency tuple, etc.). <code>groups[key].append(item)</code>. <b>defaultdict(list)</b> auto-creates the bucket on first sight — skips the <code>if key not in groups</code> dance.</div>
+    </div>
+
+    <!-- 11. INTERVALS / SORT + SWEEP -->
+    <div class="card">
+      <div class="signal">merge / insert overlapping intervals</div>
+      <div class="head">
+        <div class="name">Sort +<br>Sweep</div>
+        <div class="ds">
+          <span class="t">O(n log n)</span>
+          <span>O(1)+ space</span>
+          <span>list</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <!-- intervals before -->
+          <line x1="10" y1="10" x2="60" y2="10" class="ink-line" stroke-width="2"/>
+          <line x1="40" y1="10" x2="100" y2="10" class="ink-line" stroke-width="2"/>
+          <line x1="120" y1="10" x2="160" y2="10" class="ink-line" stroke-width="2"/>
+          <text x="5" y="6" font-size="6" class="muted">before</text>
+          <!-- after merge -->
+          <line x1="10" y1="28" x2="100" y2="28" class="accent-line" stroke-width="2"/>
+          <line x1="120" y1="28" x2="160" y2="28" class="accent-line" stroke-width="2"/>
+          <text x="5" y="36" font-size="6" class="muted">after</text>
+        </svg>
+      </div>
+      <div class="why">Sort by start. Walk. If current.start ≤ last.end → <b>extend last.end</b>. Else append new. The sort lets the sweep be one pass — adjacency is no longer hidden.</div>
+    </div>
+
+    <!-- 12. DFS / BFS -->
+    <div class="card">
+      <div class="signal">tree / graph — depth, shape, levels, paths</div>
+      <div class="head">
+        <div class="name">DFS or<br>BFS</div>
+        <div class="ds">
+          <span class="t">O(n)</span>
+          <span>O(h) / O(w)</span>
+          <span>recursion / queue</span>
+        </div>
+      </div>
+      <div class="viz">
+        <svg viewBox="0 0 180 38">
+          <g>
+            <circle cx="40" cy="6" r="4" class="accent"/>
+            <line x1="40" y1="6" x2="22" y2="18" class="ink-line" stroke-width="0.8"/>
+            <line x1="40" y1="6" x2="58" y2="18" class="ink-line" stroke-width="0.8"/>
+            <circle cx="22" cy="18" r="4" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="58" cy="18" r="4" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <line x1="22" y1="18" x2="12" y2="32" class="ink-line" stroke-width="0.8"/>
+            <line x1="22" y1="18" x2="32" y2="32" class="ink-line" stroke-width="0.8"/>
+            <line x1="58" y1="18" x2="48" y2="32" class="ink-line" stroke-width="0.8"/>
+            <circle cx="12" cy="32" r="3.5" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="32" cy="32" r="3.5" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+            <circle cx="48" cy="32" r="3.5" fill="#f3eddc" class="ink-line" stroke-width="1"/>
+          </g>
+          <text x="92" y="10" font-size="6.5" class="lbl">DFS — recursion</text>
+          <text x="92" y="20" font-size="6" class="muted">stack, go deep first</text>
+          <text x="92" y="30" font-size="6.5" class="lbl">BFS — queue</text>
+        </svg>
+      </div>
+      <div class="why"><b>DFS</b>: recurse. Stack = call stack. Use for depth, path-existence, tree shape. <b>BFS</b>: <code>deque</code>, <code>.popleft()</code>. Use for shortest distance, level-by-level. Always carry a <code>visited</code> set for graphs.</div>
+    </div>
+
+  </section>
+
+  <!-- ROW: idiom shapes + complexity hot table -->
+  <section class="row-2">
+
+    <!-- left: idiom shape blocks -->
+    <div>
+      <div class="section-label"><span class="num">iv.</span> Idiom Shapes — burn these in your fingers</div>
+      <div class="shapes">
+
+        <div class="shape">
+          <div class="tag">FREQUENCY · DICT</div>
+<pre><span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+counts = defaultdict(<span class="kw">int</span>)
+<span class="kw">for</span> c <span class="kw">in</span> s:
+    counts[c] += <span class="num">1</span>
+<span class="kw">return</span> counts</pre>
+        </div>
+
+        <div class="shape">
+          <div class="tag">TWO POINTERS · SORTED</div>
+<pre>L, R = <span class="num">0</span>, <span class="fn">len</span>(arr) - <span class="num">1</span>
+<span class="kw">while</span> L &lt; R:
+    s = arr[L] + arr[R]
+    <span class="kw">if</span> s == target:
+        <span class="kw">return</span> [L+<span class="num">1</span>, R+<span class="num">1</span>]
+    <span class="kw">elif</span> s &lt; target: L += <span class="num">1</span>
+    <span class="kw">else</span>:           R -= <span class="num">1</span></pre>
+        </div>
+
+        <div class="shape">
+          <div class="tag">SLIDING WINDOW · LONGEST</div>
+<pre>seen, L, best = {}, <span class="num">0</span>, <span class="num">0</span>
+<span class="kw">for</span> R, c <span class="kw">in</span> <span class="fn">enumerate</span>(s):
+    <span class="kw">if</span> c <span class="kw">in</span> seen <span class="kw">and</span> seen[c] &gt;= L:
+        L = seen[c] + <span class="num">1</span>
+    seen[c] = R
+    best = <span class="fn">max</span>(best, R - L + <span class="num">1</span>)</pre>
+        </div>
+
+        <div class="shape">
+          <div class="tag">BINARY SEARCH · EXACT MATCH</div>
+<pre>L, R = <span class="num">0</span>, <span class="fn">len</span>(arr) - <span class="num">1</span>
+<span class="kw">while</span> L &lt;= R:
+    mid = (L + R) // <span class="num">2</span>
+    <span class="kw">if</span> arr[mid] == target: <span class="kw">return</span> mid
+    <span class="kw">elif</span> arr[mid] &lt; target: L = mid + <span class="num">1</span>
+    <span class="kw">else</span>:                  R = mid - <span class="num">1</span>
+<span class="kw">return</span> -<span class="num">1</span></pre>
+        </div>
+
+        <div class="shape">
+          <div class="tag">STACK · VALID PARENS</div>
+<pre>pairs = {<span class="str">')'</span>: <span class="str">'('</span>, <span class="str">']'</span>: <span class="str">'['</span>, <span class="str">'}'</span>: <span class="str">'{'</span>}
+stack = []
+<span class="kw">for</span> c <span class="kw">in</span> s:
+    <span class="kw">if</span> c <span class="kw">in</span> pairs:
+        <span class="kw">if</span> <span class="kw">not</span> stack <span class="kw">or</span> stack.pop() != pairs[c]:
+            <span class="kw">return</span> <span class="kw">False</span>
+    <span class="kw">else</span>: stack.append(c)
+<span class="kw">return</span> <span class="kw">not</span> stack</pre>
+        </div>
+
+        <div class="shape">
+          <div class="tag">HEAP · TOP K</div>
+<pre><span class="kw">import</span> heapq
+heap = []
+<span class="kw">for</span> x <span class="kw">in</span> nums:
+    heapq.heappush(heap, x)
+    <span class="kw">if</span> <span class="fn">len</span>(heap) &gt; k:
+        heapq.heappop(heap)
+<span class="kw">return</span> heap   <span class="com"># top K (any order)</span></pre>
+        </div>
+
+        <div class="shape">
+          <div class="tag">BFS · LEVEL ORDER</div>
+<pre><span class="kw">from</span> collections <span class="kw">import</span> deque
+queue = deque([start])
+visited = {start}
+<span class="kw">while</span> queue:
+    node = queue.popleft()
+    <span class="kw">for</span> neighbor <span class="kw">in</span> graph[node]:
+        <span class="kw">if</span> neighbor <span class="kw">not</span> <span class="kw">in</span> visited:
+            visited.add(neighbor)
+            queue.append(neighbor)</pre>
+        </div>
+
+        <div class="shape">
+          <div class="tag">DFS · RECURSION</div>
+<pre><span class="kw">def</span> <span class="fn">dfs</span>(node):
+    <span class="kw">if</span> <span class="kw">not</span> node: <span class="kw">return</span>           <span class="com"># base case</span>
+    <span class="com"># process node here</span>
+    <span class="fn">dfs</span>(node.left)
+    <span class="fn">dfs</span>(node.right)
+    <span class="kw">return</span> result</pre>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- right: extended pattern table -->
+    <div>
+      <div class="section-label"><span class="num">v.</span> Quick Index — additional reaches</div>
+      <table class="pattern-table">
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th>Pattern</th>
+            <th>T · S</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig">"in-place reverse / swap"</td>
+            <td class="pat">Two Pointers</td>
+            <td class="cmp">O(n)<span class="s">O(1)</span></td>
+            <td class="why"><code>a, b = b, a</code> idiom; meet in middle.</td>
+          </tr>
+          <tr>
+            <td class="sig">"max contiguous sum"</td>
+            <td class="pat">Kadane's</td>
+            <td class="cmp">O(n)<span class="s">O(1)</span></td>
+            <td class="why">Extend running sum; reset if it dips below zero.</td>
+          </tr>
+          <tr>
+            <td class="sig">"rotated sorted array"</td>
+            <td class="pat">Binary Search v.</td>
+            <td class="cmp">O(log n)<span class="s">O(1)</span></td>
+            <td class="why">One half is always sorted — recurse into it.</td>
+          </tr>
+          <tr>
+            <td class="sig">"design X with O(1) ops"</td>
+            <td class="pat">Hash + Aux</td>
+            <td class="cmp">O(1)<span class="s">O(n)</span></td>
+            <td class="why">LRU = dict + doubly-linked list. Min Stack = stack + min stack.</td>
+          </tr>
+          <tr>
+            <td class="sig">"any permutation = anagram"</td>
+            <td class="pat">Counter ==</td>
+            <td class="cmp">O(n)<span class="s">O(k)</span></td>
+            <td class="why"><code>Counter(a) == Counter(b)</code>.</td>
+          </tr>
+          <tr>
+            <td class="sig">"longest consec sequence"</td>
+            <td class="pat">Set + Anchor</td>
+            <td class="cmp">O(n)<span class="s">O(n)</span></td>
+            <td class="why">Only start counting at <code>x</code> if <code>x-1</code> not in set.</td>
+          </tr>
+          <tr>
+            <td class="sig">"3Sum / 4Sum"</td>
+            <td class="pat">Sort + Outer + 2P</td>
+            <td class="cmp">O(n²)<span class="s">O(1)</span></td>
+            <td class="why">Fix one, two-pointer the rest. Skip duplicates carefully.</td>
+          </tr>
+          <tr>
+            <td class="sig">"shortest path / fewest steps"</td>
+            <td class="pat">BFS</td>
+            <td class="cmp">O(V+E)<span class="s">O(V)</span></td>
+            <td class="why">Queue. First time you reach a node = optimum (unweighted).</td>
+          </tr>
+          <tr>
+            <td class="sig">"first / last occurrence (sorted + duplicates)"</td>
+            <td class="pat">Biased Binary Search</td>
+            <td class="cmp">O(log n)<span class="s">O(1)</span></td>
+            <td class="why">On match: <b>record + keep narrowing</b> (left or right) instead of returning. Two passes.</td>
+          </tr>
+          <tr>
+            <td class="sig">"stack with O(1) min query"</td>
+            <td class="pat">Stack + Aux Min-Stack</td>
+            <td class="cmp">O(1)<span class="s">O(n)</span></td>
+            <td class="why">Parallel stack tracks <code>min(new, current_min)</code> at each push.</td>
+          </tr>
+          <tr>
+            <td class="sig">"LRU cache / O(1) get + put"</td>
+            <td class="pat">Hash Map + Doubly-Linked List</td>
+            <td class="cmp">O(1)<span class="s">O(cap)</span></td>
+            <td class="why">Dict gives lookup. DLL tracks recency — head=most recent, tail=evictable.</td>
+          </tr>
+          <tr>
+            <td class="sig">"max area / two lines container"</td>
+            <td class="pat">Two Pointers Greedy</td>
+            <td class="cmp">O(n)<span class="s">O(1)</span></td>
+            <td class="why">Always move the <b>shorter side inward</b> — moving the taller can never win.</td>
+          </tr>
+          <tr>
+            <td class="sig">"reverse linked list"</td>
+            <td class="pat">Prev / Curr / Next</td>
+            <td class="cmp">O(n)<span class="s">O(1)</span></td>
+            <td class="why">Walk through. Save next, point <code>curr.next</code> backward to prev, advance.</td>
+          </tr>
+          <tr>
+            <td class="sig">"all paths / word search / N-queens"</td>
+            <td class="pat">Backtracking (DFS + undo)</td>
+            <td class="cmp">exp.<span class="s">O(depth)</span></td>
+            <td class="why">Try a choice → recurse → <b>undo on the way out</b>. Mark / recurse / unmark.</td>
+          </tr>
+          <tr>
+            <td class="sig">"product of array except self"</td>
+            <td class="pat">Prefix + Suffix Passes</td>
+            <td class="cmp">O(n)<span class="s">O(1)*</span></td>
+            <td class="why">Two passes. Left pass = product of everything before i. Right pass = after i. Multiply.</td>
+          </tr>
+          <tr>
+            <td class="sig">"longest palindromic substring"</td>
+            <td class="pat">Expand Around Center</td>
+            <td class="cmp">O(n²)<span class="s">O(1)</span></td>
+            <td class="why">Try each char (and each gap) as center. Expand outward while chars match.</td>
+          </tr>
+          <tr>
+            <td class="sig">"min steps / fewest coins / DP"</td>
+            <td class="pat">Bottom-Up DP</td>
+            <td class="cmp">O(n·k)<span class="s">O(n)</span></td>
+            <td class="why"><code>dp[i]</code> = answer for size i, built from smaller subproblems.</td>
+          </tr>
+          <tr>
+            <td class="sig">"longest substring with K replacements"</td>
+            <td class="pat">Sliding Window + Max-Count</td>
+            <td class="cmp">O(n)<span class="s">O(k)</span></td>
+            <td class="why">Window valid iff <code>size − max_count ≤ K</code>. Track max count of any char in window.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- ROW: containers cheat (list / set / dict / tuple) -->
+  <section class="containers-row">
+    <div class="section-label"><span class="num">vi.</span> Containers — pick the right one. Don't forget these.</div>
+    <div class="container-grid">
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">List<em>.</em></div>
+          <div class="csyntax">[1, 2, 3]</div>
+        </div>
+        <div class="ckey">Ordered row of boxes. Duplicates OK. Indexable.</div>
+        <div class="crow"><span class="clabel">add</span><span><code>.append(x)</code></span></div>
+        <div class="crow"><span class="clabel">find x</span><span><code>x in lst</code> <span class="slow">O(n) — walks row</span></span></div>
+        <div class="crow"><span class="clabel">empty</span><span><code>[]</code></span></div>
+        <div class="crow"><span class="clabel">use for</span><span>order, duplicates, position lookup</span></div>
+        <div class="cwarn"><code>x in list</code> is <b>slow</b> — for fast lookup reach for a <b>set</b>.</div>
+      </div>
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">Set<em>.</em></div>
+          <div class="csyntax">{1, 2, 3}</div>
+        </div>
+        <div class="ckey">Unordered guest list. No duplicates. No index.</div>
+        <div class="crow"><span class="clabel">add</span><span><code>.add(x)</code></span></div>
+        <div class="crow"><span class="clabel">find x</span><span><code>x in s</code> <span class="fast">O(1) — instant</span></span></div>
+        <div class="crow"><span class="clabel">empty</span><span><code>set()</code> <span class="slow">(NOT <code>{}</code> — that's a dict)</span></span></div>
+        <div class="crow"><span class="clabel">use for</span><span>dedup, "seen X?" check, set math</span></div>
+        <div class="cwarn">Items must be <b>immutable</b>. <code>set.add([1,2])</code> → <b>TypeError</b>. Wrap as <code>tuple</code>.</div>
+      </div>
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">Dict<em>.</em></div>
+          <div class="csyntax">{"a": 1}</div>
+        </div>
+        <div class="ckey">Magic notebook. Key → value. Unique keys.</div>
+        <div class="crow"><span class="clabel">add / set</span><span><code>d[k] = v</code></span></div>
+        <div class="crow"><span class="clabel">get</span><span><code>d[k]</code> · <code>d.get(k, default)</code></span></div>
+        <div class="crow"><span class="clabel">find key</span><span><code>k in d</code> <span class="fast">O(1) — instant</span></span></div>
+        <div class="crow"><span class="clabel">empty</span><span><code>{}</code> or <code>dict()</code></span></div>
+        <div class="crow"><span class="clabel">use for</span><span>counting, complement-find, grouping</span></div>
+        <div class="cwarn">Keys must be <b>immutable</b>. Counting? prefer <code>defaultdict(int)</code> or <code>Counter</code>.</div>
+      </div>
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">Tuple<em>.</em></div>
+          <div class="csyntax">(1, 2, 3)</div>
+        </div>
+        <div class="ckey">Ordered, sealed forever. Like a frozen list.</div>
+        <div class="crow"><span class="clabel">read</span><span><code>t[i]</code></span></div>
+        <div class="crow"><span class="clabel">find x</span><span><code>x in t</code> <span class="slow">O(n)</span></span></div>
+        <div class="crow"><span class="clabel">unpack</span><span><code>a, b = (1, 2)</code></span></div>
+        <div class="crow"><span class="clabel">use for</span><span>set/dict keys · multi-return · fixed group</span></div>
+        <div class="cwarn">Can't <code>.append</code>, can't edit. That's the <b>point</b> — it's why sets accept it.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ROW: naming conventions -->
+  <section class="naming-row">
+    <div class="section-label"><span class="num">vii.</span> Naming Conventions — Pythonic style (PEP 8)</div>
+    <div class="container-grid">
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">Variables<em>.</em></div>
+          <div class="csyntax">snake_case</div>
+        </div>
+        <div class="ckey">Lowercase with underscores. Descriptive. Single letters only in tight loops.</div>
+        <div class="crow"><span class="clabel">examples</span><span><code>total_count</code> · <code>max_value</code> · <code>left</code> · <code>mid</code></span></div>
+        <div class="crow"><span class="clabel">constants</span><span><code>MAX_SIZE = 100</code> — ALL_CAPS</span></div>
+        <div class="crow"><span class="clabel">booleans</span><span><code>is_valid</code> · <code>has_dup</code> · <code>can_jump</code></span></div>
+        <div class="crow"><span class="clabel">private</span><span><code>_internal</code> — underscore prefix</span></div>
+        <div class="cwarn">Don't use <code>data</code>, <code>info</code>, <code>temp</code>, <code>obj</code> — too generic. <b>Name what's in it.</b></div>
+      </div>
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">Functions<em>.</em></div>
+          <div class="csyntax">snake_case verb</div>
+        </div>
+        <div class="ckey">Action phrases starting with verbs.</div>
+        <div class="crow"><span class="clabel">examples</span><span><code>count_chars()</code> · <code>find_pair()</code> · <code>is_palindrome()</code></span></div>
+        <div class="crow"><span class="clabel">finders</span><span>Prefix with <code>find_</code>, <code>get_</code>, <code>compute_</code></span></div>
+        <div class="crow"><span class="clabel">checkers</span><span>Prefix with <code>is_</code>, <code>has_</code>, <code>can_</code></span></div>
+        <div class="crow"><span class="clabel">params</span><span>Snake too: <code>def foo(my_arg, max_size):</code></span></div>
+        <div class="cwarn">LeetCode boilerplate often uses <b>camelCase</b> (<code>twoSum</code>, <code>isValid</code>) — match the platform's exception when you submit there.</div>
+      </div>
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">Classes<em>.</em></div>
+          <div class="csyntax">PascalCase</div>
+        </div>
+        <div class="ckey">Capital-first noun phrases. The "thing," not the action.</div>
+        <div class="crow"><span class="clabel">examples</span><span><code>MinStack</code> · <code>LRUCache</code> · <code>Solution</code></span></div>
+        <div class="crow"><span class="clabel">methods</span><span>Inside class: snake_case (<code>def push(self):</code>)</span></div>
+        <div class="crow"><span class="clabel">init</span><span><code>def __init__(self):</code> — dunder = double underscore</span></div>
+        <div class="crow"><span class="clabel">attrs</span><span><code>self.snake_case</code> — never CamelCase</span></div>
+        <div class="cwarn">LC always uses <code>class Solution:</code> as the wrapper. Don't rename it.</div>
+      </div>
+
+      <div class="container-card">
+        <div class="cname-row">
+          <div class="cname">Anti-Patterns<em>.</em></div>
+          <div class="csyntax">⊘ DON'T</div>
+        </div>
+        <div class="ckey">Smells interviewers notice. Avoid them.</div>
+        <div class="crow"><span class="clabel">no</span><span>Single letters as state: <code>x</code>, <code>y</code>, <code>val</code></span></div>
+        <div class="crow"><span class="clabel">no</span><span>Hungarian: <code>strName</code>, <code>intCount</code></span></div>
+        <div class="crow"><span class="clabel">no</span><span>Mixed: <code>firstName</code> → use <code>first_name</code></span></div>
+        <div class="crow"><span class="clabel">no</span><span>Generic: <code>data</code>, <code>info</code>, <code>temp</code>, <code>obj</code></span></div>
+        <div class="crow"><span class="clabel">no</span><span><code>enumerate</code> when you don't use the index</span></div>
+        <div class="cwarn">Names earn their length. <code>i</code> as a loop index is fine. <code>x</code> as a stored variable isn't.</div>
+      </div>
+
+    </div>
+
+    <!-- Common interview names -->
+    <div class="interview-names">
+      <div class="ins-label">Common interview names — burn these in your fingers</div>
+      <div class="ins-grid">
+        <div class="ins-item"><code>nums</code><span class="ins-desc">list of integers (input)</span></div>
+        <div class="ins-item"><code>target</code><span class="ins-desc">value to find / match</span></div>
+        <div class="ins-item"><code>result</code><span class="ins-desc">what you return</span></div>
+        <div class="ins-item"><code>seen</code><span class="ins-desc">set or dict of visited</span></div>
+        <div class="ins-item"><code>counts</code><span class="ins-desc">Counter / frequencies</span></div>
+        <div class="ins-item"><code>left, right</code><span class="ins-desc">two pointers</span></div>
+        <div class="ins-item"><code>mid</code><span class="ins-desc">binary search middle</span></div>
+        <div class="ins-item"><code>stack</code><span class="ins-desc">list used as stack</span></div>
+        <div class="ins-item"><code>queue</code><span class="ins-desc">deque for BFS</span></div>
+        <div class="ins-item"><code>heap</code><span class="ins-desc">heapq min-heap</span></div>
+        <div class="ins-item"><code>i, j, k</code><span class="ins-desc">tight loop indices</span></div>
+        <div class="ins-item"><code>c, ch</code><span class="ins-desc">char in a string</span></div>
+        <div class="ins-item"><code>node</code><span class="ins-desc">LL or tree node</span></div>
+        <div class="ins-item"><code>head, tail</code><span class="ins-desc">LL endpoints</span></div>
+        <div class="ins-item"><code>root</code><span class="ins-desc">tree root</span></div>
+        <div class="ins-item"><code>visited</code><span class="ins-desc">graph DFS/BFS set</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM: edges + bugs + phrases -->
+  <section class="footer-strip">
+
+    <div class="col">
+      <h3><span class="accent-dot"></span> Edge Case Sweep — every problem</h3>
+      <ul class="edge-list">
+        <li>empty input</li>
+        <li>single element</li>
+        <li>all duplicates</li>
+        <li>all unique</li>
+        <li>negative numbers</li>
+        <li>zero mid-sequence</li>
+        <li>huge input (talk, don't compute)</li>
+        <li>already-sorted / reverse-sorted</li>
+        <li>off-by-one at first / last index</li>
+        <li>no answer exists — what's returned?</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="accent-dot"></span> Bugs That Bite — scan after coding</h3>
+      <ul>
+        <li>0-indexed vs 1-indexed (Two Sum Sorted returns 1-indexed!)</li>
+        <li><code>dict.get(c, 0)</code> NOT <code>get(c, 1)</code></li>
+        <li><b>Index vs value:</b> <code>i + nums[L]</code> ✗ — use <code>nums[i] + nums[L]</code></li>
+        <li><b>Wrong pattern:</b> reached for <code>L,R = 0, n-1</code> on sliding window — both go FORWARD, not converge</li>
+        <li><b>Missing inner loop:</b> set up <code>left, right</code> but no <code>while left &lt; right</code> → pointers never move</li>
+        <li><b>Reset pointers INSIDE outer loop</b> — otherwise stale state on next anchor</li>
+        <li><b>Match branch must advance pointers</b> — elif chain isolates the match case</li>
+        <li><b>abs distance vs sum:</b> <code>abs(cur - tgt) &lt; closest_sum</code> ✗ — compare BOTH sides as distance</li>
+        <li><b>Scope creep:</b> don't lowercase / clean input if not asked</li>
+        <li>two-pointer: <code>L &lt; R</code> not <code>&lt;=</code> (no reuse)</li>
+        <li>binary: <code>low &lt;= high</code> vs <code>&lt;</code> — pick on purpose</li>
+        <li>mutating list while iterating it (don't)</li>
+        <li><code>if not x</code> matches <code>0</code>, <code>""</code>, <code>[]</code> — use <code>is None</code></li>
+        <li>integer division: <code>//</code> not <code>/</code></li>
+        <li>heap: Python is min only — negate for max</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="accent-dot"></span> Things You Say · Things You Don't</h3>
+      <div class="phrases-block">
+        <div class="pgroup good">
+          <span class="ptitle">→ lean on</span>
+          <div class="pitem">"Let me restate…"</div>
+          <div class="pitem">"A few clarifying questions…"</div>
+          <div class="pitem">"Brute force first, then optimize."</div>
+          <div class="pitem">"My invariant here is…"</div>
+          <div class="pitem">"Let me trace a small example."</div>
+        </div>
+        <div class="pgroup">
+          <span class="ptitle">⊘ never</span>
+          <div class="pitem">"This is easy."</div>
+          <div class="pitem">"I don't remember."</div>
+          <div class="pitem">"I'll skip edge cases for now."</div>
+          <div class="pitem">"Can you give me a hint?"</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="folio">PG <span class="sep">·</span> <span>02</span> <span class="of">/ 03</span></div>
+  <div class="ribbon">PATTERNS — <span class="key">PRINT LANDSCAPE</span> · M.B. PREP</div>
+
+</article>
+
+<!-- ============================================================ PAGE 3 — COMPLEXITY VISUAL PRIMER -->
+<article class="page page-3">
+
+  <div class="stamp">
+    <span class="big">FDE</span>
+    JUN 3 · 2026
+  </div>
+
+  <header class="banner">
+    <div class="title-block">
+      <div>
+        <div class="title">Complexity<em>.</em></div>
+        <div class="kicker">— a visual primer. how runtime and memory scale with input size.</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="dim">CODING ROUND · CHEATSHEET</div>
+      <div><span class="date">Jun 03</span> &nbsp; 2026</div>
+      <div class="dim">PATTERNS · QUICK REFERENCE</div>
+      <div><a href="index.html" class="x-link">↶ home</a> &nbsp; <a href="pattern_flashcards.html" class="x-link">↗ flashcards</a></div>
+    </div>
+  </header>
+
+  <!-- ROW 1: Growth curves + Real numbers table -->
+  <section class="cx-top">
+
+    <!-- LEFT: Growth curves -->
+    <div class="cx-chart">
+      <div class="section-label" style="margin-bottom: 3mm;"><span class="num">i.</span> The growth curves — what each Big-O looks like</div>
+      <svg viewBox="0 0 460 230" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: auto;">
+        <!-- Grid background -->
+        <g stroke="var(--hair-2)" stroke-width="0.4" stroke-dasharray="2,3">
+          <line x1="60" y1="40" x2="380" y2="40"/>
+          <line x1="60" y1="80" x2="380" y2="80"/>
+          <line x1="60" y1="120" x2="380" y2="120"/>
+          <line x1="60" y1="160" x2="380" y2="160"/>
+        </g>
+
+        <!-- Axes -->
+        <line x1="60" y1="20" x2="60" y2="200" stroke="var(--ink)" stroke-width="0.8"/>
+        <line x1="60" y1="200" x2="380" y2="200" stroke="var(--ink)" stroke-width="0.8"/>
+
+        <!-- Axis labels -->
+        <text x="35" y="105" font-family="JetBrains Mono" font-size="7" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90, 35, 105)">operations →</text>
+        <text x="220" y="220" font-family="JetBrains Mono" font-size="7" fill="var(--ink-3)" text-anchor="middle">input size n →</text>
+
+        <!-- O(2ⁿ) — exponential rocket -->
+        <path d="M 60 200 L 100 200 L 130 198 L 160 192 L 190 178 L 210 150 L 225 110 L 235 60 L 240 25" fill="none" stroke="#a3261c" stroke-width="2"/>
+        <text x="245" y="22" font-family="JetBrains Mono" font-size="9" fill="#a3261c" font-weight="700">O(2ⁿ)</text>
+
+        <!-- O(n²) — quadratic -->
+        <path d="M 60 200 Q 200 190 280 100 T 380 32" fill="none" stroke="#b34a2a" stroke-width="2"/>
+        <text x="358" y="48" font-family="JetBrains Mono" font-size="9" fill="#b34a2a" font-weight="700">O(n²)</text>
+
+        <!-- O(n log n) — between linear and quadratic -->
+        <path d="M 60 200 Q 200 175 380 85" fill="none" stroke="#8b2c1c" stroke-width="2"/>
+        <text x="350" y="80" font-family="JetBrains Mono" font-size="9" fill="#8b2c1c" font-weight="700">O(n log n)</text>
+
+        <!-- O(n) — linear -->
+        <path d="M 60 200 L 380 115" fill="none" stroke="#a07c52" stroke-width="2"/>
+        <text x="385" y="118" font-family="JetBrains Mono" font-size="9" fill="#a07c52" font-weight="700">O(n)</text>
+
+        <!-- O(log n) — slow curve -->
+        <path d="M 60 200 Q 130 175 220 162 T 380 152" fill="none" stroke="#4a6b3a" stroke-width="2"/>
+        <text x="385" y="155" font-family="JetBrains Mono" font-size="9" fill="#4a6b3a" font-weight="700">O(log n)</text>
+
+        <!-- O(1) — flat -->
+        <path d="M 60 192 L 380 192" fill="none" stroke="#5a5147" stroke-width="2"/>
+        <text x="385" y="195" font-family="JetBrains Mono" font-size="9" fill="#5a5147" font-weight="700">O(1)</text>
+
+        <!-- "good" / "bad" zones -->
+        <text x="60" y="14" font-family="Fraunces" font-size="8" font-style="italic" fill="var(--ink-3)">slower / more ops</text>
+        <text x="62" y="208" font-family="JetBrains Mono" font-size="7" fill="var(--ink-3)">0</text>
+      </svg>
+
+      <div class="cx-chart-caption">
+        Lines reading <b>upward</b> = slower as input grows. Anything below O(n) is fast.
+        Anything above O(n²) is dangerous past n ≈ 1000. O(2ⁿ) is only acceptable when n ≤ 20.
+      </div>
+    </div>
+
+    <!-- RIGHT: Real numbers table -->
+    <div class="cx-numbers">
+      <div class="section-label" style="margin-bottom: 3mm;"><span class="num">ii.</span> Real numbers — ops at common input sizes</div>
+      <table class="cx-table">
+        <thead>
+          <tr>
+            <th>Big-O</th>
+            <th>n=10</th>
+            <th>n=100</th>
+            <th>n=1,000</th>
+            <th>n=1M</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="big-o">O(1)</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+          <tr><td class="big-o">O(log n)</td><td>~3</td><td>~7</td><td>~10</td><td>~20</td></tr>
+          <tr><td class="big-o">O(n)</td><td>10</td><td>100</td><td>1,000</td><td>1M</td></tr>
+          <tr><td class="big-o">O(n log n)</td><td>~30</td><td>~700</td><td>~10K</td><td>~20M</td></tr>
+          <tr><td class="big-o">O(n²)</td><td>100</td><td>10K</td><td>1M</td><td class="bad">10¹² ⚠</td></tr>
+          <tr><td class="big-o">O(2ⁿ)</td><td>1K</td><td class="bad">10³⁰ ⚠</td><td class="bad">∞</td><td class="bad">∞</td></tr>
+        </tbody>
+      </table>
+      <div class="cx-rule">
+        <span class="rule-label">RULE OF THUMB</span>
+        Roughly <b>10⁸ ops/sec</b> on a modern judge. So O(n²) at n=10⁴ ≈ 1 sec.
+        O(n²) at n=10⁵ ≈ 100 sec → TLE. Pick your complexity to fit.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ROW 2: Visual mental models -->
+  <div class="section-label" style="margin-top: 6mm; margin-bottom: 4mm;"><span class="num">iii.</span> Visual mental models — what each class "looks like"</div>
+  <section class="mental-models">
+
+    <!-- O(1) -->
+    <div class="mm-card">
+      <div class="mm-header">
+        <div class="mm-bigo">O(1)</div>
+        <div class="mm-name">Constant</div>
+      </div>
+      <div class="mm-svg">
+        <svg viewBox="0 0 160 60" preserveAspectRatio="xMidYMid meet">
+          <rect x="70" y="15" width="22" height="22" fill="#8b2c1c" stroke="#1a1410" stroke-width="0.8"/>
+          <text x="81" y="30" font-family="JetBrains Mono" font-size="9" fill="#f3eddc" text-anchor="middle" font-weight="700">1</text>
+          <text x="81" y="52" font-family="Fraunces" font-style="italic" font-size="8" fill="#5a5147" text-anchor="middle">one op</text>
+        </svg>
+      </div>
+      <div class="mm-desc"><b>Always one step.</b> No matter how big n is, you do the same fixed work.</div>
+    </div>
+
+    <!-- O(log n) -->
+    <div class="mm-card">
+      <div class="mm-header">
+        <div class="mm-bigo">O(log n)</div>
+        <div class="mm-name">Halving</div>
+      </div>
+      <div class="mm-svg">
+        <svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+          <!-- Root -->
+          <line x1="100" y1="18" x2="60" y2="40" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="100" y1="18" x2="140" y2="40" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="60" y1="40" x2="35" y2="65" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="60" y1="40" x2="80" y2="65" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="140" y1="40" x2="120" y2="65" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="140" y1="40" x2="165" y2="65" stroke="#1a1410" stroke-width="0.6"/>
+          <circle cx="100" cy="18" r="7" fill="#8b2c1c"/>
+          <circle cx="60" cy="40" r="6" fill="#f3eddc" stroke="#1a1410" stroke-width="0.8"/>
+          <circle cx="140" cy="40" r="6" fill="#f3eddc" stroke="#1a1410" stroke-width="0.8"/>
+          <circle cx="35" cy="65" r="5" fill="#f3eddc" stroke="#1a1410" stroke-width="0.6"/>
+          <circle cx="80" cy="65" r="5" fill="#f3eddc" stroke="#1a1410" stroke-width="0.6"/>
+          <circle cx="120" cy="65" r="5" fill="#f3eddc" stroke="#1a1410" stroke-width="0.6"/>
+          <circle cx="165" cy="65" r="5" fill="#f3eddc" stroke="#1a1410" stroke-width="0.6"/>
+          <text x="100" y="92" font-family="Fraunces" font-style="italic" font-size="8" fill="#5a5147" text-anchor="middle">log₂(n) levels</text>
+        </svg>
+      </div>
+      <div class="mm-desc"><b>Each step halves the search range.</b> Walk the tree from root to leaf — log₂(n) levels deep.</div>
+    </div>
+
+    <!-- O(n) -->
+    <div class="mm-card">
+      <div class="mm-header">
+        <div class="mm-bigo">O(n)</div>
+        <div class="mm-name">Linear</div>
+      </div>
+      <div class="mm-svg">
+        <svg viewBox="0 0 200 60" preserveAspectRatio="xMidYMid meet">
+          <g>
+            <rect x="10"  y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+            <rect x="32"  y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+            <rect x="54"  y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+            <rect x="76"  y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+            <rect x="98"  y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+            <rect x="120" y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+            <rect x="142" y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+            <rect x="164" y="14" width="18" height="18" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.6"/>
+          </g>
+          <!-- Arrow walking across -->
+          <path d="M 15 42 L 178 42" stroke="#8b2c1c" stroke-width="1.5"/>
+          <polygon points="178,42 173,39.5 173,44.5" fill="#8b2c1c"/>
+          <text x="96" y="55" font-family="Fraunces" font-style="italic" font-size="8" fill="#5a5147" text-anchor="middle">walk each box once</text>
+        </svg>
+      </div>
+      <div class="mm-desc"><b>One pass through every item.</b> Touch n boxes, one at a time.</div>
+    </div>
+
+    <!-- O(n log n) -->
+    <div class="mm-card">
+      <div class="mm-header">
+        <div class="mm-bigo">O(n log n)</div>
+        <div class="mm-name">Sort + sweep</div>
+      </div>
+      <div class="mm-svg">
+        <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
+          <!-- Small sort tree on top -->
+          <line x1="100" y1="12" x2="60" y2="32" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="100" y1="12" x2="140" y2="32" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="60" y1="32" x2="40" y2="48" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="60" y1="32" x2="80" y2="48" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="140" y1="32" x2="120" y2="48" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="140" y1="32" x2="160" y2="48" stroke="#1a1410" stroke-width="0.6"/>
+          <circle cx="100" cy="12" r="5" fill="#8b2c1c"/>
+          <circle cx="60" cy="32" r="4" fill="#f3eddc" stroke="#1a1410" stroke-width="0.6"/>
+          <circle cx="140" cy="32" r="4" fill="#f3eddc" stroke="#1a1410" stroke-width="0.6"/>
+          <circle cx="40" cy="48" r="3" fill="#f3eddc" stroke="#1a1410" stroke-width="0.5"/>
+          <circle cx="80" cy="48" r="3" fill="#f3eddc" stroke="#1a1410" stroke-width="0.5"/>
+          <circle cx="120" cy="48" r="3" fill="#f3eddc" stroke="#1a1410" stroke-width="0.5"/>
+          <circle cx="160" cy="48" r="3" fill="#f3eddc" stroke="#1a1410" stroke-width="0.5"/>
+          <!-- Then row of sorted boxes -->
+          <g>
+            <rect x="35" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+            <rect x="50" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+            <rect x="65" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+            <rect x="80" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+            <rect x="95" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+            <rect x="110" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+            <rect x="125" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+            <rect x="140" y="58" width="13" height="13" fill="#f4dfa8" stroke="#1a1410" stroke-width="0.5"/>
+          </g>
+          <text x="100" y="84" font-family="Fraunces" font-style="italic" font-size="8" fill="#5a5147" text-anchor="middle">sort (n log n) then walk (n)</text>
+        </svg>
+      </div>
+      <div class="mm-desc"><b>Sort first, then a single sweep.</b> Sorting dominates — log n levels of merge × n items per level.</div>
+    </div>
+
+    <!-- O(n²) -->
+    <div class="mm-card">
+      <div class="mm-header">
+        <div class="mm-bigo">O(n²)</div>
+        <div class="mm-name">Every pair</div>
+      </div>
+      <div class="mm-svg">
+        <svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+          <!-- 6x6 grid -->
+          <g stroke="#1a1410" stroke-width="0.5">
+            <!-- Generate via script... or manually -->
+            <g fill="#b34a2a">
+              <rect x="50" y="10"  width="14" height="14"/>
+              <rect x="65" y="10"  width="14" height="14"/>
+              <rect x="80" y="10"  width="14" height="14"/>
+              <rect x="95" y="10"  width="14" height="14"/>
+              <rect x="110" y="10" width="14" height="14"/>
+              <rect x="125" y="10" width="14" height="14"/>
+              <rect x="50" y="25"  width="14" height="14"/>
+              <rect x="65" y="25"  width="14" height="14"/>
+              <rect x="80" y="25"  width="14" height="14"/>
+              <rect x="95" y="25"  width="14" height="14"/>
+              <rect x="110" y="25" width="14" height="14"/>
+              <rect x="125" y="25" width="14" height="14"/>
+              <rect x="50" y="40"  width="14" height="14"/>
+              <rect x="65" y="40"  width="14" height="14"/>
+              <rect x="80" y="40"  width="14" height="14"/>
+              <rect x="95" y="40"  width="14" height="14"/>
+              <rect x="110" y="40" width="14" height="14"/>
+              <rect x="125" y="40" width="14" height="14"/>
+              <rect x="50" y="55"  width="14" height="14"/>
+              <rect x="65" y="55"  width="14" height="14"/>
+              <rect x="80" y="55"  width="14" height="14"/>
+              <rect x="95" y="55"  width="14" height="14"/>
+              <rect x="110" y="55" width="14" height="14"/>
+              <rect x="125" y="55" width="14" height="14"/>
+              <rect x="50" y="70"  width="14" height="14"/>
+              <rect x="65" y="70"  width="14" height="14"/>
+              <rect x="80" y="70"  width="14" height="14"/>
+              <rect x="95" y="70"  width="14" height="14"/>
+              <rect x="110" y="70" width="14" height="14"/>
+              <rect x="125" y="70" width="14" height="14"/>
+            </g>
+          </g>
+          <text x="100" y="95" font-family="Fraunces" font-style="italic" font-size="8" fill="#5a5147" text-anchor="middle">n × n combinations</text>
+        </svg>
+      </div>
+      <div class="mm-desc"><b>Every pair (i, j).</b> n rows × n cols — visit every cell. Nested loops over the same input.</div>
+    </div>
+
+    <!-- O(2ⁿ) -->
+    <div class="mm-card">
+      <div class="mm-header">
+        <div class="mm-bigo">O(2ⁿ)</div>
+        <div class="mm-name">Exponential</div>
+      </div>
+      <div class="mm-svg">
+        <svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+          <!-- Exploding binary tree -->
+          <!-- Root -->
+          <line x1="100" y1="10" x2="60" y2="30" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="100" y1="10" x2="140" y2="30" stroke="#1a1410" stroke-width="0.6"/>
+          <!-- Level 1 -->
+          <line x1="60" y1="30" x2="35" y2="50" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="60" y1="30" x2="85" y2="50" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="140" y1="30" x2="115" y2="50" stroke="#1a1410" stroke-width="0.6"/>
+          <line x1="140" y1="30" x2="165" y2="50" stroke="#1a1410" stroke-width="0.6"/>
+          <!-- Level 2 - 8 nodes -->
+          <line x1="35" y1="50" x2="20" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <line x1="35" y1="50" x2="50" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <line x1="85" y1="50" x2="70" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <line x1="85" y1="50" x2="100" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <line x1="115" y1="50" x2="100" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <line x1="115" y1="50" x2="130" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <line x1="165" y1="50" x2="150" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <line x1="165" y1="50" x2="180" y2="70" stroke="#1a1410" stroke-width="0.4"/>
+          <!-- Nodes -->
+          <circle cx="100" cy="10" r="5" fill="#a3261c"/>
+          <circle cx="60" cy="30" r="4" fill="#a3261c"/>
+          <circle cx="140" cy="30" r="4" fill="#a3261c"/>
+          <circle cx="35" cy="50" r="3.5" fill="#a3261c"/>
+          <circle cx="85" cy="50" r="3.5" fill="#a3261c"/>
+          <circle cx="115" cy="50" r="3.5" fill="#a3261c"/>
+          <circle cx="165" cy="50" r="3.5" fill="#a3261c"/>
+          <circle cx="20" cy="70" r="3" fill="#a3261c"/>
+          <circle cx="50" cy="70" r="3" fill="#a3261c"/>
+          <circle cx="70" cy="70" r="3" fill="#a3261c"/>
+          <circle cx="100" cy="70" r="3" fill="#a3261c"/>
+          <circle cx="130" cy="70" r="3" fill="#a3261c"/>
+          <circle cx="150" cy="70" r="3" fill="#a3261c"/>
+          <circle cx="180" cy="70" r="3" fill="#a3261c"/>
+          <text x="100" y="94" font-family="Fraunces" font-style="italic" font-size="8" fill="#a3261c" text-anchor="middle">doubles at every level — runs away fast</text>
+        </svg>
+      </div>
+      <div class="mm-desc"><b>Doubles at every level.</b> Try every subset / every decision branch. Use only when n ≤ 20.</div>
+    </div>
+
+  </section>
+
+  <!-- ROW 3: Time vs Space + Drop constants -->
+  <section class="cx-bottom">
+
+    <div class="cx-bottom-left">
+      <div class="section-label" style="margin-bottom: 3mm;"><span class="num">iv.</span> Time vs Space — two separate budgets</div>
+      <div class="ts-row">
+        <div class="ts-block">
+          <div class="ts-head">⏱ TIME</div>
+          <div class="ts-text">
+            Counts <b>operations</b>. The interviewer asks: <em>"how long does this run?"</em>
+            Each <code>+</code>, comparison, dict lookup = 1 op.
+          </div>
+          <div class="ts-text">
+            Time grows with the algorithm <b>shape</b> — one loop = O(n), two nested = O(n²), etc.
+          </div>
+        </div>
+        <div class="ts-block">
+          <div class="ts-head">📦 SPACE</div>
+          <div class="ts-text">
+            Counts <b>memory</b>. The interviewer asks: <em>"how much extra storage?"</em>
+            Variables, lists, dicts, recursion stack.
+          </div>
+          <div class="ts-text">
+            Space is O(1) if you only use a few vars. O(n) if you build a structure of n items.
+            <em>Don't count the input itself</em> — only EXTRA memory.
+          </div>
+        </div>
+      </div>
+      <div class="ts-bottom-note">
+        Same algorithm can have different time and space. <b>Two pointers</b>: O(n) time, O(1) space.
+        <b>Hash map of complements</b>: O(n) time, O(n) space. Pick the trade-off the problem allows.
+      </div>
+    </div>
+
+    <div class="cx-bottom-right">
+      <div class="section-label" style="margin-bottom: 3mm;"><span class="num">v.</span> The Big-O simplification rules</div>
+      <div class="rules-list">
+        <div class="rule-item">
+          <div class="rule-num">1</div>
+          <div class="rule-text">
+            <b>Drop constants.</b>
+            <code>5n + 100</code> → O(n).
+            <code>3n²/2</code> → O(n²).
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">2</div>
+          <div class="rule-text">
+            <b>Drop lower-order terms.</b>
+            <code>n² + n</code> → O(n²).
+            The fastest-growing term wins.
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">3</div>
+          <div class="rule-text">
+            <b>Different inputs → different variables. ADD or MULTIPLY.</b>
+            <br>
+            <b>ADD</b> when inputs are separate: two lists of sizes m and n → <code>O(m + n)</code>.
+            <br>
+            <b>MULTIPLY</b> when one input has a "per-item" cost: n strings each costing k work → <code>O(n · k)</code>.
+            <br>
+            <em>Ex: Group Anagrams = O(n · k log k) — n strings, each sorted in O(k log k). Matrix = O(m · n).</em>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">4</div>
+          <div class="rule-text">
+            <b>Worst case is the default.</b>
+            "Average" and "best" can be stated separately, but the default is worst.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="folio">PG <span class="sep">·</span> <span>03</span> <span class="of">/ 03</span></div>
+  <div class="ribbon">COMPLEXITY — <span class="key">VISUAL PRIMER</span> · M.B. PREP · END.</div>
+
+</article>
+
+</body>
+</html>
