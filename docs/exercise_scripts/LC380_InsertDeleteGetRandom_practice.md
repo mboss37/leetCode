@@ -34,6 +34,12 @@ Either alone fails. **Both together** give us everything in O(1):
 
 ---
 
+## No meaningful brute force
+
+Design problem — the O(1) per-operation requirement IS the constraint. The "naive" alternative (e.g., a list alone, scanning on every remove) is O(n) per remove, which **violates the spec**, not a comparative baseline. The pair-of-structures design below is the minimal correct answer.
+
+---
+
 ## RECOMMENDED — List + Dict, swap-with-last trick (O(1))
 
 ```python

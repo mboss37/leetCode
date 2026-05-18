@@ -13,6 +13,12 @@
 
 ---
 
+## No meaningful brute force
+
+Backtracking IS the natural approach for grid path-search. The "brute force" would be to enumerate every possible path of length L (4^L paths per starting cell) — which is exactly what backtracking does, just with pruning on mismatched characters cutting most subtrees. No meaningful slower baseline.
+
+---
+
 ## RECOMMENDED — DFS + Backtracking (O(m·n·4^L))
 
 ```python

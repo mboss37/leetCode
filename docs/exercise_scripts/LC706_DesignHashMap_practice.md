@@ -33,6 +33,12 @@ buckets [0]  → [(1, 100), (1001, 50)]
 
 ---
 
+## No meaningful brute force
+
+Design problem — implement a hash map without using one. The naive alternative (a flat list of `(key, value)` pairs, O(n) per lookup) violates the implicit performance contract of "hash map". The separate-chaining structure below is the minimal correct answer that delivers average O(1).
+
+---
+
 ## RECOMMENDED — Separate Chaining, Fixed Bucket Count
 
 ```python

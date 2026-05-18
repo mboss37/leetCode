@@ -16,6 +16,12 @@
 
 ---
 
+## No meaningful brute force
+
+The operation is inherently O(n + m) — every character must be touched once. The two-pointer version below is the simplest expression of that floor. No slower comparative is worth writing.
+
+---
+
 ## RECOMMENDED — Two Pointers + tail append (O(n + m))
 
 ```python

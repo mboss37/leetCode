@@ -14,6 +14,12 @@
 
 ---
 
+## No meaningful brute force
+
+The "obvious" approach is two passes — find the length, then walk again to position n-from-end. Same O(n) complexity as the one-pass two-pointer below, just slower by a constant factor. No meaningful asymptotic baseline worth contrasting.
+
+---
+
 ## RECOMMENDED — Two Pointers with Gap, One Pass (O(n))
 
 ```python

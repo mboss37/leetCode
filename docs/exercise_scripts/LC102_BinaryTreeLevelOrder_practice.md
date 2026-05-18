@@ -30,6 +30,12 @@ Plain BFS visits nodes in level order but doesn't TELL you when a level ends. Th
 
 ---
 
+## No meaningful brute force
+
+Level-order traversal must visit every node — O(n) is the floor. BFS with a queue is the canonical expression of that visit. No slower comparative worth writing.
+
+---
+
 ## RECOMMENDED — BFS, level-by-level (O(n))
 
 ```python

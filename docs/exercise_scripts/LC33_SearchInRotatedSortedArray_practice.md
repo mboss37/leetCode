@@ -14,6 +14,25 @@
 
 ---
 
+## NOT RECOMMENDED — Linear Scan (O(n))
+
+```python
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        for i, x in enumerate(nums):
+            if x == target:
+                return i
+        return -1
+```
+
+- **Time:** O(n).
+- Correct but ignores the sorted structure. Spec requires O(log n).
+
+State verbally:
+> *"Brute force is walk the array — O(n). Spec demands O(log n), so I'll binary search; at each step one half is sorted, and I check if target lies in that sorted half's range to decide which side to recurse."*
+
+---
+
 ## RECOMMENDED — Binary Search with Pivot Detection (O(log n))
 
 ```python

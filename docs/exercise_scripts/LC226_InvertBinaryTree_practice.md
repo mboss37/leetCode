@@ -14,6 +14,12 @@
 
 ---
 
+## No meaningful brute force
+
+Inverting the tree requires touching every node to swap its children — O(n) is the floor. The recursion below is the simplest correct version; no slower comparative exists.
+
+---
+
 ## RECOMMENDED — Recursion (O(n))
 
 ```python

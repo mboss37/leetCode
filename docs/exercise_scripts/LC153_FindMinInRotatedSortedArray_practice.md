@@ -15,6 +15,22 @@
 
 ---
 
+## NOT RECOMMENDED — Linear Scan (O(n))
+
+```python
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        return min(nums)
+```
+
+- **Time:** O(n) — touches every element.
+- Correct, but ignores the "sorted-then-rotated" structure entirely. Spec demands O(log n).
+
+State verbally:
+> *"Brute force is just `min(nums)` — O(n). Spec requires O(log n), so I'll binary search comparing nums[mid] to nums[right] to detect which half contains the rotation pivot."*
+
+---
+
 ## RECOMMENDED — Binary Search Variant (O(log n))
 
 ```python

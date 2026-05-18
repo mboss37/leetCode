@@ -14,6 +14,12 @@
 
 ---
 
+## No meaningful brute force
+
+Design problem — track every message's last-print time and gate by a 10-second window. The naive approach (store every timestamp ever, scan on each call) is O(n) per call, but it's not a useful comparative — same algorithm, worse data structure. The dict-of-last-seen below is the minimal correct answer.
+
+---
+
 ## RECOMMENDED — Dict of last-seen timestamps (O(1) per call)
 
 ```python

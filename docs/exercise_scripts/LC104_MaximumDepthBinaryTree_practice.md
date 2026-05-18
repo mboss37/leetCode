@@ -12,6 +12,12 @@
 
 ---
 
+## No meaningful brute force
+
+You must visit every node to know the depth — that's the O(n) floor. The recursion below IS the simplest expression of that visit-every-node pass; no slower baseline worth showing.
+
+---
+
 ## RECOMMENDED — Recursion (O(n))
 
 ```python

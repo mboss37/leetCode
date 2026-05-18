@@ -22,6 +22,12 @@ Flood fill = DFS or BFS from this cell, visiting all 4-neighbors that are land, 
 
 ---
 
+## No meaningful brute force
+
+Connected-components on a grid — DFS or BFS IS the standard tool. The Union-Find alternative is asymptotically the same. There's no "slower but simpler" baseline to contrast: you either traverse the grid once or you don't.
+
+---
+
 ## RECOMMENDED — DFS, sink-as-you-go (O(m·n))
 
 ```python
