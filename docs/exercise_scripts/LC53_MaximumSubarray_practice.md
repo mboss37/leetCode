@@ -1,4 +1,4 @@
-# Maximum Subarray (LeetCode 53)
+# LC 53 — Maximum Subarray · Practice Script
 
 **Problem:**  
 Given an integer array `nums`, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
@@ -56,6 +56,22 @@ class Solution:
 **Time Complexity:** O(n)  
 **Space Complexity:** O(1)
 
+### Trace on `[-2, 1, -3, 4, -1, 2, 1, -5, 4]`
+
+| i | num | max_current = max(num, prev + num) | max_global |
+|---|-----|------------------------------------|------------|
+| 0 | -2  | -2 (init)                          | -2         |
+| 1 |  1  | max(1, -2+1=-1) = **1**            |  1         |
+| 2 | -3  | max(-3, 1+-3=-2) = **-2**          |  1         |
+| 3 |  4  | max(4, -2+4=2) = **4** (reset)     |  4         |
+| 4 | -1  | max(-1, 4+-1=3) = **3**            |  4         |
+| 5 |  2  | max(2, 3+2=5) = **5**              |  5         |
+| 6 |  1  | max(1, 5+1=6) = **6**              |  6         |
+| 7 | -5  | max(-5, 6+-5=1) = **1**            |  6         |
+| 8 |  4  | max(4, 1+4=5) = **5**              |  6         |
+
+Result: `6` from subarray `[4, -1, 2, 1]`. Watch row 3 — the running sum was negative, so Kadane resets to `num` instead of extending. That's the whole trick.
+
 ### Why this is RECOMMENDED:
 - Runs in linear time — very efficient.
 - Classic example of dynamic programming / greedy thinking.
@@ -76,7 +92,7 @@ class Solution:
 
 ---
 
-## Key Interview Explanation (Memorize)
+## Interview Out-Loud
 
 > "The brute force approach checks every possible subarray using two nested loops, which is O(n²).  
 > Instead, I can use Kadane’s Algorithm. At every position, I decide whether to continue the current subarray or start fresh from the current number.  

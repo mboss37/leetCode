@@ -532,8 +532,8 @@
     display: inline-block;
   }
   .legend .swatch.anchor { background: var(--accent); }
-  .legend .swatch.L { background: var(--gold); }
-  .legend .swatch.R { background: var(--gold-2); }
+  .legend .swatch.L { background: var(--accent); }
+  .legend .swatch.R { background: var(--tan); }
   .legend .swatch.match { background: var(--paper); box-shadow: 0 0 0 2px var(--good); }
   .legend .swatch.duplicate { background: var(--paper); box-shadow: 0 0 0 2px var(--bad); }
   .legend .swatch.skip { background: var(--paper); box-shadow: 0 0 0 2px var(--skip); }
@@ -548,7 +548,7 @@
     <div class="sub">Why the duplicate-skip works — step through both algorithms side by side.</div>
     <div class="stamp">
       <div><span class="key">INTERACTIVE</span> · CLICK NEXT</div>
-      <div>M.B. PREP · LC 15</div>
+      <div>LC 15</div>
     </div>
   </header>
 
@@ -651,6 +651,13 @@
     <p><strong>Without skip:</strong> when the two pointers land on duplicate values after a match, they emit the same triplet again. The set silently drops it, but the CPU still did the work.</p>
     <p><strong>With skip:</strong> after a match, we walk L past any equal neighbors (look-ahead: <code>nums[L] == nums[L+1]</code>) and walk R past its equal neighbors (look-behind: <code>nums[R] == nums[R-1]</code>). Then we advance both into fresh territory.</p>
     <p><strong>Net effect:</strong> no duplicate triplet is ever even reached. No set needed. Result is deterministic in order.</p>
+    <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--hair); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-3); letter-spacing: 0.08em;">
+      SEE ALSO →
+      <a href="pattern_flashcards.html" style="color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); margin: 0 4px;">Flashcards · two-pointers category</a> ·
+      <a href="patterns_cheatsheet.html" style="color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); margin: 0 4px;">Cheatsheet · pattern 2</a> ·
+      <a href="index.html?problem=Three%20Sum" style="color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); margin: 0 4px;">Practice script · LC 15</a> ·
+      <a href="index.html?problem=Three%20Sum%20Closest" style="color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); margin: 0 4px;">LC 16</a>
+    </div>
   </section>
 
 </div>

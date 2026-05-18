@@ -1,5 +1,4 @@
-# Two Sum – Complete Practice Script
-**Brute Force + Optimal Hashmap Solution**
+# LC 1 — Two Sum · Practice Script
 
 ---
 
@@ -123,7 +122,7 @@ print(solution.twoSum([-1, -2, -3], -5))      # Expected: [1, 2]
 
 ---
 
-## 5. Interview-Ready Explanation (Memorize & Say Out Loud)
+## Interview Out-Loud
 
 > "The brute force approach uses two nested loops and performs n(n-1)/2 comparisons, which gives O(n²) time complexity. This works for small inputs but becomes too slow for larger arrays.  
 > Instead, I use a hashmap to solve this in O(n) time with a single pass.  

@@ -1,7 +1,5 @@
 # LC 1768 — Merge Strings Alternately · Practice Script
 
-**Code:** [code/mergeStringsAlternately/](../../code/mergeStringsAlternately/)
-
 ---
 
 ## Problem
@@ -66,7 +64,7 @@ Final: `"apbqcd"` ✓
 
 ---
 
-## Even shorter — `itertools.zip_longest`
+## ALTERNATIVE — `itertools.zip_longest` (one-liner)
 
 ```python
 from itertools import zip_longest

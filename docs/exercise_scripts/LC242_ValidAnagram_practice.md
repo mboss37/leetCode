@@ -1,7 +1,4 @@
-# Valid Anagram — Practice Script
-**LeetCode 242**  
-**Difficulty:** Easy → Medium transition  
-**Pattern:** Hashmap / Frequency counting (or Sorting)
+# LC 242 — Valid Anagram · Practice Script
 
 ---
 
@@ -77,6 +74,35 @@ class Solution:
 **Time Complexity:** O(n) — single pass through each string  
 **Space Complexity:** O(1) — at most 26 keys (lowercase English letters only)
 
+### Trace on `s = "anagram"`, `t = "nagaram"`
+
+After the first loop (count chars in `s`):
+
+| step | char | seen                          |
+|------|------|-------------------------------|
+| init | —    | `{}`                          |
+| 1    | a    | `{a: 1}`                      |
+| 2    | n    | `{a: 1, n: 1}`                |
+| 3    | a    | `{a: 2, n: 1}`                |
+| 4    | g    | `{a: 2, n: 1, g: 1}`          |
+| 5    | r    | `{a: 2, n: 1, g: 1, r: 1}`    |
+| 6    | a    | `{a: 3, n: 1, g: 1, r: 1}`    |
+| 7    | m    | `{a: 3, n: 1, g: 1, r: 1, m: 1}` |
+
+Then subtract for each char in `t` (delete on hit zero):
+
+| char | seen (after)                     |
+|------|----------------------------------|
+| n    | `{a: 3, g: 1, r: 1, m: 1}`       |
+| a    | `{a: 2, g: 1, r: 1, m: 1}`       |
+| g    | `{a: 2, r: 1, m: 1}`             |
+| a    | `{a: 1, r: 1, m: 1}`             |
+| r    | `{a: 1, m: 1}`                   |
+| a    | `{m: 1}`                         |
+| m    | `{}`                             |
+
+Empty dict at the end → `True`. **The delete-on-zero matters** — without it, `len(seen) == 0` never holds and you'd need a different end check.
+
 **Why this is RECOMMENDED:**
 
 - Much faster for longer strings (O(n) vs O(n log n))
@@ -98,7 +124,7 @@ class Solution:
 
 ---
 
-## Key Interview Points to Memorize
+## Key Points
 
 1. **Always check length first** — different lengths = not anagrams.
 2. **Two common approaches:**
@@ -124,7 +150,7 @@ class Solution:
 
 ---
 
-## Interview-Ready Explanation (Memorize This)
+## Interview Out-Loud
 
 > "First I check if the lengths are different — if they are, it's impossible to be an anagram.  
 > The simple solution is to sort both strings and compare them, but that's O(n log n).  

@@ -1,7 +1,5 @@
 # LC 16 — 3Sum Closest · Practice Script
 
-**Code:** [code/threeSumClosest/](../../code/threeSumClosest/)
-
 ---
 
 ## Problem

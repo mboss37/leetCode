@@ -1,7 +1,5 @@
 # LC 79 — Word Search · Practice Script
 
-**Code:** [code/wordSearch/](../../code/wordSearch/)
-
 ---
 
 ## Problem

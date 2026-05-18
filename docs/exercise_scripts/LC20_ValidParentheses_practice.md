@@ -1,7 +1,5 @@
 # LC 20 — Valid Parentheses · Practice Script
 
-**Code:** [code/validParentheses/](../../code/validParentheses/)
-
 ---
 
 ## Problem

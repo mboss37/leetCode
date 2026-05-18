@@ -1,7 +1,5 @@
 # LC 206 — Reverse Linked List · Practice Script
 
-**Code:** [code/reverseLinkedList/](../../code/reverseLinkedList/)
-
 ---
 
 ## Problem

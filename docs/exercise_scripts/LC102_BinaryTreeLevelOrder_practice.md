@@ -1,7 +1,5 @@
 # LC 102 — Binary Tree Level Order Traversal · Practice Script
 
-**Code:** [code/binaryTreeLevelOrder/](../../code/binaryTreeLevelOrder/)
-
 ---
 
 ## Problem

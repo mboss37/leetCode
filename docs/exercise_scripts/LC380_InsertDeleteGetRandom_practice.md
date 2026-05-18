@@ -1,7 +1,5 @@
 # LC 380 — Insert / Delete / GetRandom in O(1) · Practice Script
 
-**Code:** [code/insertDeleteGetRandom/](../../code/insertDeleteGetRandom/)
-
 ---
 
 ## Problem

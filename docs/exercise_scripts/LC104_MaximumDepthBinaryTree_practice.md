@@ -1,7 +1,5 @@
 # LC 104 — Maximum Depth of Binary Tree · Practice Script
 
-**Code:** [code/maxDepthBinaryTree/](../../code/maxDepthBinaryTree/)
-
 ---
 
 ## Problem

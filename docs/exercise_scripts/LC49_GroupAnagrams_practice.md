@@ -1,7 +1,5 @@
 # LC 49 — Group Anagrams · Practice Script
 
-**Code:** [code/groupAnagrams/](../../code/groupAnagrams/)
-
 **Chain:** Valid Anagram → **Group Anagrams** → variants where you group by some other canonical key
 
 ---
@@ -75,7 +73,7 @@ Return `list(groups.values())` → `[["eat","tea","ate"], ["tan","nat"], ["bat"]
 
 ---
 
-## 3. Optional — Count-Tuple key (asymptotically faster)
+## ALTERNATIVE — Count-Tuple key (asymptotically faster)
 
 ```python
 from collections import defaultdict

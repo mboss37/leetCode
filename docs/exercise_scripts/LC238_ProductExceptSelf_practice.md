@@ -1,7 +1,5 @@
 # LC 238 — Product of Array Except Self · Practice Script
 
-**Code:** [code/productExceptSelf/](../../code/productExceptSelf/)
-
 ---
 
 ## Problem

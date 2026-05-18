@@ -1,7 +1,5 @@
 # LC 704 — Binary Search · Practice Script
 
-**Code:** [code/binarySearch/](../../code/binarySearch/)
-
 ---
 
 ## Problem
@@ -170,7 +168,7 @@ print(solution.search([1, 2, 3, 4, 5], 5))        # 4
 
 ---
 
-## 6. Interview-Ready Out-Loud Explanation
+## Interview Out-Loud
 
 > "Brute force is linear scan, O(n) — but the spec requires O(log n), so I'll use binary search.
 >

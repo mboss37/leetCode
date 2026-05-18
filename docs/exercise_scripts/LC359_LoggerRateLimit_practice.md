@@ -1,7 +1,5 @@
 # LC 359 — Logger Rate Limiter · Practice Script
 
-**Code:** [code/loggerRateLimit/](../../code/loggerRateLimit/)
-
 ---
 
 ## Problem

@@ -1,7 +1,5 @@
 # LC 322 — Coin Change · Practice Script
 
-**Code:** [code/coinChange/](../../code/coinChange/)
-
 ---
 
 ## Problem
@@ -92,7 +90,7 @@ Order matters: we compute `dp[a]` only AFTER all smaller `dp[*]` are final. That
 
 ---
 
-## Top-Down (Memoized Recursion) — same complexity
+## ALTERNATIVE — Top-Down Memoized Recursion (same complexity)
 
 ```python
 from functools import lru_cache

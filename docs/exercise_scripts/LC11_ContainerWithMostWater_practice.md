@@ -1,7 +1,5 @@
 # LC 11 — Container With Most Water · Practice Script
 
-**Code:** [code/containerWithMostWater/](../../code/containerWithMostWater/)
-
 **Chain:** Two Sum Sorted (converging two pointers) → **Container With Most Water** (greedy two pointers)
 
 ---

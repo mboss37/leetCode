@@ -1,7 +1,5 @@
 # LC 226 — Invert Binary Tree · Practice Script
 
-**Code:** [code/invertTree/](../../code/invertTree/)
-
 ---
 
 ## Problem

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FDE Prep — Visual Learning Hub</title>
+<title>Coding Prep — Visual Learning Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
@@ -94,34 +94,26 @@
     line-height: 1.6;
     text-transform: uppercase;
   }
-  header .meta .countdown-row {
+  header .meta .phase-pills {
     display: flex;
-    gap: 18px;
-    margin-top: 8px;
+    gap: 6px;
+    margin-top: 10px;
     justify-content: flex-end;
   }
-  header .meta .countdown {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 8px 14px;
-    text-align: center;
+  header .meta .phase-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    color: var(--ink-2);
+    padding: 4px 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
-  header .meta .countdown .num {
-    font-family: 'Fraunces', serif;
-    font-weight: 900;
-    font-size: 28px;
-    color: var(--gold);
-    display: block;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    font-variation-settings: "opsz" 144;
-  }
-  header .meta .countdown .lbl {
-    font-size: 9px;
-    color: var(--paper-2);
-    letter-spacing: 0.18em;
-    margin-top: 4px;
-    display: block;
+  header .meta .phase-pill b {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 4px;
   }
   header .meta .dim { color: var(--ink-3); }
 
@@ -151,6 +143,34 @@
     font-size: 13px;
     letter-spacing: 0;
     font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .section-label .learn-path {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 12px;
+    letter-spacing: 0;
+    margin-left: 8px;
+    text-transform: none;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .section-label .learn-path b {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+  }
+  .tool .tag .step-num {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--paper);
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    margin-right: 6px;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0;
   }
 
   /* ========= TOOL CARDS GRID ========= */
@@ -324,6 +344,71 @@
     color: var(--ink-3);
     letter-spacing: 0.06em;
   }
+  .problem-list li .visual-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 2px 6px;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: background 0.15s;
+    margin-right: 4px;
+  }
+  .problem-list li .visual-badge:hover {
+    background: var(--accent);
+    color: var(--paper);
+  }
+  .problem-list li .pattern-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
+    padding: 1px 5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .problem-list li .progress-check {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--ink-3);
+    background: var(--paper);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--good);
+    font-weight: 700;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .problem-list li .progress-check:hover {
+    border-color: var(--good);
+  }
+  .problem-list li.done {
+    background: var(--good-soft);
+    border-left-color: var(--good);
+  }
+  .problem-list li.done .name {
+    color: var(--ink-3);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .problem-list li.done .progress-check {
+    background: var(--good);
+    border-color: var(--good);
+    color: var(--paper);
+  }
+  .progress-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--good);
+    letter-spacing: 0.08em;
+    margin-left: 8px;
+  }
 
   /* ========= MODAL ========= */
   .modal {
@@ -380,6 +465,30 @@
     color: var(--accent);
     font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
   }
+  .modal-header .header-controls {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .modal-nav-btn {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 6px 10px;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+  .modal-nav-btn:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .modal-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
   .modal-close {
     background: var(--ink);
     color: var(--paper);
@@ -392,6 +501,40 @@
     transition: background 0.15s;
   }
   .modal-close:hover { background: var(--accent); }
+  .modal-pattern-badge {
+    background: var(--paper-2);
+    border-left: 4px solid var(--accent);
+    padding: 10px 16px;
+    margin: 0 0 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    align-items: center;
+  }
+  .modal-pattern-badge .lbl {
+    color: var(--ink-3);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+  }
+  .modal-pattern-badge a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+  }
+  .modal-pattern-badge a:hover {
+    background: var(--gold);
+  }
+  .modal-pattern-badge .phase-tag {
+    background: var(--ink);
+    color: var(--gold);
+    padding: 2px 7px;
+    font-size: 10px;
+  }
   .modal-content {
     flex: 1;
     overflow-y: auto;
@@ -644,7 +787,7 @@
     header h1 { font-size: 48px; }
     header.top { grid-template-columns: 1fr; }
     header .meta { text-align: left; }
-    header .meta .countdown-row { justify-content: flex-start; }
+    header .meta .phase-pills { justify-content: flex-start; }
   }
 </style>
 </head>
@@ -655,31 +798,36 @@
   <header class="top">
     <div>
       <h1>Prep<em>.</em> Hub</h1>
-      <div class="sub">— FDE / SWE Coding Interview Prep. Visual tools, pattern drills, and the path through Phase A → C.</div>
+      <div class="sub">— Coding interview prep. Visual tools, pattern drills, and the path through Phase A → C.</div>
     </div>
     <div class="meta">
       <div class="dim">VISUAL LEARNING HUB</div>
-      <div class="countdown-row">
-        <div class="countdown">
-          <span class="num" id="cd-coding">—</span>
-          <span class="lbl">Coding · Jun 3</span>
-        </div>
-        <div class="countdown">
-          <span class="num" id="cd-design">—</span>
-          <span class="lbl">Sys Design · Jun 8</span>
-        </div>
+      <div class="phase-pills">
+        <span class="phase-pill"><b>A</b> Foundations</span>
+        <span class="phase-pill"><b>B</b> Depth</span>
+        <span class="phase-pill"><b>C</b> Mock</span>
       </div>
     </div>
   </header>
 
   <!-- =================== TOOLS =================== -->
-  <div class="section-label"><span class="num">i.</span> Visual learning tools</div>
+  <div class="section-label"><span class="num">i.</span> Visual learning tools <span class="learn-path">— start at <b>1</b>, work right</span></div>
   <section class="tools">
 
+    <a href="#" id="open-idioms" class="tool">
+      <div class="tag"><b class="step-num">1</b> Foundation · Python</div>
+      <h2>Python Idioms<em>.</em></h2>
+      <div class="desc">— 15 idioms drilled to muscle memory. Counter, defaultdict, deque, heapq, bisect, slicing, comprehensions. Language fluency first — every pattern below assumes you can type these in 30 seconds.</div>
+      <div class="footer-row">
+        <div class="features">15 idioms · snippets · chain map</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
     <a href="patterns_cheatsheet.html" class="tool">
-      <div class="tag">Reference · Printable</div>
+      <div class="tag"><b class="step-num">2</b> Map · Printable</div>
       <h2>Patterns Cheatsheet<em>.</em></h2>
-      <div class="desc">— Dense single-page map of every pattern. Print landscape A4 and keep beside you while you code.</div>
+      <div class="desc">— Dense single-page map of every pattern. The "what exists" overview. Print landscape A4 and keep beside you while you code.</div>
       <div class="footer-row">
         <div class="features">12 cards · idiom shapes · bugs · phrases</div>
         <div class="open-arrow">OPEN →</div>
@@ -687,17 +835,17 @@
     </a>
 
     <a href="pattern_flashcards.html" class="tool">
-      <div class="tag">Interactive · Drill</div>
+      <div class="tag"><b class="step-num">3</b> Drill · Interactive</div>
       <h2>Pattern Flashcards<em>.</em></h2>
-      <div class="desc">— 33 signal-to-pattern cards. Click to flip. Mark as known. Filter by category. Build the recognition reflex.</div>
+      <div class="desc">— Signal-to-pattern cards. Click to flip. Mark as known. Filter by category. Turn the cheatsheet's passive map into a recognition reflex. Each example links to its practice script.</div>
       <div class="footer-row">
-        <div class="features">33 cards · 9 categories · localStorage</div>
+        <div class="features">35 cards · 10 categories · localStorage</div>
         <div class="open-arrow">OPEN →</div>
       </div>
     </a>
 
     <a href="3sum_skip_visual.html" class="tool">
-      <div class="tag">Walkthrough · 3Sum</div>
+      <div class="tag"><b class="step-num">4</b> Walkthrough · LC 15</div>
       <h2>3Sum Skip Logic<em>.</em></h2>
       <div class="desc">— Step through the dedup invariant side by side: WITHOUT skip vs WITH skip. Watch the duplicate triplet appear in one panel and not the other.</div>
       <div class="footer-row">
@@ -707,7 +855,7 @@
     </a>
 
     <a href="sliding_window_visual.html" class="tool">
-      <div class="tag">Walkthrough · Sliding Window</div>
+      <div class="tag"><b class="step-num">5</b> Walkthrough · LC 3</div>
       <h2>Sliding Window<em>.</em></h2>
       <div class="desc">— Watch the window grow on the right and shrink on the left for Longest Substring Without Repeating. Both pointers move forward — see why.</div>
       <div class="footer-row">
@@ -716,8 +864,18 @@
       </div>
     </a>
 
+    <a href="binary_search_visual.html" class="tool">
+      <div class="tag"><b class="step-num">6</b> Walkthrough · LC 704 / 35 / 34</div>
+      <h2>Binary Search Variants<em>.</em></h2>
+      <div class="desc">— Four modes of the same skeleton: exact match, insertion point, first occurrence, last occurrence. Step through and watch which return changes and why.</div>
+      <div class="footer-row">
+        <div class="features">4 modes · L/R/mid · biased search</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
     <a href="stack_visual.html" class="tool">
-      <div class="tag">Walkthrough · Stack</div>
+      <div class="tag"><b class="step-num">7</b> Walkthrough · LC 20 / 155</div>
       <h2>Stack Ops<em>.</em></h2>
       <div class="desc">— Push, pop, and peek visualized. Two scenes: Valid Parentheses matching, and Min Stack with its auxiliary stack synced in parallel.</div>
       <div class="footer-row">
@@ -733,7 +891,8 @@
   <div class="phase-block">
     <div class="phase-heading">
       <h3>Phase A<em>.</em></h3>
-      <span class="dates">May 13 → May 19</span>
+      <span class="dates">Recovery + foundations</span>
+      <span class="progress-summary" data-phase-pill="A"></span>
       <span class="count-pill">17 problems</span>
     </div>
     <ul class="problem-list" id="phase-a-list"></ul>
@@ -744,7 +903,8 @@
   <div class="phase-block">
     <div class="phase-heading">
       <h3>Phase B<em>.</em></h3>
-      <span class="dates">May 20 → May 26</span>
+      <span class="dates">Depth + extensions</span>
+      <span class="progress-summary" data-phase-pill="B"></span>
       <span class="count-pill">15 problems</span>
     </div>
     <ul class="problem-list" id="phase-b-list"></ul>
@@ -755,7 +915,8 @@
   <div class="phase-block">
     <div class="phase-heading">
       <h3>Phase C<em>.</em></h3>
-      <span class="dates">May 27 → Jun 2</span>
+      <span class="dates">Mock mode</span>
+      <span class="progress-summary" data-phase-pill="C"></span>
       <span class="count-pill">7 problems</span>
     </div>
     <ul class="problem-list" id="phase-c-list"></ul>
@@ -767,7 +928,11 @@
     <div class="modal-panel">
       <div class="modal-header">
         <h2 id="modal-title">—</h2>
-        <button class="modal-close" id="modal-close" aria-label="Close">CLOSE ✕</button>
+        <div class="header-controls">
+          <button class="modal-nav-btn" id="modal-prev" aria-label="Previous problem" title="Previous problem (←)">← Prev</button>
+          <button class="modal-nav-btn" id="modal-next" aria-label="Next problem" title="Next problem (→)">Next →</button>
+          <button class="modal-close" id="modal-close" aria-label="Close">CLOSE ✕</button>
+        </div>
       </div>
       <div class="modal-content markdown-content" id="modal-content">
         <div class="modal-loading">Loading…</div>
@@ -777,7 +942,7 @@
 
   <!-- =================== FOOTER =================== -->
   <footer>
-    <div><span class="accent">FDE PREP</span> · <span class="dim">visual learning hub</span> · <span class="dim">v1.0</span></div>
+    <div><span class="accent">CODING PREP</span> · <span class="dim">visual learning hub</span> · <span class="dim">v1.0</span></div>
     <div class="deploy">
       <h4>Deploy to GitHub Pages — one-time setup</h4>
       <ol>
@@ -793,17 +958,6 @@
 </div>
 
 <script>
-/* ===== Countdown ===== */
-function daysUntil(dateStr) {
-  const target = new Date(dateStr + 'T00:00:00');
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const ms = target - today;
-  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
-}
-document.getElementById('cd-coding').textContent = daysUntil('2026-06-03');
-document.getElementById('cd-design').textContent = daysUntil('2026-06-08');
-
 /* ===== Problem lists (stateless — just the canonical list per phase) ===== */
 const PHASE_A = [
   'Two Sum',
@@ -853,7 +1007,7 @@ const PHASE_C = [
   'Merge Strings Alternately',
 ];
 
-/* ===== Practice script paths (only Phase A has written walkthroughs so far) ===== */
+/* ===== Practice script paths — every problem links to its markdown walkthrough ===== */
 const SCRIPTS = {
   'Two Sum':                          'exercise_scripts/LC1_TwoSum_practice.md',
   'Contains Duplicate':               'exercise_scripts/LC217_ContainsDuplicate_practice.md',
@@ -896,22 +1050,133 @@ const SCRIPTS = {
   'Merge Strings Alternately':        'exercise_scripts/LC1768_MergeStringsAlternately_practice.md',
 };
 
+/* ===== Visual walkthrough map ===== */
+const VISUALS = {
+  'Three Sum':                          '3sum_skip_visual.html',
+  'Longest Substring':                  'sliding_window_visual.html',
+  'Valid Parentheses':                  'stack_visual.html',
+  'Min Stack':                          'stack_visual.html',
+  'Binary Search':                      'binary_search_visual.html',
+  'Search Insert Position':             'binary_search_visual.html',
+  'Find First and Last Position':       'binary_search_visual.html',
+};
+
+/* ===== Problem → pattern map (drives sub-list tags + the modal badge) ===== */
+const PROBLEMS_META = {
+  'Two Sum':                              { pattern: 'Hash Map',         flashcardCat: 'hashmap' },
+  'Contains Duplicate':                   { pattern: 'Hash Set',         flashcardCat: 'hashmap' },
+  'Valid Anagram':                        { pattern: 'Counter',          flashcardCat: 'hashmap' },
+  'Valid Palindrome':                     { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+  'Best Time to Buy and Sell Stock':      { pattern: 'One-pass tracker', flashcardCat: 'array-misc' },
+  'Maximum Subarray':                     { pattern: 'Kadane',           flashcardCat: 'array-misc' },
+  'Two Sum Sorted':                       { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+  'Three Sum':                            { pattern: 'Sort + 2Ptr',      flashcardCat: 'two-pointers' },
+  'Three Sum Closest':                    { pattern: 'Sort + 2Ptr',      flashcardCat: 'two-pointers' },
+  'Longest Substring':                    { pattern: 'Sliding Window',   flashcardCat: 'sliding-window' },
+  'Binary Search':                        { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Search Insert Position':               { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Find First and Last Position':         { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Valid Parentheses':                    { pattern: 'Stack',            flashcardCat: 'stack' },
+  'Min Stack':                            { pattern: 'Stack + Aux',      flashcardCat: 'stack' },
+  'LRU Cache':                            { pattern: 'Hash + DLL',       flashcardCat: 'linked-list' },
+  'Top K Frequent Elements':              { pattern: 'Heap',             flashcardCat: 'heap' },
+  'Group Anagrams':                       { pattern: 'Hash + Bucket',    flashcardCat: 'hashmap' },
+  'Longest Consecutive Sequence':         { pattern: 'Set + Anchor',     flashcardCat: 'hashmap' },
+  'Container With Most Water':            { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+  'Merge Intervals':                      { pattern: 'Sort + Sweep',     flashcardCat: 'array-misc' },
+  'Longest Repeating Character Replacement': { pattern: 'Sliding Window', flashcardCat: 'sliding-window' },
+  'Daily Temperatures':                   { pattern: 'Monotonic Stack',  flashcardCat: 'stack' },
+  'Find Minimum in Rotated Sorted Array': { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Search in Rotated Sorted Array':       { pattern: 'Binary Search',    flashcardCat: 'binary-search' },
+  'Reverse Linked List':                  { pattern: '3-Pointer Walk',   flashcardCat: 'linked-list' },
+  'Remove Nth Node From End':             { pattern: 'Fast/Slow Ptrs',   flashcardCat: 'linked-list' },
+  'Maximum Depth of Binary Tree':         { pattern: 'DFS Recursion',    flashcardCat: 'tree-graph' },
+  'Invert Binary Tree':                   { pattern: 'DFS Recursion',    flashcardCat: 'tree-graph' },
+  'Insert Delete GetRandom O(1)':         { pattern: 'Hash + Array',     flashcardCat: 'hashmap' },
+  'Design HashMap':                       { pattern: 'Hash (manual)',    flashcardCat: 'hashmap' },
+  'Logger Rate Limit':                    { pattern: 'Dict + Expiry',    flashcardCat: 'hashmap' },
+  'Number of Islands':                    { pattern: 'DFS / BFS Grid',   flashcardCat: 'tree-graph' },
+  'Coin Change':                          { pattern: 'Bottom-up DP',     flashcardCat: 'dp' },
+  'Word Search':                          { pattern: 'Backtracking',     flashcardCat: 'tree-graph' },
+  'Binary Tree Level Order Traversal':    { pattern: 'BFS',              flashcardCat: 'tree-graph' },
+  'Product of Array Except Self':         { pattern: 'Prefix + Suffix',  flashcardCat: 'array-misc' },
+  'Longest Palindromic Substring':        { pattern: 'Expand-Center',    flashcardCat: 'array-misc' },
+  'Merge Strings Alternately':            { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+};
+
+/* ===== Progress tracking (localStorage) ===== */
+const DONE_KEY = 'problems_done_v1';
+function loadDone() {
+  try { return new Set(JSON.parse(localStorage.getItem(DONE_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+function saveDone(set) {
+  localStorage.setItem(DONE_KEY, JSON.stringify([...set]));
+}
+const doneSet = loadDone();
+
+/* ===== Flat ordered list for modal prev/next (Phase A → B → C) ===== */
+const ALL_PROBLEMS = [...PHASE_A, ...PHASE_B, ...PHASE_C];
+
 /* ===== Modal logic ===== */
 const modalEl       = document.getElementById('modal');
 const modalTitleEl  = document.getElementById('modal-title');
 const modalContentEl= document.getElementById('modal-content');
 
+let currentProblem = null;
+
+function phaseLabelFor(name) {
+  if (PHASE_A.includes(name)) return 'A';
+  if (PHASE_B.includes(name)) return 'B';
+  if (PHASE_C.includes(name)) return 'C';
+  return '';
+}
+
+function buildPatternBadge(name) {
+  const meta = PROBLEMS_META[name];
+  if (!meta) return '';
+  const phase = phaseLabelFor(name);
+  const visual = VISUALS[name];
+  const parts = [];
+  if (phase) parts.push(`<span class="phase-tag">PHASE ${phase}</span>`);
+  parts.push(`<span><span class="lbl">Pattern:</span> <b>${meta.pattern}</b></span>`);
+  parts.push(`<a href="pattern_flashcards.html#cat=${meta.flashcardCat}">↗ flashcards</a>`);
+  parts.push(`<a href="patterns_cheatsheet.html">↗ cheatsheet</a>`);
+  if (visual) parts.push(`<a href="${visual}">▶ visual</a>`);
+  if (name !== 'Python Idioms') parts.push(`<a href="#" onclick="openScript('Python Idioms','python_idioms.md'); return false;">↗ idioms</a>`);
+  return `<div class="modal-pattern-badge">${parts.join('')}</div>`;
+}
+
+function updateModalNavButtons() {
+  if (!currentProblem) {
+    modalPrevBtn.disabled = true;
+    modalNextBtn.disabled = true;
+    modalPrevBtn.style.display = 'none';
+    modalNextBtn.style.display = 'none';
+    return;
+  }
+  modalPrevBtn.style.display = '';
+  modalNextBtn.style.display = '';
+  const idx = ALL_PROBLEMS.indexOf(currentProblem);
+  modalPrevBtn.disabled = idx <= 0;
+  modalNextBtn.disabled = idx < 0 || idx >= ALL_PROBLEMS.length - 1;
+}
+
 async function openScript(name, path) {
+  currentProblem = SCRIPTS[name] ? name : null;
   modalTitleEl.textContent = name;
   modalContentEl.innerHTML = '<div class="modal-loading">Loading practice script…</div>';
   modalEl.classList.add('open');
   document.body.style.overflow = 'hidden';
+  updateModalNavButtons();
 
   try {
     const response = await fetch(path);
     if (!response.ok) throw new Error('HTTP ' + response.status);
     const md = await response.text();
-    modalContentEl.innerHTML = marked.parse(md);
+    const rendered = marked.parse(md);
+    const badge = currentProblem ? buildPatternBadge(currentProblem) : '';
+    modalContentEl.innerHTML = badge + rendered;
     modalContentEl.scrollTop = 0;
   } catch (err) {
     modalContentEl.innerHTML = `<div class="modal-loading" style="color:var(--accent);">
@@ -923,40 +1188,108 @@ async function openScript(name, path) {
   }
 }
 
+function navProblem(delta) {
+  if (!currentProblem) return;
+  const idx = ALL_PROBLEMS.indexOf(currentProblem);
+  if (idx < 0) return;
+  const nextIdx = idx + delta;
+  if (nextIdx < 0 || nextIdx >= ALL_PROBLEMS.length) return;
+  const nextName = ALL_PROBLEMS[nextIdx];
+  const nextPath = SCRIPTS[nextName];
+  if (nextPath) openScript(nextName, nextPath);
+}
+
+const modalPrevBtn = document.getElementById('modal-prev');
+const modalNextBtn = document.getElementById('modal-next');
+modalPrevBtn.addEventListener('click', () => navProblem(-1));
+modalNextBtn.addEventListener('click', () => navProblem(1));
+
 function closeModal() {
   modalEl.classList.remove('open');
   document.body.style.overflow = '';
+  currentProblem = null;
 }
 
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-overlay').addEventListener('click', closeModal);
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && modalEl.classList.contains('open')) closeModal();
+  if (!modalEl.classList.contains('open')) return;
+  if (e.key === 'Escape') closeModal();
+  else if (e.key === 'ArrowRight' && currentProblem && !modalNextBtn.disabled) navProblem(1);
+  else if (e.key === 'ArrowLeft'  && currentProblem && !modalPrevBtn.disabled) navProblem(-1);
 });
 
-/* ===== Render lists with clickable items ===== */
-function renderList(elId, items) {
+/* Open the Python Idioms reference in the same modal */
+document.getElementById('open-idioms').addEventListener('click', (e) => {
+  e.preventDefault();
+  openScript('Python Idioms', 'python_idioms.md');
+});
+
+/* ===== Render lists with clickable items, pattern tags, progress checkbox ===== */
+function renderList(elId, items, phaseId) {
   const el = document.getElementById(elId);
   if (!el) return;
   el.innerHTML = items.map((name, i) => {
     const path = SCRIPTS[name];
-    const cls = path ? 'clickable' : 'unavailable';
+    const visual = VISUALS[name];
+    const meta = PROBLEMS_META[name];
+    const isDone = doneSet.has(name);
+    const cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
+    const tag = meta ? `<span class="pattern-tag">${meta.pattern}</span>` : '';
+    const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
+    const check = `<span class="progress-check" data-name="${name}" title="Mark complete">${isDone ? '✓' : ''}</span>`;
     return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
+      ${check}
       <span class="name">${name}</span>
+      ${tag}
+      ${badge}
       <span class="open-icon">OPEN →</span>
       <span class="num-tag">${(i+1).toString().padStart(2,'0')}</span>
     </li>`;
   }).join('');
 
   el.querySelectorAll('li.clickable').forEach(li => {
-    li.addEventListener('click', () => {
+    li.addEventListener('click', (e) => {
+      if (e.target.classList.contains('progress-check') || e.target.classList.contains('visual-badge')) return;
       openScript(li.dataset.name, li.dataset.path);
     });
   });
+  el.querySelectorAll('.progress-check').forEach(c => {
+    c.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const name = c.dataset.name;
+      if (doneSet.has(name)) doneSet.delete(name);
+      else doneSet.add(name);
+      saveDone(doneSet);
+      renderAllLists();
+    });
+  });
+  updateProgressPill(phaseId, items);
 }
-renderList('phase-a-list', PHASE_A);
-renderList('phase-b-list', PHASE_B);
-renderList('phase-c-list', PHASE_C);
+
+function updateProgressPill(phaseId, items) {
+  const pillEl = document.querySelector(`[data-phase-pill="${phaseId}"]`);
+  if (!pillEl) return;
+  const doneInPhase = items.filter(n => doneSet.has(n)).length;
+  pillEl.textContent = doneInPhase ? `${doneInPhase}/${items.length} done` : '';
+}
+
+function renderAllLists() {
+  renderList('phase-a-list', PHASE_A, 'A');
+  renderList('phase-b-list', PHASE_B, 'B');
+  renderList('phase-c-list', PHASE_C, 'C');
+}
+renderAllLists();
+
+/* ===== Deep-link: open ?problem=Name on load (used by flashcards) ===== */
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const problem = params.get('problem');
+  if (problem && SCRIPTS[problem]) {
+    openScript(problem, SCRIPTS[problem]);
+    history.replaceState({}, '', window.location.pathname);
+  }
+})();
 </script>
 </body>
 </html>
