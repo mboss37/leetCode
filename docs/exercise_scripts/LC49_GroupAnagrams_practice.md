@@ -73,7 +73,7 @@ Return `list(groups.values())` → `[["eat","tea","ate"], ["tan","nat"], ["bat"]
 
 ---
 
-## 3. Optional — Count-Tuple key (asymptotically faster)
+## ALTERNATIVE — Count-Tuple key (asymptotically faster)
 
 ```python
 from collections import defaultdict

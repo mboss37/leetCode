@@ -1,5 +1,4 @@
-# 3Sum – Complete Practice Script
-**Brute Force + Optimal Two-Pointer Solution**
+# LC 15 — Three Sum · Practice Script
 
 ---
 
@@ -224,7 +223,7 @@ print(solution.threeSum([-2, -1, -1, 0, 0, 1, 1, 2]))     # [[-2, 0, 2], [-2, 1,
 
 ---
 
-## 6. Interview-Ready Explanation (Memorize & Say Out Loud)
+## Interview Out-Loud
 
 > "I'd state the brute force first: three nested loops, O(n³). At n=3000 that's about 4.5 billion operations — too slow.
 > The optimal is sort plus two pointers. Sorting is O(n log n) but unlocks two benefits: it lets me reason about the two-pointer sum direction, AND it groups duplicates next to each other so I can skip them by checking adjacent positions.

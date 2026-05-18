@@ -60,15 +60,23 @@ Using `OrderedDict` shows:
 - **`move_to_end(key)`** — promote a key to most-recent position on access.
 - **`popitem(last=False)`** — evict from the front (oldest) on capacity overflow.
 
-### Trace `put(1,1) put(2,2) get(1) put(3,3) get(2)`
+### Trace — `capacity = 2`
 
-| op | cache (front → end) | returns |
-|---|---|---|
-| put(1,1) | {1: 1} | — |
-| put(2,2) | {1: 1, 2: 2} | — |
-| get(1) | {2: 2, 1: 1} | 1 |
-| put(3,3) | {1: 1, 3: 3} | — (capacity exceeded → evicted 2 from front) |
-| get(2) | (same) | -1 |
+Front of the OrderedDict = least-recently-used (eviction end). End = most-recent.
+
+| op           | internal action              | cache (front → end) | returns |
+|--------------|------------------------------|---------------------|---------|
+| put(1, 10)   | insert                       | `{1:10}`            | —       |
+| put(2, 20)   | insert                       | `{1:10, 2:20}`      | —       |
+| get(1)       | move_to_end(1)               | `{2:20, 1:10}`      | 10      |
+| put(3, 30)   | insert → len > cap → pop front (key=2) | `{1:10, 3:30}` | —     |
+| get(2)       | not in cache                 | `{1:10, 3:30}`      | -1      |
+| put(1, 99)   | key exists → move_to_end(1), assign | `{3:30, 1:99}` | —     |
+| put(4, 40)   | insert → len > cap → pop front (key=3) | `{1:99, 4:40}` | —     |
+| get(3)       | not in cache                 | `{1:99, 4:40}`      | -1      |
+| get(4)       | move_to_end(4)               | `{1:99, 4:40}`      | 40      |
+
+**Two move_to_end events to notice:** `get(1)` (line 3) and `put(1, 99)` (line 6, key already present). Without those moves, line 7's eviction would target key 1 instead of key 3 — silent correctness bug.
 
 ### Complexity
 
@@ -77,7 +85,7 @@ Using `OrderedDict` shows:
 
 ---
 
-## 2. FOLLOW-UP (if asked) — manual hash map + doubly-linked list
+## FOLLOW-UP — Manual hash map + doubly-linked list
 
 If the interviewer says *"now do it without `OrderedDict`"*, you fall back to building the structure manually.
 
@@ -188,12 +196,24 @@ All O(1). Just verbose.
 
 ## 5. Pitfalls
 
+### OrderedDict version
+
 | Trap | What goes wrong | Fix |
 |---|---|---|
 | Forgetting to `move_to_end` on `get` | Order stays stale; eviction picks the wrong key | Always move on access |
 | Forgetting to `move_to_end` on `put` for existing key | Same issue — updated key shouldn't be LRU | Move first, then assign |
 | `popitem(last=True)` instead of `last=False` | Evicts the MOST recent instead of the least recent | `last=False` for LRU |
 | Building Node + DLL when OrderedDict would do | Wastes time, more code, more bugs | Lead with OrderedDict |
+
+### Manual DLL version
+
+| Trap | What goes wrong | Fix |
+|---|---|---|
+| No sentinel head/tail nodes | Empty-list and single-node cases need special branches; pointer code gets twice as long | Always create sentinel `head` and `tail`; `head.next` is the real-most-recent, `tail.prev` is the real-LRU |
+| Splicing in the wrong order in `_add_to_head` | If you set `head.next = node` before saving the old `head.next`, you lose the rest of the list | Save references first, then re-link: `node.next = head.next; node.prev = head; head.next.prev = node; head.next = node` |
+| Forgetting to delete the key from the dict on eviction | The DLL evicts the node but the dict still holds the key → memory leak and stale lookups | After `_remove(lru)`, `del self.cache[lru.key]` |
+| Storing `key → value` in the dict (instead of `key → Node`) | You can't find the node to splice it on access | Map `key → Node` so you can reach prev/next in O(1) |
+| Returning `node` instead of `node.value` from `get` | API contract violation | Always return `node.value` |
 
 ---
 

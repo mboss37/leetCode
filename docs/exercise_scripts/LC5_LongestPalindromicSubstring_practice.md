@@ -74,7 +74,7 @@ n ≤ 1000 → 10⁶ ops, trivially fast.
 
 ---
 
-## Alternative — DP (O(n²) time, O(n²) space)
+## ALTERNATIVE — DP (O(n²) time, O(n²) space)
 
 ```python
 class Solution:

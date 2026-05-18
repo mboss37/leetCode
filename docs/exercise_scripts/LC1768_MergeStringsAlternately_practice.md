@@ -64,7 +64,7 @@ Final: `"apbqcd"` ✓
 
 ---
 
-## Even shorter — `itertools.zip_longest`
+## ALTERNATIVE — `itertools.zip_longest` (one-liner)
 
 ```python
 from itertools import zip_longest

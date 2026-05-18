@@ -1,5 +1,4 @@
-# Contains Duplicate (LeetCode 217) — Practice Script
-**Difficulty: Easy → Light Medium**
+# LC 217 — Contains Duplicate · Practice Script
 
 ---
 
@@ -70,7 +69,7 @@ class Solution:
 
 ---
 
-## Even Shorter Pythonic Version (Also Excellent)
+## ALTERNATIVE — One-liner (`len(set(nums)) != len(nums)`)
 
 ```python
 from typing import List
@@ -84,7 +83,7 @@ This version shows you understand Python well. Many strong candidates use this.
 
 ---
 
-## Key Interview Points to Memorize
+## Key Points
 
 1. **Why use a set instead of a dict?**  
    We only need to know *if* a number was seen before — we don't need the index. A set is cleaner and uses less memory.
@@ -126,7 +125,7 @@ This version shows you understand Python well. Many strong candidates use this.
 
 ---
 
-## Interview-Ready Explanation (Say This Out Loud)
+## Interview Out-Loud
 
 > "For this problem I can use a hashset. I'll go through the array once.  
 > For each number, I check if I've already seen it before.  
