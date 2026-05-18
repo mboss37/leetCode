@@ -783,7 +783,9 @@
   }
 
   @media (max-width: 720px) {
+    html, body { overflow-x: hidden; max-width: 100%; }
     body { padding: 24px 14px 40px; }
+    .wrap { max-width: 100%; }
     header h1 { font-size: 44px; }
     header.top { grid-template-columns: 1fr; }
     header .meta { text-align: left; }
@@ -803,21 +805,45 @@
     .phase-heading { flex-wrap: wrap; gap: 6px 10px; }
     .phase-heading .count-pill { margin-left: 0; }
     .phase-heading .progress-summary { margin-left: 0; }
-    .modal-panel { width: 100vw; max-height: 100vh; margin: 0; border: none; }
+    .modal { overflow: hidden; }
+    .modal-panel {
+      width: 100vw;
+      max-width: 100vw;
+      max-height: 100vh;
+      margin: 0;
+      border: none;
+      overflow: hidden;
+    }
     .modal-header { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
     .modal-header h2 { font-size: 18px; flex: 1 1 100%; }
     .modal-header .header-controls { width: 100%; justify-content: space-between; }
     .modal-nav-btn { padding: 8px 10px; font-size: 10px; flex: 1; }
     .modal-close { padding: 8px 10px; font-size: 11px; }
-    .modal-content { padding: 18px 18px 30px; }
+    .modal-content {
+      padding: 18px 18px 30px;
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+    .markdown-content { max-width: 100%; overflow-wrap: anywhere; word-wrap: break-word; }
     .markdown-content h1 { font-size: 26px; }
     .markdown-content h2 { font-size: 19px; }
     .markdown-content h3 { font-size: 16px; }
-    .markdown-content table { font-size: 12px; }
+    .markdown-content table {
+      display: block;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
     .markdown-content table th,
-    .markdown-content table td { padding: 6px 8px; }
-    .markdown-content pre { padding: 12px 14px; }
+    .markdown-content table td { padding: 6px 8px; white-space: nowrap; }
+    .markdown-content pre {
+      max-width: 100%;
+      padding: 12px 14px;
+      -webkit-overflow-scrolling: touch;
+    }
     .markdown-content pre code { font-size: 11px; }
+    .markdown-content :not(pre) > code { word-break: break-all; }
     .modal-pattern-badge { font-size: 10px; padding: 8px 12px; }
   }
 </style>
