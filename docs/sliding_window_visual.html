@@ -449,6 +449,20 @@
   .legend .swatch.in-w { background: var(--good-soft); border-color: var(--good); border-width: 2px; }
   .legend .swatch.dup  { background: var(--bad-soft); border-color: var(--bad); border-width: 2px; }
   .legend .swatch.add  { background: var(--paper); border-color: var(--accent); border-width: 2px; }
+
+  @media (max-width: 720px) {
+    body { padding: 24px 14px 40px; }
+    .home-link { top: 12px; left: 12px; padding: 6px 10px; font-size: 11px; }
+    header.top { grid-template-columns: 1fr; }
+    header.top h1 { font-size: 36px; }
+    .preset-row { flex-wrap: wrap; }
+    .preset-btn { font-size: 10px; padding: 6px 8px; }
+    .cell { width: 32px; height: 38px; font-size: 15px; }
+    .info-row { grid-template-columns: 1fr; gap: 10px; }
+    .controls { flex-wrap: wrap; }
+    .controls .step-info { width: 100%; order: 99; }
+    .controls button { font-size: 10px; padding: 8px 10px; }
+  }
 </style>
 </head>
 <body>
