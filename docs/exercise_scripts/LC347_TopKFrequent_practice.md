@@ -1,7 +1,5 @@
 # LC 347 — Top K Frequent Elements · Practice Script
 
-**Code:** [code/topKFrequent/](../../code/topKFrequent/)
-
 ---
 
 ## Problem

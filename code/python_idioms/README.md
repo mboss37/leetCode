@@ -1,7 +1,7 @@
 # Python Idioms Drill
 
 > Quick reference + drill files for interview-day Python fluency.
-> Goal: every idiom on this list is muscle memory by Jun 3. You can type any of them in under 30 seconds without thinking.
+> Goal: every idiom on this list is muscle memory. You can type any of them in under 30 seconds without thinking.
 
 ## How to drill (5 min per idiom)
 

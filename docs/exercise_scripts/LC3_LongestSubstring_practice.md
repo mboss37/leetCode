@@ -1,7 +1,5 @@
 # LC 3 — Longest Substring Without Repeating Characters · Practice Script
 
-**Code:** [code/longestSubstring/](../../code/longestSubstring/)
-
 ---
 
 ## Problem

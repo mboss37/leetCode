@@ -1,7 +1,5 @@
 # LC 33 — Search in Rotated Sorted Array · Practice Script
 
-**Code:** [code/searchRotated/](../../code/searchRotated/)
-
 ---
 
 ## Problem

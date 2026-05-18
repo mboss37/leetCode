@@ -1,7 +1,5 @@
 # LC 128 — Longest Consecutive Sequence · Practice Script
 
-**Code:** [code/longestConsecutive/](../../code/longestConsecutive/)
-
 **Chain:** Contains Duplicate (set existence) → **Longest Consecutive Sequence** (set + anchor)
 
 ---

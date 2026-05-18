@@ -1,7 +1,5 @@
 # LC 153 — Find Minimum in Rotated Sorted Array · Practice Script
 
-**Code:** [code/findMinRotated/](../../code/findMinRotated/)
-
 ---
 
 ## Problem

@@ -1,7 +1,5 @@
 # LC 704 — Binary Search · Practice Script
 
-**Code:** [code/binarySearch/](../../code/binarySearch/)
-
 ---
 
 ## Problem

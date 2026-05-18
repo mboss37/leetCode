@@ -1,7 +1,5 @@
 # LC 49 — Group Anagrams · Practice Script
 
-**Code:** [code/groupAnagrams/](../../code/groupAnagrams/)
-
 **Chain:** Valid Anagram → **Group Anagrams** → variants where you group by some other canonical key
 
 ---

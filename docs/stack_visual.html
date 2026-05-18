@@ -871,7 +871,7 @@ function renderTopRow(step) {
   }
 }
 
-function buildStackCol(name, items, accent) {
+function buildStackCol(name, items) {
   const col = document.createElement('div');
   col.className = 'stack-col';
 
@@ -905,12 +905,12 @@ function renderStacks(step) {
 
   if (state.mode === 'parens') {
     const stackItems = step ? step.stack : [];
-    stacksRowEl.appendChild(buildStackCol('Stack<em>.</em>', stackItems, true));
+    stacksRowEl.appendChild(buildStackCol('Stack<em>.</em>', stackItems));
   } else {
     const stackItems = step ? step.stack : [];
     const minStackItems = step ? step.minStack : [];
-    stacksRowEl.appendChild(buildStackCol('Stack<em>.</em>', stackItems, true));
-    stacksRowEl.appendChild(buildStackCol('Min Stack<em>.</em>', minStackItems, true));
+    stacksRowEl.appendChild(buildStackCol('Stack<em>.</em>', stackItems));
+    stacksRowEl.appendChild(buildStackCol('Min Stack<em>.</em>', minStackItems));
   }
 }
 

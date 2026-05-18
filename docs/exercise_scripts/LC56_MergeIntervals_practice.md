@@ -1,7 +1,5 @@
 # LC 56 — Merge Intervals · Practice Script
 
-**Code:** [code/mergeIntervals/](../../code/mergeIntervals/)
-
 ---
 
 ## Problem

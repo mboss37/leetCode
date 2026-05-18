@@ -1,7 +1,5 @@
 # LC 146 — LRU Cache · Practice Script
 
-**Code:** [code/lruCache/](../../code/lruCache/)
-
 ---
 
 ## Problem

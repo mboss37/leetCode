@@ -1,7 +1,5 @@
 # LC 706 — Design HashMap · Practice Script
 
-**Code:** [code/designHashMap/](../../code/designHashMap/)
-
 ---
 
 ## Problem

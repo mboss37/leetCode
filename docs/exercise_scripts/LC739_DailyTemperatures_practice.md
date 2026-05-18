@@ -1,7 +1,5 @@
 # LC 739 — Daily Temperatures · Practice Script
 
-**Code:** [code/dailyTemperatures/](../../code/dailyTemperatures/)
-
 ---
 
 ## Problem

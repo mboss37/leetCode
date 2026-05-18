@@ -1,7 +1,5 @@
 # LC 167 — Two Sum II · Input Array Is Sorted · Practice Script
 
-**Code:** [code/twoSumSorted/](../../code/twoSumSorted/)
-
 **Chain:** Two Sum → **Two Sum Sorted** → 3Sum → 3Sum Closest
 
 ---

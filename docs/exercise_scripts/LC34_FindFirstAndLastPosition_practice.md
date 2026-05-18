@@ -1,7 +1,5 @@
 # LC 34 — Find First and Last Position of Element in Sorted Array · Practice Script
 
-**Code:** [code/searchRange/](../../code/searchRange/)
-
 **Chain:** Binary Search → Search Insert Position → **Find First and Last Position**
 
 ---

@@ -1,7 +1,5 @@
 # LC 200 — Number of Islands · Practice Script
 
-**Code:** [code/numberOfIslands/](../../code/numberOfIslands/)
-
 ---
 
 ## Problem

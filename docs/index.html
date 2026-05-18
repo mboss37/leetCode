@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FDE Prep — Visual Learning Hub</title>
+<title>Coding Prep — Visual Learning Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
@@ -94,34 +94,26 @@
     line-height: 1.6;
     text-transform: uppercase;
   }
-  header .meta .countdown-row {
+  header .meta .phase-pills {
     display: flex;
-    gap: 18px;
-    margin-top: 8px;
+    gap: 6px;
+    margin-top: 10px;
     justify-content: flex-end;
   }
-  header .meta .countdown {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 8px 14px;
-    text-align: center;
+  header .meta .phase-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    color: var(--ink-2);
+    padding: 4px 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
-  header .meta .countdown .num {
-    font-family: 'Fraunces', serif;
-    font-weight: 900;
-    font-size: 28px;
-    color: var(--gold);
-    display: block;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    font-variation-settings: "opsz" 144;
-  }
-  header .meta .countdown .lbl {
-    font-size: 9px;
-    color: var(--paper-2);
-    letter-spacing: 0.18em;
-    margin-top: 4px;
-    display: block;
+  header .meta .phase-pill b {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 4px;
   }
   header .meta .dim { color: var(--ink-3); }
 
@@ -323,6 +315,21 @@
     font-size: 10px;
     color: var(--ink-3);
     letter-spacing: 0.06em;
+  }
+  .problem-list li .visual-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 2px 6px;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: background 0.15s;
+    margin-right: 4px;
+  }
+  .problem-list li .visual-badge:hover {
+    background: var(--accent);
+    color: var(--paper);
   }
 
   /* ========= MODAL ========= */
@@ -644,7 +651,7 @@
     header h1 { font-size: 48px; }
     header.top { grid-template-columns: 1fr; }
     header .meta { text-align: left; }
-    header .meta .countdown-row { justify-content: flex-start; }
+    header .meta .phase-pills { justify-content: flex-start; }
   }
 </style>
 </head>
@@ -655,19 +662,14 @@
   <header class="top">
     <div>
       <h1>Prep<em>.</em> Hub</h1>
-      <div class="sub">— FDE / SWE Coding Interview Prep. Visual tools, pattern drills, and the path through Phase A → C.</div>
+      <div class="sub">— Coding interview prep. Visual tools, pattern drills, and the path through Phase A → C.</div>
     </div>
     <div class="meta">
       <div class="dim">VISUAL LEARNING HUB</div>
-      <div class="countdown-row">
-        <div class="countdown">
-          <span class="num" id="cd-coding">—</span>
-          <span class="lbl">Coding · Jun 3</span>
-        </div>
-        <div class="countdown">
-          <span class="num" id="cd-design">—</span>
-          <span class="lbl">Sys Design · Jun 8</span>
-        </div>
+      <div class="phase-pills">
+        <span class="phase-pill"><b>A</b> Foundations</span>
+        <span class="phase-pill"><b>B</b> Depth</span>
+        <span class="phase-pill"><b>C</b> Mock</span>
       </div>
     </div>
   </header>
@@ -689,9 +691,9 @@
     <a href="pattern_flashcards.html" class="tool">
       <div class="tag">Interactive · Drill</div>
       <h2>Pattern Flashcards<em>.</em></h2>
-      <div class="desc">— 33 signal-to-pattern cards. Click to flip. Mark as known. Filter by category. Build the recognition reflex.</div>
+      <div class="desc">— Signal-to-pattern cards. Click to flip. Mark as known. Filter by category. Build the recognition reflex.</div>
       <div class="footer-row">
-        <div class="features">33 cards · 9 categories · localStorage</div>
+        <div class="features">35 cards · 10 categories · localStorage</div>
         <div class="open-arrow">OPEN →</div>
       </div>
     </a>
@@ -726,6 +728,16 @@
       </div>
     </a>
 
+    <a href="#" id="open-idioms" class="tool">
+      <div class="tag">Reference · Python</div>
+      <h2>Python Idioms<em>.</em></h2>
+      <div class="desc">— 15 idioms drilled to muscle memory. Counter, defaultdict, deque, heapq, bisect, slicing, comprehensions. Canonical shapes + gotchas.</div>
+      <div class="footer-row">
+        <div class="features">15 idioms · code snippets · chain map</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
   </section>
 
   <!-- =================== PHASE A =================== -->
@@ -733,7 +745,7 @@
   <div class="phase-block">
     <div class="phase-heading">
       <h3>Phase A<em>.</em></h3>
-      <span class="dates">May 13 → May 19</span>
+      <span class="dates">Recovery + foundations</span>
       <span class="count-pill">17 problems</span>
     </div>
     <ul class="problem-list" id="phase-a-list"></ul>
@@ -744,7 +756,7 @@
   <div class="phase-block">
     <div class="phase-heading">
       <h3>Phase B<em>.</em></h3>
-      <span class="dates">May 20 → May 26</span>
+      <span class="dates">Depth + extensions</span>
       <span class="count-pill">15 problems</span>
     </div>
     <ul class="problem-list" id="phase-b-list"></ul>
@@ -755,7 +767,7 @@
   <div class="phase-block">
     <div class="phase-heading">
       <h3>Phase C<em>.</em></h3>
-      <span class="dates">May 27 → Jun 2</span>
+      <span class="dates">Mock mode</span>
       <span class="count-pill">7 problems</span>
     </div>
     <ul class="problem-list" id="phase-c-list"></ul>
@@ -777,7 +789,7 @@
 
   <!-- =================== FOOTER =================== -->
   <footer>
-    <div><span class="accent">FDE PREP</span> · <span class="dim">visual learning hub</span> · <span class="dim">v1.0</span></div>
+    <div><span class="accent">CODING PREP</span> · <span class="dim">visual learning hub</span> · <span class="dim">v1.0</span></div>
     <div class="deploy">
       <h4>Deploy to GitHub Pages — one-time setup</h4>
       <ol>
@@ -793,17 +805,6 @@
 </div>
 
 <script>
-/* ===== Countdown ===== */
-function daysUntil(dateStr) {
-  const target = new Date(dateStr + 'T00:00:00');
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const ms = target - today;
-  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
-}
-document.getElementById('cd-coding').textContent = daysUntil('2026-06-03');
-document.getElementById('cd-design').textContent = daysUntil('2026-06-08');
-
 /* ===== Problem lists (stateless — just the canonical list per phase) ===== */
 const PHASE_A = [
   'Two Sum',
@@ -853,7 +854,7 @@ const PHASE_C = [
   'Merge Strings Alternately',
 ];
 
-/* ===== Practice script paths (only Phase A has written walkthroughs so far) ===== */
+/* ===== Practice script paths — every problem links to its markdown walkthrough ===== */
 const SCRIPTS = {
   'Two Sum':                          'exercise_scripts/LC1_TwoSum_practice.md',
   'Contains Duplicate':               'exercise_scripts/LC217_ContainsDuplicate_practice.md',
@@ -896,6 +897,14 @@ const SCRIPTS = {
   'Merge Strings Alternately':        'exercise_scripts/LC1768_MergeStringsAlternately_practice.md',
 };
 
+/* ===== Visual walkthrough map ===== */
+const VISUALS = {
+  'Three Sum':         '3sum_skip_visual.html',
+  'Longest Substring': 'sliding_window_visual.html',
+  'Valid Parentheses': 'stack_visual.html',
+  'Min Stack':         'stack_visual.html',
+};
+
 /* ===== Modal logic ===== */
 const modalEl       = document.getElementById('modal');
 const modalTitleEl  = document.getElementById('modal-title');
@@ -934,15 +943,24 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && modalEl.classList.contains('open')) closeModal();
 });
 
+/* Open the Python Idioms reference in the same modal */
+document.getElementById('open-idioms').addEventListener('click', (e) => {
+  e.preventDefault();
+  openScript('Python Idioms', 'python_idioms.md');
+});
+
 /* ===== Render lists with clickable items ===== */
 function renderList(elId, items) {
   const el = document.getElementById(elId);
   if (!el) return;
   el.innerHTML = items.map((name, i) => {
     const path = SCRIPTS[name];
+    const visual = VISUALS[name];
     const cls = path ? 'clickable' : 'unavailable';
+    const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
     return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
       <span class="name">${name}</span>
+      ${badge}
       <span class="open-icon">OPEN →</span>
       <span class="num-tag">${(i+1).toString().padStart(2,'0')}</span>
     </li>`;

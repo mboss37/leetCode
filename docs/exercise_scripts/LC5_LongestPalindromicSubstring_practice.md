@@ -1,7 +1,5 @@
 # LC 5 — Longest Palindromic Substring · Practice Script
 
-**Code:** [code/longestPalindromicSubstring/](../../code/longestPalindromicSubstring/)
-
 ---
 
 ## Problem

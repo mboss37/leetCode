@@ -1,7 +1,5 @@
 # LC 1768 — Merge Strings Alternately · Practice Script
 
-**Code:** [code/mergeStringsAlternately/](../../code/mergeStringsAlternately/)
-
 ---
 
 ## Problem

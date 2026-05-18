@@ -1,7 +1,5 @@
 # LC 322 — Coin Change · Practice Script
 
-**Code:** [code/coinChange/](../../code/coinChange/)
-
 ---
 
 ## Problem

@@ -1,7 +1,5 @@
 # LC 424 — Longest Repeating Character Replacement · Practice Script
 
-**Code:** [code/longestRepeatingChar/](../../code/longestRepeatingChar/)
-
 ---
 
 ## Problem
