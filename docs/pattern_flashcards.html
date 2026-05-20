@@ -608,6 +608,7 @@
     <button class="chip" data-cat="linked-list">Linked List</button>
     <button class="chip" data-cat="tree-graph">Tree / Graph</button>
     <button class="chip" data-cat="array-misc">Array / Misc</button>
+    <button class="chip" data-cat="greedy">Greedy</button>
     <button class="chip" data-cat="dp">Dynamic Programming</button>
     <button class="chip" data-cat="unknown">Unknown only</button>
   </div>
@@ -993,13 +994,13 @@ const CARDS = [
     examples: ['Maximum Subarray']
   },
   {
-    cat: 'sliding-window', catLabel: 'Sliding Window',
+    cat: 'greedy', catLabel: 'Greedy',
     signal: 'Max profit from ONE buy and one later sell.',
-    pattern: 'One-pass min tracker',
-    memoryHook: '"Best profit = today − min so far." Two variables, one walk.',
+    pattern: 'Min-so-far + running max',
+    memoryHook: '"Best profit = today − min so far." Two scalars, one walk — no window, no DP table.',
     ds: 'two integers — min and best',
     time: 'O(n)', space: 'O(1)',
-    why: 'Walk left to right. <span class="key-phrase">Track the minimum price seen so far.</span> At each day, profit = current price − min so far. Update best profit. Update min if today\'s price is lower.',
+    why: 'Walk left to right. <span class="key-phrase">Track the minimum price seen so far.</span> At each day, profit = current price − min so far. Update best profit. Update min if today\'s price is lower. The greedy choice (always take the cheapest valid buy) provably gives the global optimum.',
     pitfall: 'Compute profit FIRST, then update min. Otherwise you might subtract today\'s price from itself → 0.',
     examples: ['Best Time to Buy and Sell Stock']
   },
