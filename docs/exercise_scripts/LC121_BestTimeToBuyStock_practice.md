@@ -124,7 +124,7 @@ Result: `5`. Watch row 2 — when today is the new minimum, profit is negative b
 | Updating `min_buy` BEFORE computing profit | Profit becomes 0 (today's price minus today's price) | Compute `max_profit` FIRST, then update `min_buy` |
 | Initializing `min_buy = 0` | Profit gets inflated (price minus 0) for the first day | Initialize `min_buy = prices[0]` OR `float('inf')` |
 | Returning a negative profit | Spec says return 0 if no profit possible | Initialize `max_profit = 0` — won't go below |
-| `for i, sell in enumerate(prices):` and using `i` unnecessarily | Code smell — `enumerate` when you don't need the index | `for sell in prices:` — cleaner |
+| `for i, sell in enumerate(prices):` when `i` is never used | Useless index variable — signals "I'm not fluent in Python" to the interviewer | `for sell in prices:` — cleaner when you don't need the index |
 | Two-pass solution (find min, then find max after) | O(n) but misses days where min appears after | Single pass — min so far, profit at each day |
 
 ---

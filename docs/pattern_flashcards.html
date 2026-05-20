@@ -990,7 +990,7 @@ const CARDS = [
     ds: 'two integers — running and best',
     time: 'O(n)', space: 'O(1)',
     why: 'Walk the array. Keep a running sum. <span class="key-phrase">If running sum drops below zero, reset it to the current number</span> (a negative running sum can only hurt future sums). Track the max running sum seen.',
-    pitfall: 'Reset to CURRENT NUM (not to 0) so arrays of all-negatives still work — the answer is the single largest negative.',
+    pitfall: 'Initialize best to nums[0], NOT to 0 — otherwise arrays of all-negatives wrongly return 0 instead of the single largest negative. The recurrence is current = max(num, current + num), which naturally "resets" when current + num drops below num.',
     examples: ['Maximum Subarray']
   },
   {

@@ -106,7 +106,7 @@ Order matters: we compute `dp[a]` only AFTER all smaller `dp[*]` are final. That
 | Using greedy ("biggest coin first") | Wrong on `[1,3,4]` → 6 | DP — try all combinations |
 | Initializing dp[0] = INF | All amounts become INF — answer -1 always | dp[0] = 0 |
 | Returning dp[amount] without the INF check | Returns garbage when impossible | Check `dp[amount] != INF` |
-| Outer loop over coins, inner over amounts | Subtly different (this gives "number of ways", not "min coins") for some variants — but for THIS problem, either order works | Stay consistent; amount-outer is canonical |
+| Outer loop over coins, inner over amounts | For LC322 (min coins) either order works. But in the LC518 Coin Change II follow-up (count number of ways), the order matters: coin-outer counts unordered combinations; amount-outer counts ordered permutations | Stay consistent; amount-outer is canonical for LC322. For LC518 use coin-outer |
 | `dp = [INF] * amount` (missing the +1) | IndexError at `dp[amount]` | `amount + 1` length |
 
 ---

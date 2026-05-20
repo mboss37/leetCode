@@ -96,9 +96,9 @@ So a stale (too-large) `max_count` is harmless. It saves us the cost of recomput
 | 1 | A | {A:2} | 2 | "AA" | 2-2=0 ≤ 1 ✓ | 2 |
 | 2 | B | {A:2,B:1} | 2 | "AAB" | 3-2=1 ≤ 1 ✓ | 3 |
 | 3 | A | {A:3,B:1} | 3 | "AABA" | 4-3=1 ≤ 1 ✓ | 4 |
-| 4 | B | {A:3,B:2} | 3 | "AABAB" | 5-3=2 > 1 → shrink. drop A → {A:2,B:2}, left=1. 4-3=1 ≤ 1 ✓ | 4 |
-| 5 | B | {A:2,B:3} | 3 | "ABABB" | 5-3=2 > 1 → shrink. drop A → {A:1,B:3}, left=2. 4-3=1 ≤ 1 ✓ | 4 |
-| 6 | A | {A:2,B:3} | 3 | "BABBA" | 5-3=2 > 1 → shrink. drop B → {A:2,B:2}, left=3. 4-3=1 ≤ 1 ✓ | 4 |
+| 4 | B | {A:3,B:2} → {A:2,B:2} | 3 | "AABAB" → "ABAB" | 5-3=2 > 1 → shrink. drop A, left=1. 4-3=1 ≤ 1 ✓ | 4 |
+| 5 | B | {A:2,B:3} → {A:1,B:3} | 3 | "ABABB" → "BABB" | 5-3=2 > 1 → shrink. drop A, left=2. 4-3=1 ≤ 1 ✓ | 4 |
+| 6 | A | {A:2,B:3} → {A:2,B:2} | 3 | "BABBA" → "ABBA" | 5-3=2 > 1 → shrink. drop B, left=3. 4-3=1 ≤ 1 ✓ | 4 |
 
 Returns **4** ✓
 
