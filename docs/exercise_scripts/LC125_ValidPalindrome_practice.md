@@ -1,4 +1,4 @@
-# Valid Palindrome (LeetCode 125) — Practice Script
+# LC 125 — Valid Palindrome · Practice Script
 
 **Problem:**  
 A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.  
@@ -76,7 +76,7 @@ class Solution:
 
 ---
 
-## Key Interview Points (Memorize)
+## Key Points
 
 - Always check for **non-alphanumeric** characters — this is the main gotcha.
 - Use `.isalnum()` and `.lower()` — very useful in Python.
@@ -98,7 +98,7 @@ class Solution:
 
 ---
 
-## Interview-Ready Explanation (Practice saying this out loud)
+## Interview Out-Loud
 
 > "For Valid Palindrome, the brute force way is to clean the string by removing non-alphanumeric characters and converting to lowercase, then check if it equals its reverse. That works but creates an extra string and uses O(n) space.
 >

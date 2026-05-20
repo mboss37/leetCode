@@ -1,7 +1,5 @@
 # LC 1768 — Merge Strings Alternately · Practice Script
 
-**Code:** [code/mergeStringsAlternately/](../../code/mergeStringsAlternately/)
-
 ---
 
 ## Problem
@@ -15,6 +13,12 @@
 
 **Constraints:**
 - `1 <= word1.length, word2.length <= 100`
+
+---
+
+## No meaningful brute force
+
+The operation is inherently O(n + m) — every character must be touched once. The two-pointer version below is the simplest expression of that floor. No slower comparative is worth writing.
 
 ---
 
@@ -66,7 +70,7 @@ Final: `"apbqcd"` ✓
 
 ---
 
-## Even shorter — `itertools.zip_longest`
+## ALTERNATIVE — `itertools.zip_longest` (one-liner)
 
 ```python
 from itertools import zip_longest

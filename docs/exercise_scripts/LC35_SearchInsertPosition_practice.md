@@ -1,7 +1,5 @@
 # LC 35 — Search Insert Position · Practice Script
 
-**Code:** [code/searchInsert/](../../code/searchInsert/)
-
 **Chain:** Binary Search → **Search Insert Position** → Find First and Last Position
 
 ---

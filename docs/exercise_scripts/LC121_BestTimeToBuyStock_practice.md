@@ -1,4 +1,4 @@
-# Best Time to Buy and Sell Stock (LeetCode 121)
+# LC 121 — Best Time to Buy and Sell Stock · Practice Script
 
 **Problem:**  
 You are given an array `prices` where `prices[i]` is the price of a given stock on day `i`.  
@@ -58,6 +58,19 @@ class Solution:
 **Time Complexity:** O(n)  
 **Space Complexity:** O(1)
 
+### Trace on `prices = [7, 1, 5, 3, 6, 4]`
+
+| sell | min_buy (before) | profit = sell − min_buy | max_profit (after) | min_buy (after) |
+|------|------------------|--------------------------|---------------------|------------------|
+|  7   | 7                |  0                       | 0                   | 7                |
+|  1   | 7                | -6 (max keeps 0)         | 0                   | **1** (new low)  |
+|  5   | 1                |  4                       | **4**               | 1                |
+|  3   | 1                |  2                       | 4                   | 1                |
+|  6   | 1                |  **5**                   | **5**               | 1                |
+|  4   | 1                |  3                       | 5                   | 1                |
+
+Result: `5`. Watch row 2 — when today is the new minimum, profit is negative but `max(...)` ignores it; we just update `min_buy` for tomorrow. **Compute profit first, then update min** — otherwise day-zero would subtract itself.
+
 ---
 
 ### Why Solution 2 is RECOMMENDED
@@ -82,7 +95,7 @@ class Solution:
 
 ---
 
-### Key Interview Explanation (Memorize)
+## Interview Out-Loud
 
 > "The brute force approach checks every possible buy and sell pair, which is O(n²).  
 > Instead, I do one single pass while keeping track of the minimum buy price seen so far.  
@@ -118,7 +131,7 @@ class Solution:
 
 ## Chain position
 
-Best Time to Buy/Sell is the **one-pass min tracker** pattern. The "best ending at day i" idea extends to:
+Best Time to Buy/Sell is the **Sliding Window** pattern (one-pass min tracker variant). The "best ending at day i" idea extends to:
 - **Maximum Subarray** (Kadane's) — same shape, different update rule
 - **Best Time to Buy/Sell II** — multiple transactions allowed
 - **Container With Most Water** — track best as you walk

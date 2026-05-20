@@ -1,7 +1,5 @@
 # LC 5 — Longest Palindromic Substring · Practice Script
 
-**Code:** [code/longestPalindromicSubstring/](../../code/longestPalindromicSubstring/)
-
 ---
 
 ## Problem
@@ -11,6 +9,28 @@
 **Constraints:**
 - `1 <= s.length <= 1000`
 - `s` contains only digits and English letters.
+
+---
+
+## NOT RECOMMENDED — Check Every Substring (O(n³))
+
+```python
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        best = ""
+        for i in range(len(s)):
+            for j in range(i, len(s)):
+                sub = s[i:j+1]
+                if sub == sub[::-1] and len(sub) > len(best):
+                    best = sub
+        return best
+```
+
+- **Time:** O(n³) — n² substrings × O(n) palindrome check.
+- For n = 1000: 10⁹ ops → borderline TLE.
+
+State verbally:
+> *"Brute force checks every substring against its reverse. O(n³). I'll expand around every possible center — odd-length and even-length — tracking the longest match. O(n²) time, O(1) space."*
 
 ---
 
@@ -76,7 +96,7 @@ n ≤ 1000 → 10⁶ ops, trivially fast.
 
 ---
 
-## Alternative — DP (O(n²) time, O(n²) space)
+## ALTERNATIVE — DP (O(n²) time, O(n²) space)
 
 ```python
 class Solution:

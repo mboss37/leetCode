@@ -1,7 +1,5 @@
 # LC 359 — Logger Rate Limiter · Practice Script
 
-**Code:** [code/loggerRateLimit/](../../code/loggerRateLimit/)
-
 ---
 
 ## Problem
@@ -13,6 +11,12 @@
 **Constraints:**
 - Timestamps are non-negative and arrive in **non-decreasing** order.
 - Up to 10⁴ calls.
+
+---
+
+## No meaningful brute force
+
+Design problem — track every message's last-print time and gate by a 10-second window. The naive approach (store every timestamp ever, scan on each call) is O(n) per call, but it's not a useful comparative — same algorithm, worse data structure. The dict-of-last-seen below is the minimal correct answer.
 
 ---
 

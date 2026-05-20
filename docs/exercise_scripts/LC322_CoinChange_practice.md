@@ -1,7 +1,5 @@
 # LC 322 — Coin Change · Practice Script
 
-**Code:** [code/coinChange/](../../code/coinChange/)
-
 ---
 
 ## Problem
@@ -24,6 +22,27 @@ Counterexample: `coins = [1, 3, 4]`, `amount = 6`.
 - Optimal: 3 + 3 = **2 coins**
 
 Greedy can be off arbitrarily. **You need DP.**
+
+---
+
+## NOT RECOMMENDED — Pure Recursion (Exponential)
+
+```python
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        def best(a):
+            if a == 0: return 0
+            if a < 0:  return float('inf')
+            return min(best(a - c) for c in coins) + 1
+        ans = best(amount)
+        return ans if ans != float('inf') else -1
+```
+
+- **Time:** O(c^a) — branching factor `c` (number of coins), depth `a` (amount). Recomputes the same subproblems millions of times.
+- For amount = 100, coins = [1,2,5]: easily 10⁹+ recursive calls → TLE.
+
+State verbally:
+> *"Naive recursion is exponential — same subproblems get recomputed over and over. I'll add memoization (or go bottom-up with a DP array) to bring it down to O(amount × len(coins))."*
 
 ---
 
@@ -92,7 +111,7 @@ Order matters: we compute `dp[a]` only AFTER all smaller `dp[*]` are final. That
 
 ---
 
-## Top-Down (Memoized Recursion) — same complexity
+## ALTERNATIVE — Top-Down Memoized Recursion (same complexity)
 
 ```python
 from functools import lru_cache

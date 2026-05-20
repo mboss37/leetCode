@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary Search Variants — Visual Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:     #f3eddc;
+    --paper-2:   #ebe2cc;
+    --paper-3:   #e3d8bd;
+    --ink:       #1a1410;
+    --ink-2:     #3c352d;
+    --ink-3:     #6b6155;
+    --accent:    #8b2c1c;
+    --accent-2:  #b34a2a;
+    --tan:       #a07c52;
+    --gold:      #f4dfa8;
+    --gold-2:    #ead09a;
+    --muted:     #5a5147;
+    --hair:      #c8bea4;
+    --good:      #4a6b3a;
+    --good-soft: #d9e3cf;
+    --bad:       #a3261c;
+    --bad-soft:  #f0d8d3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 5%, rgba(139,44,28,0.04), transparent 55%),
+      radial-gradient(ellipse at 90% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  .home-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 14px;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: background 0.15s;
+    z-index: 100;
+  }
+  .home-link:hover { background: var(--accent); }
+
+  /* ===== HEADER ===== */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+  }
+  header.top::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+  }
+  header.top h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    margin: 0 0 8px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header.top h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header.top .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 18px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  header.top .stamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+  header.top .stamp .key { color: var(--accent); font-weight: 700; }
+
+  /* ===== MODE SELECTOR ===== */
+  .mode-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .mode-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    color: var(--ink-2);
+    padding: 10px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    flex: 1 1 220px;
+    text-align: left;
+  }
+  .mode-btn:hover { background: var(--paper-3); }
+  .mode-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .mode-btn .label {
+    display: block;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .mode-btn:not(.active) .label { color: var(--accent); }
+  .mode-btn .lc {
+    font-size: 9px;
+    color: inherit;
+    opacity: 0.7;
+    letter-spacing: 0.16em;
+  }
+
+  /* ===== SETUP ROW ===== */
+  .setup {
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+  }
+  .setup .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .setup .target-display {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .setup .target-display em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .preset-row {
+    display: flex;
+    gap: 6px;
+  }
+  .preset-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--paper);
+    border: 1px solid var(--hair);
+    color: var(--ink-2);
+    padding: 6px 10px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+  }
+  .preset-btn:hover { background: var(--gold); }
+  .preset-btn.active {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+
+  /* ===== ARRAY DISPLAY ===== */
+  .array-stage {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 36px 18px 50px;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .array-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    position: relative;
+    min-height: 70px;
+  }
+  .cell {
+    width: 56px;
+    height: 56px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    position: relative;
+    transition: all 0.25s;
+    font-variation-settings: "opsz" 24;
+  }
+  .cell.eliminated {
+    background: repeating-linear-gradient(
+      45deg,
+      var(--paper-2),
+      var(--paper-2) 4px,
+      var(--paper) 4px,
+      var(--paper) 8px
+    );
+    color: var(--ink-3);
+    border-color: var(--hair);
+  }
+  .cell.in-range {
+    background: var(--paper);
+    border-color: var(--ink);
+  }
+  .cell.is-mid {
+    background: var(--gold);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--gold-2);
+    transform: translateY(-6px);
+  }
+  .cell.match {
+    background: var(--good-soft);
+    border-color: var(--good);
+    color: var(--good);
+  }
+  .cell.recorded {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .cell .idx {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+  }
+  .ptr {
+    position: absolute;
+    top: -28px;
+    transform: translateX(-50%);
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+    font-style: italic;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+    text-align: center;
+    width: 56px;
+    z-index: 10;
+    transition: left 0.3s;
+  }
+  .ptr .ar { display: block; font-size: 11px; line-height: 1; }
+  .ptr.L { color: var(--accent); }
+  .ptr.R { color: var(--tan); }
+  .ptr.M { color: var(--good); top: -54px; }
+
+  /* ===== INFO BAR ===== */
+  .info-bar {
+    margin-top: 0;
+    padding: 16px 20px;
+    background: var(--paper-2);
+    border-left: 4px solid var(--ink-3);
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 14px;
+  }
+  .info-bar.match { border-left-color: var(--good); background: var(--good-soft); }
+  .info-bar.eliminate-right { border-left-color: var(--accent); }
+  .info-bar.eliminate-left { border-left-color: var(--tan); background: rgba(160,124,82,0.06); }
+  .info-bar.done-found { border-left-color: var(--good); background: var(--good-soft); }
+  .info-bar.done-not-found { border-left-color: var(--bad); background: var(--bad-soft); }
+  .info-bar .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .info-bar .narration {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .info-bar .narration code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 5px;
+    font-size: 13px;
+  }
+  .state-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .state-cell {
+    background: var(--paper-2);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .state-cell .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .state-cell .val {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--ink);
+    margin-top: 2px;
+    font-variation-settings: "opsz" 24;
+  }
+  .state-cell .val em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .state-cell .val.muted { color: var(--ink-3); }
+
+  /* ===== CONTROLS ===== */
+  .controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+  .controls button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--accent); }
+  .controls button:disabled {
+    background: var(--hair);
+    color: var(--ink-3);
+    cursor: not-allowed;
+  }
+  .controls .spacer { flex: 1; }
+  .controls .step-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== CODE PANE ===== */
+  .code-pane {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    border-left: 4px solid var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  .code-pane .ln {
+    display: block;
+    transition: background 0.2s;
+    padding: 0 6px;
+  }
+  .code-pane .ln.hl {
+    background: var(--accent);
+    color: var(--paper);
+  }
+  .code-pane .ln .c { color: var(--ink-3); font-style: italic; }
+
+  /* ===== LEGEND ===== */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 12px 16px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--hair);
+    margin-bottom: 22px;
+    font-size: 12px;
+  }
+  .legend .key {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-2);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .legend .swatch {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--ink-3);
+  }
+  .legend .swatch.mid { background: var(--gold); border-color: var(--accent); }
+  .legend .swatch.elim { background: repeating-linear-gradient(45deg, var(--paper-2), var(--paper-2) 3px, var(--paper) 3px, var(--paper) 6px); }
+  .legend .swatch.match { background: var(--good-soft); border-color: var(--good); }
+  .legend .swatch.recorded { box-shadow: 0 0 0 2px var(--accent); border: none; background: var(--paper); }
+
+  /* ===== SUMMARY / EXPLAINER ===== */
+  .explainer {
+    background: var(--paper-2);
+    padding: 22px 26px;
+    border-left: 4px solid var(--accent);
+    margin-top: 30px;
+  }
+  .explainer h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0 0 10px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 24;
+  }
+  .explainer h3 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .explainer table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 10px;
+  }
+  .explainer th {
+    background: var(--ink);
+    color: var(--paper);
+    text-align: left;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .explainer td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--hair);
+    vertical-align: top;
+    color: var(--ink-2);
+  }
+  .explainer td code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 5px;
+    font-size: 12px;
+  }
+  .see-also {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hair);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+  }
+  .see-also a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+    margin: 0 4px;
+  }
+  .see-also a:hover {
+    background: var(--gold);
+  }
+
+  @media (max-width: 720px) {
+    body { padding: 24px 14px 40px; }
+    header.top { grid-template-columns: 1fr; }
+    header.top .stamp { text-align: left; }
+    header.top h1 { font-size: 40px; }
+    .cell { width: 42px; height: 42px; font-size: 17px; }
+    .ptr { width: 42px; font-size: 11px; }
+    .state-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<a href="index.html" class="home-link">↶ Home</a>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Binary Search Variants<em>.</em></h1>
+      <div class="sub">— Same skeleton, four return rules. Step through each mode and watch what changes.</div>
+    </div>
+    <div class="stamp">
+      <div><span class="key">INTERACTIVE</span> · CLICK NEXT</div>
+      <div>LC 704 · 35 · 34</div>
+    </div>
+  </header>
+
+  <!-- MODE SELECTOR -->
+  <div class="mode-row" id="mode-row">
+    <button class="mode-btn active" data-mode="exact">
+      <span class="label">Exact match</span>
+      <span class="lc">LC 704 · return index or -1</span>
+    </button>
+    <button class="mode-btn" data-mode="insert">
+      <span class="label">Insertion point</span>
+      <span class="lc">LC 35 · return left</span>
+    </button>
+    <button class="mode-btn" data-mode="first">
+      <span class="label">First occurrence</span>
+      <span class="lc">LC 34 · biased-left</span>
+    </button>
+    <button class="mode-btn" data-mode="last">
+      <span class="label">Last occurrence</span>
+      <span class="lc">LC 34 · biased-right</span>
+    </button>
+  </div>
+
+  <!-- SETUP -->
+  <div class="setup">
+    <div>
+      <div class="label">Target</div>
+      <div class="target-display"><em id="target-val">5</em></div>
+    </div>
+    <div class="preset-row" id="preset-row"></div>
+    <div>
+      <button class="preset-btn" id="reset-target">⟲ Reset</button>
+    </div>
+  </div>
+
+  <!-- ARRAY STAGE -->
+  <div class="array-stage">
+    <div class="array-row" id="array-row"></div>
+  </div>
+
+  <!-- STATE ROW -->
+  <div class="state-row">
+    <div class="state-cell">
+      <div class="lbl">Left</div>
+      <div class="val"><em id="state-L">0</em></div>
+    </div>
+    <div class="state-cell">
+      <div class="lbl">Mid</div>
+      <div class="val"><em id="state-M">—</em></div>
+    </div>
+    <div class="state-cell">
+      <div class="lbl">Right</div>
+      <div class="val"><em id="state-R">—</em></div>
+    </div>
+  </div>
+
+  <!-- INFO BAR -->
+  <div class="info-bar" id="info-bar">
+    <div class="step-num" id="step-num">STEP 0 OF —</div>
+    <div class="narration" id="narration">Press <b>Next →</b> to start the search.</div>
+  </div>
+
+  <!-- CODE PANE -->
+  <div class="code-pane" id="code-pane"></div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button id="prev-btn">← Prev</button>
+    <button id="next-btn">Next →</button>
+    <button id="autoplay-btn">▶ Auto</button>
+    <button id="reset-btn">⟲ Reset</button>
+    <div class="spacer"></div>
+    <div class="step-counter" id="step-counter">step 0 of —</div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="key"><div class="swatch mid"></div> mid (peek)</div>
+    <div class="key"><div class="swatch elim"></div> eliminated half</div>
+    <div class="key"><div class="swatch match"></div> match</div>
+    <div class="key"><div class="swatch recorded"></div> recorded best</div>
+  </div>
+
+  <!-- EXPLAINER -->
+  <div class="explainer">
+    <h3>The four modes<em>.</em></h3>
+    <p style="margin: 6px 0 4px; color: var(--ink-2);">All four use the same loop skeleton (<code>while L &lt;= R</code>, halve based on comparison). What differs is the <b>return rule</b> on match and the <b>final return</b> when the loop exits.</p>
+    <table>
+      <thead>
+        <tr><th>Mode</th><th>On match</th><th>Loop exit return</th><th>Used by</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Exact match</b></td>
+          <td><code>return mid</code></td>
+          <td><code>return -1</code></td>
+          <td>LC 704 Binary Search</td>
+        </tr>
+        <tr>
+          <td><b>Insertion point</b></td>
+          <td><code>return mid</code></td>
+          <td><code>return left</code> — the first slot ≥ target</td>
+          <td>LC 35 Search Insert Position</td>
+        </tr>
+        <tr>
+          <td><b>First occurrence</b></td>
+          <td>record <code>ans=mid</code>, then <code>R = mid - 1</code> to keep narrowing left</td>
+          <td><code>return ans</code> (or -1 if never recorded)</td>
+          <td>LC 34 Find First (1 of 2 passes)</td>
+        </tr>
+        <tr>
+          <td><b>Last occurrence</b></td>
+          <td>record <code>ans=mid</code>, then <code>L = mid + 1</code> to keep narrowing right</td>
+          <td><code>return ans</code> (or -1 if never recorded)</td>
+          <td>LC 34 Find Last (2 of 2 passes)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 14px; color: var(--ink-2); font-style: italic; font-family: 'Fraunces', serif; font-size: 15px; font-variation-settings: 'opsz' 14, 'SOFT' 100, 'WONK' 1;">The biased searches (first / last) are the one trick that catches everyone — <b>don't return on match, record and keep narrowing</b>. The recorded index is the answer if the loop later exhausts the range.</p>
+    <div class="see-also">
+      SEE ALSO →
+      <a href="pattern_flashcards.html">Pattern Flashcards (binary search category)</a> ·
+      <a href="patterns_cheatsheet.html">Cheatsheet (pattern 7 + biased BS row)</a> ·
+      <a href="index.html?problem=Binary%20Search">Practice script · LC 704</a> ·
+      <a href="index.html?problem=Search%20Insert%20Position">LC 35</a> ·
+      <a href="index.html?problem=Find%20First%20and%20Last%20Position">LC 34</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =================== PRESETS =================== */
+const PRESETS = [
+  { label: 'sorted, t=5',     arr: [1, 3, 5, 7, 9, 11, 13],          target: 5 },
+  { label: 'sorted, t=4',     arr: [1, 3, 5, 7, 9, 11, 13],          target: 4 },
+  { label: 'dupes, t=5',      arr: [1, 3, 5, 5, 5, 7, 9, 11],        target: 5 },
+  { label: 'dupes, t=7',      arr: [2, 2, 2, 4, 4, 7, 7, 7, 7, 9],   target: 7 },
+  { label: 'edge: before',    arr: [3, 5, 7, 9],                     target: 1 },
+  { label: 'edge: after',     arr: [3, 5, 7, 9],                     target: 20 },
+];
+let activePresetIdx = 0;
+
+/* =================== STATE =================== */
+const state = {
+  mode: 'exact',
+  arr: PRESETS[0].arr,
+  target: PRESETS[0].target,
+  stepIdx: 0,
+  steps: [],
+  autoplay: null,
+};
+
+/* =================== STEP BUILDERS =================== */
+function buildSteps(mode, arr, target) {
+  const steps = [];
+  let L = 0, R = arr.length - 1;
+  let ans = -1;
+  let stepNum = 0;
+
+  // Initial step — entry state, no mid yet
+  steps.push({
+    L, R, mid: null, ans,
+    action: 'init',
+    actionClass: '',
+    narration: `Initialize <code>L = 0</code>, <code>R = ${R}</code>. The search range covers the whole array.`,
+    highlightLines: ['init-L', 'init-R'],
+    done: false,
+  });
+
+  while (L <= R) {
+    const mid = Math.floor((L + R) / 2);
+    const v = arr[mid];
+
+    if (v === target) {
+      if (mode === 'exact' || mode === 'insert') {
+        steps.push({
+          L, R, mid, ans: mid,
+          action: 'match-exact',
+          actionClass: 'match done-found',
+          narration: `<code>arr[${mid}] = ${v}</code> equals target. <b>Return ${mid}.</b>`,
+          highlightLines: ['if-eq', 'ret-mid'],
+          done: true,
+          finalReturn: mid,
+        });
+        return steps;
+      } else if (mode === 'first') {
+        ans = mid;
+        steps.push({
+          L, R, mid, ans,
+          action: 'match-record-narrow-left',
+          actionClass: 'match',
+          narration: `<code>arr[${mid}] = ${v}</code> matches. Record <code>ans = ${mid}</code> but <b>don't return</b> — narrow LEFT to find an earlier match: <code>R = ${mid - 1}</code>.`,
+          highlightLines: ['if-eq', 'record-ans', 'narrow-left'],
+          done: false,
+        });
+        R = mid - 1;
+        continue;
+      } else if (mode === 'last') {
+        ans = mid;
+        steps.push({
+          L, R, mid, ans,
+          action: 'match-record-narrow-right',
+          actionClass: 'match',
+          narration: `<code>arr[${mid}] = ${v}</code> matches. Record <code>ans = ${mid}</code> but <b>don't return</b> — narrow RIGHT to find a later match: <code>L = ${mid + 1}</code>.`,
+          highlightLines: ['if-eq', 'record-ans', 'narrow-right'],
+          done: false,
+        });
+        L = mid + 1;
+        continue;
+      }
+    } else if (v < target) {
+      steps.push({
+        L, R, mid, ans,
+        action: 'eliminate-left',
+        actionClass: 'eliminate-left',
+        narration: `<code>arr[${mid}] = ${v}</code> &lt; target. Target must be to the RIGHT. <code>L = ${mid + 1}</code>.`,
+        highlightLines: ['elif-lt', 'narrow-right'],
+        done: false,
+      });
+      L = mid + 1;
+    } else {
+      steps.push({
+        L, R, mid, ans,
+        action: 'eliminate-right',
+        actionClass: 'eliminate-right',
+        narration: `<code>arr[${mid}] = ${v}</code> &gt; target. Target must be to the LEFT. <code>R = ${mid - 1}</code>.`,
+        highlightLines: ['else-gt', 'narrow-left'],
+        done: false,
+      });
+      R = mid - 1;
+    }
+  }
+
+  // Loop exited. Final return depends on mode.
+  let finalReturn, finalNarration, actionClass;
+  if (mode === 'exact') {
+    finalReturn = -1;
+    finalNarration = `Loop exited with <code>L &gt; R</code>. Target not in array. <b>Return -1.</b>`;
+    actionClass = 'done-not-found';
+  } else if (mode === 'insert') {
+    finalReturn = L;
+    finalNarration = `Loop exited with <code>L &gt; R</code>. <code>L = ${L}</code> is now the first slot where target would belong. <b>Return ${L}.</b>`;
+    actionClass = 'done-found';
+  } else if (mode === 'first' || mode === 'last') {
+    finalReturn = ans;
+    if (ans === -1) {
+      finalNarration = `Loop exited. <code>ans</code> was never recorded — target absent. <b>Return -1.</b>`;
+      actionClass = 'done-not-found';
+    } else {
+      finalNarration = `Loop exited. Recorded <code>ans = ${ans}</code>. <b>Return ${ans}.</b>`;
+      actionClass = 'done-found';
+    }
+  }
+
+  steps.push({
+    L, R, mid: null, ans,
+    action: 'done',
+    actionClass,
+    narration: finalNarration,
+    highlightLines: ['ret-final'],
+    done: true,
+    finalReturn,
+  });
+
+  return steps;
+}
+
+/* =================== CODE TEMPLATES =================== */
+const CODE_TEMPLATES = {
+  exact: [
+    { id: 'init-L', text: 'L = 0' },
+    { id: 'init-R', text: 'R = len(arr) - 1' },
+    { id: 'while', text: 'while L <= R:' },
+    { id: 'mid', text: '    mid = (L + R) // 2' },
+    { id: 'if-eq', text: '    if arr[mid] == target:' },
+    { id: 'ret-mid', text: '        return mid' },
+    { id: 'elif-lt', text: '    elif arr[mid] < target:' },
+    { id: 'narrow-right', text: '        L = mid + 1' },
+    { id: 'else-gt', text: '    else:' },
+    { id: 'narrow-left', text: '        R = mid - 1' },
+    { id: 'ret-final', text: 'return -1   # not found' },
+  ],
+  insert: [
+    { id: 'init-L', text: 'L = 0' },
+    { id: 'init-R', text: 'R = len(arr) - 1' },
+    { id: 'while', text: 'while L <= R:' },
+    { id: 'mid', text: '    mid = (L + R) // 2' },
+    { id: 'if-eq', text: '    if arr[mid] == target:' },
+    { id: 'ret-mid', text: '        return mid' },
+    { id: 'elif-lt', text: '    elif arr[mid] < target:' },
+    { id: 'narrow-right', text: '        L = mid + 1' },
+    { id: 'else-gt', text: '    else:' },
+    { id: 'narrow-left', text: '        R = mid - 1' },
+    { id: 'ret-final', text: 'return L    # insertion point' },
+  ],
+  first: [
+    { id: 'init-L', text: 'L = 0' },
+    { id: 'init-R', text: 'R = len(arr) - 1' },
+    { id: 'init-ans', text: 'ans = -1' },
+    { id: 'while', text: 'while L <= R:' },
+    { id: 'mid', text: '    mid = (L + R) // 2' },
+    { id: 'if-eq', text: '    if arr[mid] == target:' },
+    { id: 'record-ans', text: '        ans = mid             # record, don\'t return' },
+    { id: 'narrow-left', text: '        R = mid - 1           # keep narrowing left' },
+    { id: 'elif-lt', text: '    elif arr[mid] < target:' },
+    { id: 'narrow-right', text: '        L = mid + 1' },
+    { id: 'else-gt', text: '    else:' },
+    { id: 'narrow-left-cmp', text: '        R = mid - 1' },
+    { id: 'ret-final', text: 'return ans' },
+  ],
+  last: [
+    { id: 'init-L', text: 'L = 0' },
+    { id: 'init-R', text: 'R = len(arr) - 1' },
+    { id: 'init-ans', text: 'ans = -1' },
+    { id: 'while', text: 'while L <= R:' },
+    { id: 'mid', text: '    mid = (L + R) // 2' },
+    { id: 'if-eq', text: '    if arr[mid] == target:' },
+    { id: 'record-ans', text: '        ans = mid             # record, don\'t return' },
+    { id: 'narrow-right', text: '        L = mid + 1           # keep narrowing right' },
+    { id: 'elif-lt', text: '    elif arr[mid] < target:' },
+    { id: 'narrow-right-cmp', text: '        L = mid + 1' },
+    { id: 'else-gt', text: '    else:' },
+    { id: 'narrow-left', text: '        R = mid - 1' },
+    { id: 'ret-final', text: 'return ans' },
+  ],
+};
+
+/* =================== DOM REFS =================== */
+const arrayRowEl   = document.getElementById('array-row');
+const infoBarEl    = document.getElementById('info-bar');
+const stepNumEl    = document.getElementById('step-num');
+const narrationEl  = document.getElementById('narration');
+const stateLEl     = document.getElementById('state-L');
+const stateMEl     = document.getElementById('state-M');
+const stateREl     = document.getElementById('state-R');
+const codePaneEl   = document.getElementById('code-pane');
+const stepCounterEl = document.getElementById('step-counter');
+const prevBtn      = document.getElementById('prev-btn');
+const nextBtn      = document.getElementById('next-btn');
+const resetBtn     = document.getElementById('reset-btn');
+const autoplayBtn  = document.getElementById('autoplay-btn');
+const targetValEl  = document.getElementById('target-val');
+const presetRowEl  = document.getElementById('preset-row');
+
+/* =================== RENDER =================== */
+function renderPresets() {
+  presetRowEl.innerHTML = PRESETS.map((p, i) =>
+    `<button class="preset-btn ${i === activePresetIdx ? 'active' : ''}" data-idx="${i}">${p.label}</button>`
+  ).join('');
+  presetRowEl.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activePresetIdx = parseInt(btn.dataset.idx);
+      const p = PRESETS[activePresetIdx];
+      state.arr = p.arr;
+      state.target = p.target;
+      rebuild();
+    });
+  });
+}
+
+function renderCode() {
+  const template = CODE_TEMPLATES[state.mode];
+  const step = state.steps[state.stepIdx];
+  const hl = new Set(step?.highlightLines || []);
+  codePaneEl.innerHTML = template.map(line => {
+    const isHl = hl.has(line.id);
+    return `<span class="ln ${isHl ? 'hl' : ''}">${line.text.replace(/#.*/, m => `<span class="c">${m}</span>`)}</span>`;
+  }).join('');
+}
+
+function renderArray() {
+  const step = state.steps[state.stepIdx] || { L: 0, R: state.arr.length - 1, mid: null, ans: -1 };
+  arrayRowEl.innerHTML = '';
+
+  for (let i = 0; i < state.arr.length; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+
+    if (i < step.L || i > step.R) {
+      cell.classList.add('eliminated');
+    } else {
+      cell.classList.add('in-range');
+    }
+    if (step.mid !== null && i === step.mid) {
+      cell.classList.add('is-mid');
+      if (step.action && step.action.startsWith('match')) cell.classList.add('match');
+    }
+    if (step.ans !== undefined && step.ans !== -1 && i === step.ans && (state.mode === 'first' || state.mode === 'last')) {
+      cell.classList.add('recorded');
+    }
+
+    cell.innerHTML = `${state.arr[i]}<span class="idx">${i}</span>`;
+    arrayRowEl.appendChild(cell);
+  }
+
+  // Pointer arrows (positioned absolutely above cells)
+  const cellWidth = arrayRowEl.children[0]?.offsetWidth || 56;
+  const gap = 4;
+  function cellCenter(i) {
+    return arrayRowEl.children[i]?.offsetLeft + (cellWidth / 2);
+  }
+
+  const lPtr = document.createElement('div');
+  lPtr.className = 'ptr L';
+  lPtr.innerHTML = `↑<span class="ar">L</span>`;
+  if (step.L > state.arr.length - 1) {
+    lPtr.style.left = (arrayRowEl.offsetWidth + 8) + 'px';
+  } else if (step.L >= 0) {
+    lPtr.style.left = cellCenter(step.L) + 'px';
+  } else {
+    lPtr.style.left = '-8px';
+  }
+  arrayRowEl.appendChild(lPtr);
+
+  const rPtr = document.createElement('div');
+  rPtr.className = 'ptr R';
+  rPtr.innerHTML = `↑<span class="ar">R</span>`;
+  if (step.R < 0) {
+    rPtr.style.left = '-8px';
+  } else if (step.R <= state.arr.length - 1) {
+    rPtr.style.left = cellCenter(step.R) + 'px';
+  } else {
+    rPtr.style.left = (arrayRowEl.offsetWidth + 8) + 'px';
+  }
+  arrayRowEl.appendChild(rPtr);
+  if (step.mid !== null) {
+    const mPtr = document.createElement('div');
+    mPtr.className = 'ptr M';
+    mPtr.innerHTML = `↓<span class="ar">mid</span>`;
+    mPtr.style.left = cellCenter(step.mid) + 'px';
+    arrayRowEl.appendChild(mPtr);
+  }
+}
+
+function renderState() {
+  const step = state.steps[state.stepIdx] || {};
+  stateLEl.textContent = step.L !== undefined ? step.L : '0';
+  stateMEl.textContent = step.mid !== null && step.mid !== undefined ? step.mid : '—';
+  stateREl.textContent = step.R !== undefined ? step.R : (state.arr.length - 1);
+  stateLEl.classList.toggle('muted', step.L > step.R);
+  stateREl.classList.toggle('muted', step.L > step.R);
+}
+
+function renderInfo() {
+  const step = state.steps[state.stepIdx] || {};
+  infoBarEl.className = 'info-bar';
+  if (step.actionClass) {
+    step.actionClass.split(' ').forEach(cls => infoBarEl.classList.add(cls));
+  }
+  stepNumEl.textContent = `STEP ${state.stepIdx} OF ${state.steps.length - 1}`;
+  narrationEl.innerHTML = step.narration || 'Press <b>Next →</b> to start the search.';
+  stepCounterEl.textContent = `step ${state.stepIdx} of ${state.steps.length - 1}`;
+  prevBtn.disabled = state.stepIdx === 0;
+  nextBtn.disabled = state.stepIdx >= state.steps.length - 1;
+}
+
+function renderAll() {
+  renderArray();
+  renderState();
+  renderInfo();
+  renderCode();
+}
+
+function rebuild() {
+  state.steps = buildSteps(state.mode, state.arr, state.target);
+  state.stepIdx = 0;
+  targetValEl.textContent = state.target;
+  stopAutoplay();
+  renderAll();
+  document.querySelectorAll('.preset-btn').forEach((b, i) => b.classList.toggle('active', i === activePresetIdx));
+}
+
+/* =================== INPUT HANDLERS =================== */
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.mode = btn.dataset.mode;
+    rebuild();
+  });
+});
+
+prevBtn.addEventListener('click', () => {
+  if (state.stepIdx > 0) {
+    state.stepIdx--;
+    renderAll();
+  }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (state.stepIdx < state.steps.length - 1) {
+    state.stepIdx++;
+    renderAll();
+  }
+});
+
+resetBtn.addEventListener('click', () => {
+  state.stepIdx = 0;
+  stopAutoplay();
+  renderAll();
+});
+
+document.getElementById('reset-target').addEventListener('click', () => {
+  state.stepIdx = 0;
+  renderAll();
+});
+
+function startAutoplay() {
+  autoplayBtn.textContent = '⏸ Pause';
+  state.autoplay = setInterval(() => {
+    if (state.stepIdx < state.steps.length - 1) {
+      state.stepIdx++;
+      renderAll();
+    } else {
+      stopAutoplay();
+    }
+  }, 1100);
+}
+function stopAutoplay() {
+  if (state.autoplay) {
+    clearInterval(state.autoplay);
+    state.autoplay = null;
+  }
+  autoplayBtn.textContent = '▶ Auto';
+}
+autoplayBtn.addEventListener('click', () => {
+  if (state.autoplay) stopAutoplay();
+  else startAutoplay();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
+  else if (e.key === 'ArrowLeft') { prevBtn.click(); }
+  else if (e.key === 'r' || e.key === 'R') { resetBtn.click(); }
+});
+
+window.addEventListener('resize', () => renderArray());
+
+/* =================== INIT =================== */
+renderPresets();
+rebuild();
+</script>
+</body>
+</html>

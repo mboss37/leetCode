@@ -1,7 +1,5 @@
 # LC 238 — Product of Array Except Self · Practice Script
 
-**Code:** [code/productExceptSelf/](../../code/productExceptSelf/)
-
 ---
 
 ## Problem
@@ -15,13 +13,29 @@
 
 ---
 
-## Why the obvious solutions fail
+## NOT RECOMMENDED — Brute Force (O(n²))
 
-**Brute force:** for each `i`, loop and multiply all others. O(n²). TLE on n = 10⁵.
+```python
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        result = []
+        for i in range(n):
+            product = 1
+            for j in range(n):
+                if j != i:
+                    product *= nums[j]
+            result.append(product)
+        return result
+```
 
-**Divide by self:** total product / nums[i]. Banned by the spec AND breaks on zeros (and breaks twice on multiple zeros).
+- **Time:** O(n²) — nested loop.
+- For n = 10⁵: 10¹⁰ ops → TLE.
 
-We need TWO passes, no division.
+**Why not division?** `total / nums[i]` would be O(n), but the spec bans division. It also fails on zeros (and breaks twice on multiple zeros).
+
+State verbally:
+> *"Brute force is for each index, loop and multiply all others — O(n²). Division would be O(n) but it's banned and breaks on zeros. I'll split into a left-product pass and a right-product pass — O(n) time, O(1) extra space."*
 
 ---
 

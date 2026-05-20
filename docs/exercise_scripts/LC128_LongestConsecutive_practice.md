@@ -1,8 +1,6 @@
 # LC 128 — Longest Consecutive Sequence · Practice Script
 
-**Code:** [code/longestConsecutive/](../../code/longestConsecutive/)
-
-**Chain:** Contains Duplicate (set existence) → **Longest Consecutive Sequence** (set + anchor)
+**Chain:** Contains Duplicate (Hash Set) → **Longest Consecutive Sequence** (Hash Set with anchor trick)
 
 ---
 
@@ -48,7 +46,7 @@ class Solution:
 - **Rejected by spec.** Spec demands O(n).
 
 State it verbally:
-> *"Naive is sort + sweep, O(n log n). Spec wants O(n), so I'll use a set + anchor check instead."*
+> *"Naive is sort + sweep, O(n log n). Spec wants O(n), so I'll use a Hash Set with an anchor check instead."*
 
 ### Two bugs to avoid in the sort + sweep version
 
@@ -57,7 +55,7 @@ State it verbally:
 
 ---
 
-## 2. RECOMMENDED — Set + Anchor (O(n))
+## 2. RECOMMENDED — Hash Set with Anchor (O(n))
 
 ```python
 from typing import List
@@ -125,7 +123,7 @@ Return `best = 4` ✓
 | Approach | Time | Space | Accepted by spec? |
 |---|---|---|---|
 | Sort + sweep | O(n log n) | O(n) | ❌ NO (spec demands O(n)) |
-| **Set + anchor** | **O(n)** | O(n) | **✓ YES** |
+| **Hash Set + anchor** | **O(n)** | O(n) | **✓ YES** |
 
 ---
 
@@ -133,7 +131,7 @@ Return `best = 4` ✓
 
 ### Step 1: Read out loud
 
-> "Naive is sort + sweep, O(n log n). Spec demands O(n) so that's rejected. I'll use a set + anchor check.
+> "Naive is sort + sweep, O(n log n). Spec demands O(n) so that's rejected. I'll use a Hash Set with an anchor check.
 >
 > Put everything in a set for O(1) membership lookup. For each number, check if `num - 1` is in the set. If yes, this number is mid-chain — skip. If no, this number is the START of a chain (the anchor). Walk forward, incrementing the count while the next number is in the set.
 >
@@ -168,7 +166,7 @@ Return `best = 4` ✓
 |---|---|---|
 | No anchor check, walk every element's chain | O(n²) — re-walks the same chain from each starting point | `if (num - 1) not in s` GUARD before walking |
 | `for num in nums` instead of `for num in s` | Duplicates trigger redundant skips | Iterate over the set |
-| Sort + sweep approach | Spec demands O(n); sort is O(n log n) | Use set + anchor |
+| Sort + sweep approach | Spec demands O(n); sort is O(n log n) | Use Hash Set with anchor |
 | Counting TOTAL gaps==1 in sort+sweep | Combines disconnected chains into one count | Track `current` vs `best`, reset on gap |
 | Forgetting to handle empty input | `best = 0` doesn't update → returns 0 (which is correct!) | Lucky default, but state it explicitly |
 
@@ -184,8 +182,8 @@ Return `best = 4` ✓
 
 ---
 
-**Chain position:** Longest Consecutive Sequence is the canonical **"set + anchor"** pattern. The "only-start-at-the-floor-of-a-chain" idea also appears in:
+**Chain position:** Longest Consecutive Sequence is the canonical **Hash Set** pattern with the sequence-start anchor trick. The "only-start-at-the-floor-of-a-chain" idea also appears in:
 - **Number of Islands** (Phase C) — only start a DFS at unvisited land cells (similar anchor concept)
 - **Some interval problems** — only process the leftmost interval of a group
 
-The reflex: when you see "find longest run / longest chain / longest island in unsorted input," reach for set + anchor.
+The reflex: when you see "find longest run / longest chain / longest island in unsorted input," reach for the Hash Set with anchor check.

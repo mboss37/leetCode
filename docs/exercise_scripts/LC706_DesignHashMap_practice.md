@@ -1,7 +1,5 @@
 # LC 706 — Design HashMap · Practice Script
 
-**Code:** [code/designHashMap/](../../code/designHashMap/)
-
 ---
 
 ## Problem
@@ -32,6 +30,12 @@ buckets [0]  → [(1, 100), (1001, 50)]
         ...
         [M-1]→ [(M-1, 42)]
 ```
+
+---
+
+## No meaningful brute force
+
+Design problem — implement a hash map without using one. The naive alternative (a flat list of `(key, value)` pairs, O(n) per lookup) violates the implicit performance contract of "hash map". The separate-chaining structure below is the minimal correct answer that delivers average O(1).
 
 ---
 

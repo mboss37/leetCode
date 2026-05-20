@@ -1,7 +1,5 @@
 # LC 347 — Top K Frequent Elements · Practice Script
 
-**Code:** [code/topKFrequent/](../../code/topKFrequent/)
-
 ---
 
 ## Problem
@@ -72,7 +70,7 @@ for pair in top_pairs:
 
 ---
 
-## 3. FOLLOW-UP — Manual min-heap (only if asked "without most_common")
+## FOLLOW-UP — Manual min-heap (only if asked "without most_common")
 
 ```python
 import heapq

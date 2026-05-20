@@ -1,7 +1,5 @@
 # LC 153 — Find Minimum in Rotated Sorted Array · Practice Script
 
-**Code:** [code/findMinRotated/](../../code/findMinRotated/)
-
 ---
 
 ## Problem
@@ -14,6 +12,22 @@
 - `1 <= n <= 5000`
 - `-5000 <= nums[i] <= 5000`
 - All integers are **unique**.
+
+---
+
+## NOT RECOMMENDED — Linear Scan (O(n))
+
+```python
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        return min(nums)
+```
+
+- **Time:** O(n) — touches every element.
+- Correct, but ignores the "sorted-then-rotated" structure entirely. Spec demands O(log n).
+
+State verbally:
+> *"Brute force is just `min(nums)` — O(n). Spec requires O(log n), so I'll binary search comparing nums[mid] to nums[right] to detect which half contains the rotation pivot."*
 
 ---
 

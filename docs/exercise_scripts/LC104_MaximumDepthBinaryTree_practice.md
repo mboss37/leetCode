@@ -1,7 +1,5 @@
 # LC 104 — Maximum Depth of Binary Tree · Practice Script
 
-**Code:** [code/maxDepthBinaryTree/](../../code/maxDepthBinaryTree/)
-
 ---
 
 ## Problem
@@ -11,6 +9,12 @@
 **Constraints:**
 - Number of nodes: `0 <= n <= 10⁴`
 - `-100 <= Node.val <= 100`
+
+---
+
+## No meaningful brute force
+
+You must visit every node to know the depth — that's the O(n) floor. The recursion below IS the simplest expression of that visit-every-node pass; no slower baseline worth showing.
 
 ---
 

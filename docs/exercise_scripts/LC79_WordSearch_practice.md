@@ -1,7 +1,5 @@
 # LC 79 — Word Search · Practice Script
 
-**Code:** [code/wordSearch/](../../code/wordSearch/)
-
 ---
 
 ## Problem
@@ -12,6 +10,12 @@
 - `1 <= m, n <= 6`
 - `1 <= word.length <= 15`
 - Letters are uppercase/lowercase English.
+
+---
+
+## No meaningful brute force
+
+Backtracking IS the natural approach for grid path-search. The "brute force" would be to enumerate every possible path of length L (4^L paths per starting cell) — which is exactly what backtracking does, just with pruning on mismatched characters cutting most subtrees. No meaningful slower baseline.
 
 ---
 

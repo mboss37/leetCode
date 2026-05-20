@@ -1,7 +1,5 @@
 # LC 424 — Longest Repeating Character Replacement · Practice Script
 
-**Code:** [code/longestRepeatingChar/](../../code/longestRepeatingChar/)
-
 ---
 
 ## Problem
@@ -12,6 +10,33 @@
 - `1 <= s.length <= 10⁵`
 - `s` consists of uppercase English letters only.
 - `0 <= k <= s.length`
+
+---
+
+## NOT RECOMMENDED — Check Every Substring (O(n³))
+
+```python
+class Solution:
+    def characterReplacement(self, s: str, k: int) -> int:
+        n = len(s)
+        best = 0
+        for i in range(n):
+            for j in range(i, n):
+                counts = {}
+                for c in s[i:j+1]:
+                    counts[c] = counts.get(c, 0) + 1
+                max_count = max(counts.values())
+                length = j - i + 1
+                if length - max_count <= k:
+                    best = max(best, length)
+        return best
+```
+
+- **Time:** O(n³) — n² substrings × O(n) char count.
+- For n = 10⁵: 10¹⁵ ops → TLE.
+
+State verbally:
+> *"Brute force is check every substring: count its most frequent char and see if `length - max_count ≤ k`. O(n³). Better: a sliding window that grows while `length - max_count ≤ k` and shrinks otherwise — O(n)."*
 
 ---
 

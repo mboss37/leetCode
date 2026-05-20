@@ -1,7 +1,5 @@
 # LC 155 — Min Stack · Practice Script
 
-**Code:** [code/minStack/](../../code/minStack/)
-
 **Chain:** Valid Parentheses → **Min Stack** → Daily Temperatures (monotonic stack)
 
 ---

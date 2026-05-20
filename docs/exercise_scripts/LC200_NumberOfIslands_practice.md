@@ -1,7 +1,5 @@
 # LC 200 — Number of Islands · Practice Script
 
-**Code:** [code/numberOfIslands/](../../code/numberOfIslands/)
-
 ---
 
 ## Problem
@@ -21,6 +19,12 @@ For every cell:
 - Else → it's the START of a new island. **Increment counter.** Then **flood-fill** the whole connected component so we don't count it again.
 
 Flood fill = DFS or BFS from this cell, visiting all 4-neighbors that are land, marking them visited.
+
+---
+
+## No meaningful brute force
+
+Connected-components on a grid — DFS or BFS IS the standard tool. The Union-Find alternative is asymptotically the same. There's no "slower but simpler" baseline to contrast: you either traverse the grid once or you don't.
 
 ---
 

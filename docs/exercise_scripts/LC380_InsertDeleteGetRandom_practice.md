@@ -1,7 +1,5 @@
 # LC 380 — Insert / Delete / GetRandom in O(1) · Practice Script
 
-**Code:** [code/insertDeleteGetRandom/](../../code/insertDeleteGetRandom/)
-
 ---
 
 ## Problem
@@ -33,6 +31,12 @@ Either alone fails. **Both together** give us everything in O(1):
 - **dict `idx`** — `{value → index in items}`
 
 `getRandom` needs the list (random.choice). Lookup needs the dict. The clever part is REMOVAL.
+
+---
+
+## No meaningful brute force
+
+Design problem — the O(1) per-operation requirement IS the constraint. The "naive" alternative (e.g., a list alone, scanning on every remove) is O(n) per remove, which **violates the spec**, not a comparative baseline. The pair-of-structures design below is the minimal correct answer.
 
 ---
 

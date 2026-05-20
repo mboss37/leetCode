@@ -1,7 +1,5 @@
 # LC 102 — Binary Tree Level Order Traversal · Practice Script
 
-**Code:** [code/binaryTreeLevelOrder/](../../code/binaryTreeLevelOrder/)
-
 ---
 
 ## Problem
@@ -29,6 +27,12 @@ Returns `[[3], [9, 20], [15, 7]]`.
 Plain BFS visits nodes in level order but doesn't TELL you when a level ends. The trick:
 
 **At the start of every iteration of the outer loop, `len(queue)` equals the number of nodes on the current level.** Process exactly that many. Anything added to the queue during that batch belongs to the NEXT level.
+
+---
+
+## No meaningful brute force
+
+Level-order traversal must visit every node — O(n) is the floor. BFS with a queue is the canonical expression of that visit. No slower comparative worth writing.
 
 ---
 

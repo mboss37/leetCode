@@ -323,7 +323,14 @@
     color: var(--ink-2);
     background: transparent;
     padding: 0 3px;
+    text-decoration: none;
+    border-bottom: 1px dotted transparent;
+    transition: color 0.15s, border-color 0.15s;
     font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .front .examples-front .pill:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
   }
   .front .examples-front .pill:not(:last-child)::after {
     content: ' ·';
@@ -485,7 +492,13 @@
     background: var(--gold);
     color: var(--ink);
     padding: 3px 10px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
     font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .back .example-pill:hover {
+    background: var(--accent);
+    color: var(--paper);
   }
 
   /* ========= CONTROLS ========= */
@@ -595,6 +608,7 @@
     <button class="chip" data-cat="linked-list">Linked List</button>
     <button class="chip" data-cat="tree-graph">Tree / Graph</button>
     <button class="chip" data-cat="array-misc">Array / Misc</button>
+    <button class="chip" data-cat="dp">Dynamic Programming</button>
     <button class="chip" data-cat="unknown">Unknown only</button>
   </div>
 
@@ -685,12 +699,12 @@ const CARDS = [
     time: 'O(n)', space: 'O(k)',
     why: 'One walk, increment. <code>counts[c] += 1</code> with <code>defaultdict(int)</code> or <code>Counter(seq)</code> in one line. Bonus: <code>.most_common(k)</code> gives top-K for free.',
     pitfall: 'With plain dict: default is 0, not 1. <code>counts.get(c, 0) + 1</code>. Default 1 gives off-by-one.',
-    examples: ['Top K Frequent', 'Valid Anagram']
+    examples: ['Top K Frequent Elements', 'Valid Anagram']
   },
   {
     cat: 'hashmap', catLabel: 'Hash Map',
     signal: 'Longest consecutive run in an UNSORTED array.',
-    pattern: 'Set + anchor check',
+    pattern: 'Hash Set with anchor check',
     memoryHook: '"Only start counting at the floor of a chain" — if x−1 in set, x is mid-chain.',
     ds: 'set',
     time: 'O(n)', space: 'O(n)',
@@ -731,7 +745,7 @@ const CARDS = [
     time: 'O(n²)', space: 'O(1)',
     why: 'Sort first. Outer loop picks an anchor. For each anchor, run two pointers on the remaining slice — find pair summing to <code>−anchor</code>. <span class="key-phrase">Skip duplicate anchors and duplicate pointer values</span> after matches to avoid emitting the same triplet twice.',
     pitfall: 'Reset L and R INSIDE the outer loop. Defining them outside leaves stale state per anchor.',
-    examples: ['3Sum', '3Sum Closest', '4Sum']
+    examples: ['Three Sum', 'Three Sum Closest']
   },
   {
     cat: 'two-pointers', catLabel: 'Two Pointers',
@@ -777,7 +791,7 @@ const CARDS = [
     time: 'O(n)', space: 'O(min(n, alphabet))',
     why: 'R walks every char. Before adding <code>s[R]</code>, if it\'s already in the window, <span class="key-phrase">shrink from L until the duplicate is gone</span>. Then add s[R]. Update best. Each char visited at most twice → linear.',
     pitfall: 'NOT converging two-pointer — both go forward. Don\'t reach for <code>L,R = 0, n-1</code>.',
-    examples: ['Longest Substring Without Repeating Characters']
+    examples: ['Longest Substring']
   },
   {
     cat: 'sliding-window', catLabel: 'Sliding Window',
@@ -845,31 +859,20 @@ const CARDS = [
     time: 'O(log n)', space: 'O(1)',
     why: '<span class="key-phrase">Even rotated, one HALF is always sorted.</span> Compare <code>nums[mid]</code> to <code>nums[right]</code> (or <code>nums[left]</code>) to figure out which. Recurse into the half that could contain target.',
     pitfall: 'Comparison to the WRONG endpoint can give the wrong half. Pick one (right is common) and use consistently.',
-    examples: ['Find Min in Rotated Sorted Array', 'Search in Rotated Sorted Array']
+    examples: ['Find Minimum in Rotated Sorted Array', 'Search in Rotated Sorted Array']
   },
 
-  // ----- HEAP (2) -----
+  // ----- HEAP (1) -----
   {
     cat: 'heap', catLabel: 'Heap',
-    signal: 'Top K most frequent / largest / smallest elements.',
-    pattern: 'Min-heap of size K (or bucket sort)',
-    memoryHook: '"Keep the K best in a tiny heap." Push, pop if oversized.',
+    signal: 'Top K (or Kth) most frequent / largest / smallest elements.',
+    pattern: 'Min-heap of size K',
+    memoryHook: '"Keep the K best in a tiny heap." Push, pop if oversized — root = K-th.',
     ds: 'heapq',
     time: 'O(n log k)', space: 'O(k)',
-    why: 'Keep a heap of the best K seen so far. <span class="key-phrase">When size > K, pop the smallest (the heap\'s root).</span> What survives = top K. Python heapq is min only; negate values for max-heap behavior.',
-    pitfall: 'Python only ships min-heap. For "K largest," negate values OR push (count, value) tuples so count is compared first.',
-    examples: ['Top K Frequent Elements', 'Kth Largest Element']
-  },
-  {
-    cat: 'heap', catLabel: 'Heap',
-    signal: 'Kth smallest / largest element overall.',
-    pattern: 'Heap of size K',
-    memoryHook: '"Min-heap size K → root = Kth largest." Same shape as top-K, return just one.',
-    ds: 'heapq',
-    time: 'O(n log k)', space: 'O(k)',
-    why: 'Same shape as top-K — but you return only one element instead of all K. For <span class="key-phrase">Kth largest</span>: maintain a min-heap of size K. After processing, the root IS the Kth largest.',
-    pitfall: '"Kth largest" wants the K-th from biggest. Min-heap of size K works because root = smallest IN the heap = K-th largest overall.',
-    examples: ['Kth Largest Element']
+    why: 'Keep a min-heap of the best K seen so far. <span class="key-phrase">When size > K, pop the smallest (the heap\'s root).</span> What survives = top K. For "K-th largest": same heap, but the root IS the K-th element (smallest in the heap = K-th largest overall). Python <code>heapq</code> is min-only; for "K largest" push <code>-val</code> or tuples like <code>(count, val)</code>.',
+    pitfall: 'Python ships min-heap only. For "K largest", negate values OR push (count, value) tuples so count is compared first.',
+    examples: ['Top K Frequent Elements']
   },
 
   // ----- STACK (3) -----
@@ -963,7 +966,7 @@ const CARDS = [
     time: 'O(V + E)', space: 'O(V)',
     why: '<span class="key-phrase">Process nodes in waves — all at distance d before any at d+1.</span> First time you reach a node = shortest distance. Use <code>deque.popleft()</code> (O(1)) not <code>list.pop(0)</code> (O(n)).',
     pitfall: 'Mark a node as <code>visited</code> WHEN YOU ENQUEUE it, not when you dequeue. Otherwise you can enqueue the same node multiple times.',
-    examples: ['Binary Tree Level Order', 'Number of Islands', 'Word Ladder']
+    examples: ['Binary Tree Level Order Traversal', 'Number of Islands']
   },
   {
     cat: 'tree-graph', catLabel: 'Tree / Graph',
@@ -990,7 +993,7 @@ const CARDS = [
     examples: ['Maximum Subarray']
   },
   {
-    cat: 'array-misc', catLabel: 'Array / Misc',
+    cat: 'sliding-window', catLabel: 'Sliding Window',
     signal: 'Max profit from ONE buy and one later sell.',
     pattern: 'One-pass min tracker',
     memoryHook: '"Best profit = today − min so far." Two variables, one walk.',
@@ -1009,7 +1012,42 @@ const CARDS = [
     time: 'O(n log n)', space: 'O(n) for output',
     why: 'Sort intervals by start. Walk through. <span class="key-phrase">Adjacent intervals overlap iff current.start ≤ last.end</span>. If so, extend last.end to <code>max(last.end, current.end)</code>. Otherwise, append current as a new interval.',
     pitfall: 'Use <code>≤</code> (not <code>&lt;</code>) for the overlap check — touching intervals like [1,3] and [3,5] should merge.',
-    examples: ['Merge Intervals', 'Insert Interval']
+    examples: ['Merge Intervals']
+  },
+  {
+    cat: 'array-misc', catLabel: 'Array / Misc',
+    signal: 'Build output[i] from values at OTHER positions, without division.',
+    pattern: 'Prefix + suffix passes',
+    memoryHook: '"Two sweeps — left-of-i then right-of-i — multiplied into the answer."',
+    ds: 'output array reused as scratch',
+    time: 'O(n)', space: 'O(1) extra (output doesn\'t count)',
+    why: 'First pass left-to-right: <code>out[i] = product of everything LEFT of i</code>. Second pass right-to-left: <span class="key-phrase">multiply <code>out[i]</code> by a running "right product"</span> as you walk back. No division needed; zeros are handled naturally.',
+    pitfall: 'Initialize <code>out[0] = 1</code> for the left pass and <code>right = 1</code> before the right pass — these are the empty-product identities.',
+    examples: ['Product of Array Except Self']
+  },
+  {
+    cat: 'array-misc', catLabel: 'Array / Misc',
+    signal: 'Longest palindromic substring inside a string.',
+    pattern: 'Expand around each center',
+    memoryHook: '"Every char (and gap) is a potential center — expand outward while matching."',
+    ds: 'two indices walking outward',
+    time: 'O(n²)', space: 'O(1)',
+    why: 'A palindrome has a center. <span class="key-phrase">Try every index as a center (odd length) and every gap as a center (even length)</span>; expand left/right while characters match. Track the longest span seen.',
+    pitfall: 'Need BOTH odd and even centers. Forgetting even centers misses "abba"-style palindromes.',
+    examples: ['Longest Palindromic Substring']
+  },
+
+  // ----- DYNAMIC PROGRAMMING (1) -----
+  {
+    cat: 'dp', catLabel: 'Dynamic Programming',
+    signal: 'Min/max ways to reach a target using a set of choices (coins, steps, words).',
+    pattern: 'Bottom-up DP table',
+    memoryHook: '"<code>dp[amount] = min(dp[amount - coin]) + 1</code>." Build small subproblems first.',
+    ds: '1-D list indexed by subproblem size',
+    time: 'O(target × choices)', space: 'O(target)',
+    why: 'Define <code>dp[i]</code> = answer for subproblem of size <code>i</code>. <span class="key-phrase">Initialize the base case (<code>dp[0]</code>), then fill <code>dp[1..target]</code> by combining smaller subproblems.</span> For Coin Change: <code>dp[i] = min(dp[i - c] for c in coins if c &lt;= i) + 1</code>.',
+    pitfall: 'Use a sentinel (<code>float(\'inf\')</code> or <code>target + 1</code>) for unreachable amounts. Don\'t default to 0 — that silently corrupts the min.',
+    examples: ['Coin Change']
   }
 ];
 
@@ -1093,8 +1131,10 @@ function render() {
   markBtn.textContent = isKnown ? '★ Known' : '☆ Mark known';
   markBtn.classList.toggle('is-known', isKnown);
 
-  const examplesHTML = card.examples.map(e => `<span class="example-pill">${e}</span>`).join('');
-  const examplesHTMLFront = card.examples.map(e => `<span class="pill">${e}</span>`).join('');
+  const exampleLink = name => `<a class="example-pill" href="index.html?problem=${encodeURIComponent(name)}" title="Open ${name} practice script">${name}</a>`;
+  const exampleLinkFront = name => `<a class="pill" href="index.html?problem=${encodeURIComponent(name)}" title="Open ${name} practice script">${name}</a>`;
+  const examplesHTML = card.examples.map(exampleLink).join('');
+  const examplesHTMLFront = card.examples.map(exampleLinkFront).join('');
 
   cardEl.innerHTML = `
     <div class="face front">
@@ -1200,7 +1240,17 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ===================== INIT ===================== */
-render();
+/* If URL has #cat=<category>, pre-apply that filter (used by deep links from index.html badge) */
+(() => {
+  const m = window.location.hash.match(/cat=([a-z-]+)/);
+  if (!m) { render(); return; }
+  const cat = m[1];
+  const chip = document.querySelector(`.chip[data-cat="${cat}"]`);
+  if (!chip) { render(); return; }
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  applyFilter(cat);
+})();
 </script>
 </body>
 </html>

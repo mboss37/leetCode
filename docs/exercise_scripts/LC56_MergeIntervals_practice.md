@@ -1,7 +1,5 @@
 # LC 56 — Merge Intervals · Practice Script
 
-**Code:** [code/mergeIntervals/](../../code/mergeIntervals/)
-
 ---
 
 ## Problem
@@ -17,7 +15,37 @@
 
 ---
 
-## RECOMMENDED — Sort + Sweep (O(n log n))
+## NOT RECOMMENDED — Pairwise Merge (O(n³))
+
+```python
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        result = [list(iv) for iv in intervals]
+        changed = True
+        while changed:
+            changed = False
+            for i in range(len(result)):
+                for j in range(i + 1, len(result)):
+                    a, b = result[i], result[j]
+                    if a[0] <= b[1] and b[0] <= a[1]:   # overlap
+                        result[i] = [min(a[0], b[0]), max(a[1], b[1])]
+                        result.pop(j)
+                        changed = True
+                        break
+                if changed:
+                    break
+        return result
+```
+
+- **Time:** O(n³) worst case — repeatedly scan pairs and merge until stable.
+- For n = 10⁴: ~10¹² ops → TLE.
+
+State verbally:
+> *"Brute force is keep scanning pairs and merging on the fly until no more merges happen. O(n³). I'll sort by start time so overlapping intervals become adjacent, then a single linear sweep handles it — O(n log n)."*
+
+---
+
+## RECOMMENDED — Intervals (sort + merge, O(n log n))
 
 ```python
 from typing import List
@@ -80,4 +108,4 @@ Sorted: `[[1,3], [2,6], [8,10], [15,18]]` (already sorted).
 
 ---
 
-**Chain position:** Sort + sweep pattern. Same shape applies to: Insert Interval, Meeting Rooms, Non-overlapping Intervals.
+**Chain position:** Intervals pattern (sort by start, then merge). Same shape applies to: Insert Interval, Meeting Rooms, Non-overlapping Intervals.

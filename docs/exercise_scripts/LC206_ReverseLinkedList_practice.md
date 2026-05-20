@@ -1,7 +1,5 @@
 # LC 206 — Reverse Linked List · Practice Script
 
-**Code:** [code/reverseLinkedList/](../../code/reverseLinkedList/)
-
 ---
 
 ## Problem
@@ -11,6 +9,12 @@
 **Constraints:**
 - Number of nodes: `0 <= n <= 5000`
 - `-5000 <= Node.val <= 5000`
+
+---
+
+## No meaningful brute force
+
+Linked-list traversal is inherently O(n) — you must touch every node. The pointer-juggling approach below is the simplest correct version; there's no slower comparative worth writing as a baseline. (A recursive variant exists but trades stack for clarity, not complexity.)
 
 ---
 
