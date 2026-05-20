@@ -45,7 +45,7 @@ State verbally:
 
 ---
 
-## RECOMMENDED — Sort + Sweep (O(n log n))
+## RECOMMENDED — Intervals (sort + merge, O(n log n))
 
 ```python
 from typing import List
@@ -108,4 +108,4 @@ Sorted: `[[1,3], [2,6], [8,10], [15,18]]` (already sorted).
 
 ---
 
-**Chain position:** Sort + sweep pattern. Same shape applies to: Insert Interval, Meeting Rooms, Non-overlapping Intervals.
+**Chain position:** Intervals pattern (sort by start, then merge). Same shape applies to: Insert Interval, Meeting Rooms, Non-overlapping Intervals.

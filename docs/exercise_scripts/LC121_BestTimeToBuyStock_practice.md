@@ -131,7 +131,7 @@ Result: `5`. Watch row 2 — when today is the new minimum, profit is negative b
 
 ## Chain position
 
-Best Time to Buy/Sell is the **one-pass min tracker** pattern. The "best ending at day i" idea extends to:
+Best Time to Buy/Sell is the **Sliding Window** pattern (one-pass min tracker variant). The "best ending at day i" idea extends to:
 - **Maximum Subarray** (Kadane's) — same shape, different update rule
 - **Best Time to Buy/Sell II** — multiple transactions allowed
 - **Container With Most Water** — track best as you walk

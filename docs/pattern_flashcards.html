@@ -704,7 +704,7 @@ const CARDS = [
   {
     cat: 'hashmap', catLabel: 'Hash Map',
     signal: 'Longest consecutive run in an UNSORTED array.',
-    pattern: 'Set + anchor check',
+    pattern: 'Hash Set with anchor check',
     memoryHook: '"Only start counting at the floor of a chain" — if x−1 in set, x is mid-chain.',
     ds: 'set',
     time: 'O(n)', space: 'O(n)',
@@ -993,7 +993,7 @@ const CARDS = [
     examples: ['Maximum Subarray']
   },
   {
-    cat: 'array-misc', catLabel: 'Array / Misc',
+    cat: 'sliding-window', catLabel: 'Sliding Window',
     signal: 'Max profit from ONE buy and one later sell.',
     pattern: 'One-pass min tracker',
     memoryHook: '"Best profit = today − min so far." Two variables, one walk.',

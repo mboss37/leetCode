@@ -152,7 +152,7 @@ This version shows you understand Python well. Many strong candidates use this.
 ## Chain position
 
 Contains Duplicate is the **set existence pattern**. The bouncer-with-a-guest-list idea extends to:
-- **Longest Consecutive Sequence** — set + anchor check
+- **Longest Consecutive Sequence** — Hash Set with anchor check
 - **Word Search** (Phase C) — set of visited cells
 - **Happy Number** — set of seen values for cycle detection
 - **Linked List Cycle** — same concept (though slow/fast pointers is the canonical answer there)
