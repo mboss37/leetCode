@@ -54,6 +54,11 @@ class Solution:
         closest_sum = sorted_nums[0] + sorted_nums[1] + sorted_nums[2]
 
         for i in range(n - 2):
+            # Optimization: skip duplicate anchors — same value reruns the
+            # same two-pointer scan and can't improve closest_sum.
+            if i > 0 and sorted_nums[i] == sorted_nums[i - 1]:
+                continue
+
             left = i + 1
             right = n - 1
 
@@ -82,7 +87,7 @@ class Solution:
    - `sum < target` → L moves right (bigger).
    - `sum > target` → R moves left (smaller).
    - `sum == target` → distance is 0. **Return immediately** — no other triplet can beat that.
-5. **No dedup needed.** Output is a single number; duplicate sums don't corrupt anything. Skip checks are unnecessary.
+5. **No output dedup needed, BUT skip duplicate anchors as an optimization.** Output is a single number, so duplicates can't corrupt the answer. However, if the same anchor value appears multiple times, re-running the inner two-pointer scan computes the same sums over again — wasted work. The `if i > 0 and sorted_nums[i] == sorted_nums[i - 1]: continue` line cuts that redundant work. Same big-O (O(n²)), better constant factor on inputs with duplicates.
 
 ### Complexity
 
