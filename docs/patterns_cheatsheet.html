@@ -1566,7 +1566,7 @@
     <div class="card">
       <div class="signal">merge / insert overlapping intervals</div>
       <div class="head">
-        <div class="name">Sort +<br>Sweep</div>
+        <div class="name">Intervals<br>Merge</div>
         <div class="ds">
           <span class="t">O(n log n)</span>
           <span>O(1)+ space</span>
@@ -1763,19 +1763,19 @@ visited = {start}
           </tr>
           <tr>
             <td class="sig">"any permutation = anagram"</td>
-            <td class="pat">Counter ==</td>
+            <td class="pat">Hash Map</td>
             <td class="cmp">O(n)<span class="s">O(k)</span></td>
             <td class="why"><code>Counter(a) == Counter(b)</code>.</td>
           </tr>
           <tr>
             <td class="sig">"longest consec sequence"</td>
-            <td class="pat">Set + Anchor</td>
+            <td class="pat">Hash Set</td>
             <td class="cmp">O(n)<span class="s">O(n)</span></td>
             <td class="why">Only start counting at <code>x</code> if <code>x-1</code> not in set.</td>
           </tr>
           <tr>
             <td class="sig">"3Sum / 4Sum"</td>
-            <td class="pat">Sort + Outer + 2P</td>
+            <td class="pat">Two Pointers</td>
             <td class="cmp">O(n²)<span class="s">O(1)</span></td>
             <td class="why">Fix one, two-pointer the rest. Skip duplicates carefully.</td>
           </tr>
@@ -1793,7 +1793,7 @@ visited = {start}
           </tr>
           <tr>
             <td class="sig">"stack with O(1) min query"</td>
-            <td class="pat">Stack + Aux Min-Stack</td>
+            <td class="pat">Stack</td>
             <td class="cmp">O(1)<span class="s">O(n)</span></td>
             <td class="why">Parallel stack tracks <code>min(new, current_min)</code> at each push.</td>
           </tr>
@@ -1811,7 +1811,7 @@ visited = {start}
           </tr>
           <tr>
             <td class="sig">"reverse linked list"</td>
-            <td class="pat">Prev / Curr / Next</td>
+            <td class="pat">Linked List Reversal</td>
             <td class="cmp">O(n)<span class="s">O(1)</span></td>
             <td class="why">Walk through. Save next, point <code>curr.next</code> backward to prev, advance.</td>
           </tr>
