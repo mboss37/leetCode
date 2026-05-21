@@ -370,6 +370,30 @@
     text-transform: uppercase;
     flex-shrink: 0;
   }
+  .problem-list li .diff-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    letter-spacing: 0.08em;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+  .problem-list li .diff-pill.diff-e {
+    color: var(--good);
+    background: var(--good-soft);
+    border-color: var(--good);
+  }
+  .problem-list li .diff-pill.diff-m {
+    color: #8b5a1c;
+    background: var(--gold);
+    border-color: #8b5a1c;
+  }
+  .problem-list li .diff-pill.diff-h {
+    color: var(--accent);
+    background: rgba(139, 44, 28, 0.08);
+    border-color: var(--accent);
+  }
   .problem-list li .progress-check {
     width: 16px;
     height: 16px;
@@ -799,6 +823,7 @@
     }
     .problem-list li .name { flex: 1 1 auto; min-width: 60%; }
     .problem-list li .pattern-tag { font-size: 8px; padding: 1px 4px; }
+    .problem-list li .diff-pill   { font-size: 8px; padding: 1px 4px; }
     .problem-list li .visual-badge { font-size: 8px; padding: 2px 5px; }
     .problem-list li .num-tag { display: none; }
     .problem-list li .open-icon { display: none; }
@@ -1161,6 +1186,53 @@ const PROBLEMS_META = {
   'Merge Strings Alternately':            { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
 };
 
+/* ===== LeetCode difficulty by problem ===== */
+const DIFFICULTIES = {
+  // Phase A
+  'Two Sum': 'E',
+  'Contains Duplicate': 'E',
+  'Valid Anagram': 'E',
+  'Valid Palindrome': 'E',
+  'Best Time to Buy and Sell Stock': 'E',
+  'Maximum Subarray': 'M',
+  'Two Sum Sorted': 'M',
+  'Three Sum': 'M',
+  'Three Sum Closest': 'M',
+  'Longest Substring': 'M',
+  'Binary Search': 'E',
+  'Search Insert Position': 'E',
+  'Find First and Last Position': 'M',
+  'Valid Parentheses': 'E',
+  'Min Stack': 'M',
+  'LRU Cache': 'M',
+  'Top K Frequent Elements': 'M',
+  // Phase B
+  'Group Anagrams': 'M',
+  'Longest Consecutive Sequence': 'M',
+  'Container With Most Water': 'M',
+  'Merge Intervals': 'M',
+  'Longest Repeating Character Replacement': 'M',
+  'Daily Temperatures': 'M',
+  'Find Minimum in Rotated Sorted Array': 'M',
+  'Search in Rotated Sorted Array': 'M',
+  'Reverse Linked List': 'E',
+  'Remove Nth Node From End': 'M',
+  'Maximum Depth of Binary Tree': 'E',
+  'Invert Binary Tree': 'E',
+  'Insert Delete GetRandom O(1)': 'M',
+  'Design HashMap': 'E',
+  'Logger Rate Limit': 'E',
+  // Phase C
+  'Number of Islands': 'M',
+  'Coin Change': 'M',
+  'Word Search': 'M',
+  'Binary Tree Level Order Traversal': 'M',
+  'Product of Array Except Self': 'M',
+  'Longest Palindromic Substring': 'M',
+  'Merge Strings Alternately': 'E',
+};
+const DIFF_LABEL = { 'E': 'EASY', 'M': 'MED', 'H': 'HARD' };
+
 /* ===== Progress tracking (localStorage) ===== */
 const DONE_KEY = 'problems_done_v1';
 function loadDone() {
@@ -1294,10 +1366,13 @@ function renderList(elId, items, phaseId) {
     const cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
     const tag = meta ? `<span class="pattern-tag">${meta.pattern}</span>` : '';
     const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
+    const diff = DIFFICULTIES[name];
+    const diffTag = diff ? `<span class="diff-pill diff-${diff.toLowerCase()}" title="LeetCode difficulty">${DIFF_LABEL[diff]}</span>` : '';
     const check = `<span class="progress-check" data-name="${name}" title="Mark complete">${isDone ? '✓' : ''}</span>`;
     return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
       ${check}
       <span class="name">${name}</span>
+      ${diffTag}
       ${tag}
       ${badge}
       <span class="open-icon">OPEN →</span>
