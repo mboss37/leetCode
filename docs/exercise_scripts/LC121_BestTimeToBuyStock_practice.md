@@ -121,7 +121,7 @@ Result: `5`. Watch row 2 — when today is the new minimum, profit is negative b
 
 | Trap | What goes wrong | Fix |
 |---|---|---|
-| Updating `min_buy` BEFORE computing profit | Profit becomes 0 (today's price minus today's price) | Compute `max_profit` FIRST, then update `min_buy` |
+| Updating `min_buy` BEFORE computing profit | On the day you set a new min, profit becomes 0. **This is harmless** — `max_profit` is a max-tracker, so 0 won't overwrite a higher value. Both orderings give the same answer. | Stylistic preference, not correctness. Computing `max_profit` first reads as "respect the constraint that you can't sell on your buy day" — but either order works |
 | Initializing `min_buy = 0` | Profit gets inflated (price minus 0) for the first day | Initialize `min_buy = prices[0]` OR `float('inf')` |
 | Returning a negative profit | Spec says return 0 if no profit possible | Initialize `max_profit = 0` — won't go below |
 | `for i, sell in enumerate(prices):` when `i` is never used | Useless index variable — signals "I'm not fluent in Python" to the interviewer | `for sell in prices:` — cleaner when you don't need the index |
