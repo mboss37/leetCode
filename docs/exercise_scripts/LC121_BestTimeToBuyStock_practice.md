@@ -35,7 +35,7 @@ class Solution:
 
 ---
 
-## Solution 2: Optimal One-Pass (Compact) — Recommended
+## Solution 2: Greedy (One-Pass) — Recommended
 
 ```python
 from typing import List
@@ -77,7 +77,7 @@ Result: `5`. Watch row 2 — when today is the new minimum, profit is negative b
 
 - Only **one single pass** through the array
 - Very compact and elegant
-- Classic "track minimum so far" pattern (very common in interviews)
+- Classic **Greedy** pattern — track the minimum so far, take the best profit so far (very common in interviews)
 - Optimal time and space
 - Clean and professional
 - Shows you can optimize from O(n²) to O(n)
@@ -86,7 +86,7 @@ Result: `5`. Watch row 2 — when today is the new minimum, profit is negative b
 
 ### Comparison
 
-| Aspect                  | Brute Force (Solution 1)     | One-Pass Compact (Solution 2) | Winner          |
+| Aspect                  | Brute Force (Solution 1)     | Greedy (Solution 2)           | Winner          |
 |-------------------------|------------------------------|-------------------------------|-----------------|
 | Time Complexity         | O(n²)                        | **O(n)**                      | Solution 2      |
 | Space Complexity        | O(1)                         | O(1)                          | Tie             |
