@@ -42,9 +42,32 @@ class Solution:
 
 ---
 
-## Solution 2: Hashmap / Frequency Counting (Recommended — Optimal)
+## Solution 2: `Counter(s) == Counter(t)` (Recommended — Lead with this)
 
-This is the version you should master and lead with in the interview.
+```python
+from collections import Counter
+
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        return Counter(s) == Counter(t)
+```
+
+**Time Complexity:** O(n) — `Counter` walks each string once
+**Space Complexity:** O(1) — at most 26 keys (lowercase English letters only)
+
+**Why this is the lead solution:**
+- One line. Reads like the problem statement.
+- Same O(n) complexity as a manual hashmap — no signal lost.
+- `Counter` is canonical stdlib Python for "frequency map" — using it shows you know your tools.
+- Equality on `Counter` objects compares all (key, count) pairs directly.
+
+If the interviewer asks *"do it without `Counter`"* — see Solution 3 below.
+
+---
+
+## Solution 3: Manual Frequency Map (follow-up if asked)
+
+Same algorithm, spelled out by hand. Useful for understanding what `Counter` does under the hood, and to write when the interviewer explicitly blocks the stdlib.
 
 ```python
 from typing import List
@@ -170,20 +193,6 @@ Empty dict at the end → `True`. **The delete-on-zero matters** — without it,
 4. Explain the trade-off between sorting vs hashmap out loud
 5. Run the test cases mentally or in code
 6. Retape the hashmap version once without looking
-
----
-
-## The Even Simpler Version — `Counter(s) == Counter(t)`
-
-```python
-from collections import Counter
-
-class Solution:
-    def isAnagram(self, s: str, t: str) -> bool:
-        return Counter(s) == Counter(t)
-```
-
-`Counter` builds the frequency map for you in one call. Equality on Counter objects compares the underlying counts. **One line. O(n). Same complexity as the manual hashmap.** This is what to lead with in the interview — but be ready to write the manual version if asked.
 
 ---
 

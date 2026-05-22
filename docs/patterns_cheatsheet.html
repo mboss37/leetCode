@@ -1291,7 +1291,7 @@
           <text x="143" y="20" class="lbl">grow / shrink</text>
         </svg>
       </div>
-      <div class="why">R expands the window. When the invariant breaks (dup char, sum &gt; k, &lt;k distinct), L advances until it's repaired. Each index visited ≤ 2× → linear.</div>
+      <div class="why">R expands the window. When the invariant breaks (dup char, sum &gt; k, &gt;k distinct), L advances until it's repaired. Each index visited ≤ 2× → linear.</div>
     </div>
 
     <!-- 4. EXISTENCE CHECK (SET) -->
@@ -1805,7 +1805,7 @@ visited = {start}
           </tr>
           <tr>
             <td class="sig">"max area / two lines container"</td>
-            <td class="pat">Two Pointers Greedy</td>
+            <td class="pat">Two Pointers</td>
             <td class="cmp">O(n)<span class="s">O(1)</span></td>
             <td class="why">Always move the <b>shorter side inward</b> — moving the taller can never win.</td>
           </tr>
@@ -1962,7 +1962,7 @@ visited = {start}
           <div class="csyntax">⊘ DON'T</div>
         </div>
         <div class="ckey">Smells interviewers notice. Avoid them.</div>
-        <div class="crow"><span class="clabel">no</span><span>Single letters as state: <code>x</code>, <code>y</code>, <code>val</code></span></div>
+        <div class="crow"><span class="clabel">no</span><span>Cryptic state names: <code>x</code>, <code>y</code>, <code>val</code>, <code>tmp</code></span></div>
         <div class="crow"><span class="clabel">no</span><span>Hungarian: <code>strName</code>, <code>intCount</code></span></div>
         <div class="crow"><span class="clabel">no</span><span>Mixed: <code>firstName</code> → use <code>first_name</code></span></div>
         <div class="crow"><span class="clabel">no</span><span>Generic: <code>data</code>, <code>info</code>, <code>temp</code>, <code>obj</code></span></div>

@@ -156,7 +156,7 @@ class Solution:
 | `[1, 2, 3]`                   | `[]`                                       | No triplet sums to 0           |
 | `[-2, 0, 1, 1, 2]`            | `[[-2, 0, 2], [-2, 1, 1]]`                 | Duplicates in input            |
 | `[3, 0, -2, -1, 1, 2]`        | `[[-2, -1, 3], [-2, 0, 2], [-1, 0, 1]]`    | Mixed positive / negative      |
-| `[-2, -1, -1, 0, 0, 1, 1, 2]` | `[[-2, 0, 2], [-2, 1, 1], [-1, 0, 1]]`     | Heavy duplicates — dedup test  |
+| `[-2, -1, -1, 0, 0, 1, 1, 2]` | `[[-2, 0, 2], [-2, 1, 1], [-1, -1, 2], [-1, 0, 1]]` | Heavy duplicates — dedup test |
 
 ### Step 4: Full Testing Code (Copy-Paste & Run Locally)
 
@@ -203,7 +203,7 @@ print(solution.threeSum([1, 2, 3]))                       # []
 print(solution.threeSum([]))                              # []
 print(solution.threeSum([-2, 0, 1, 1, 2]))                # [[-2, 0, 2], [-2, 1, 1]]
 print(solution.threeSum([3, 0, -2, -1, 1, 2]))            # [[-2, -1, 3], [-2, 0, 2], [-1, 0, 1]]
-print(solution.threeSum([-2, -1, -1, 0, 0, 1, 1, 2]))     # [[-2, 0, 2], [-2, 1, 1], [-1, 0, 1]]
+print(solution.threeSum([-2, -1, -1, 0, 0, 1, 1, 2]))     # [[-2, 0, 2], [-2, 1, 1], [-1, -1, 2], [-1, 0, 1]]
 ```
 
 ---
