@@ -394,6 +394,38 @@
     background: rgba(139, 44, 28, 0.08);
     border-color: var(--accent);
   }
+  .problem-list li .priority-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    letter-spacing: 0.08em;
+    border: 1px solid;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+  .problem-list li .priority-pill.priority-low {
+    color: var(--ink-3);
+    background: transparent;
+    border-color: var(--ink-3);
+    border-style: dashed;
+  }
+  .problem-list li .priority-pill.priority-skip {
+    color: var(--paper);
+    background: var(--ink-3);
+    border-color: var(--ink-3);
+  }
+  .problem-list li.has-skip {
+    opacity: 0.55;
+  }
+  .problem-list li.has-skip .name {
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--ink-3);
+  }
+  .problem-list li.has-low {
+    opacity: 0.85;
+  }
   .problem-list li .progress-check {
     width: 16px;
     height: 16px;
@@ -824,6 +856,7 @@
     .problem-list li .name { flex: 1 1 auto; min-width: 60%; }
     .problem-list li .pattern-tag { font-size: 8px; padding: 1px 4px; }
     .problem-list li .diff-pill   { font-size: 8px; padding: 1px 4px; }
+    .problem-list li .priority-pill { font-size: 8px; padding: 1px 4px; }
     .problem-list li .visual-badge { font-size: 8px; padding: 2px 5px; }
     .problem-list li .num-tag { display: none; }
     .problem-list li .open-icon { display: none; }
@@ -1244,6 +1277,18 @@ const DIFFICULTIES = {
 };
 const DIFF_LABEL = { 'E': 'EASY', 'M': 'MED', 'H': 'HARD' };
 
+/* ===== Priority hints (which problems can be deprioritized given limited time) ===== */
+const PRIORITY = {
+  'Maximum Depth of Binary Tree':       'low',   // tree recursion
+  'Invert Binary Tree':                 'low',   // tree recursion
+  'Binary Tree Level Order Traversal':  'low',   // BFS on tree
+  'Coin Change':                        'low',   // DP
+  'Longest Palindromic Substring':      'low',   // DP / expand around center
+  'Number of Islands':                  'skip',  // grid DFS/BFS (graph)
+  'Word Search':                        'skip',  // backtracking (grid)
+};
+const PRIORITY_LABEL = { 'low': 'LOW PRI', 'skip': 'SKIP' };
+
 /* ===== Progress tracking (localStorage) ===== */
 const DONE_KEY = 'problems_done_v1';
 function loadDone() {
@@ -1374,16 +1419,21 @@ function renderList(elId, items, phaseId) {
     const visual = VISUALS[name];
     const meta = PROBLEMS_META[name];
     const isDone = doneSet.has(name);
-    const cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
+    const priority = PRIORITY[name];
+    let cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
+    if (priority === 'low')  cls += ' has-low';
+    if (priority === 'skip') cls += ' has-skip';
     const tag = meta ? `<span class="pattern-tag">${meta.pattern}</span>` : '';
     const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
     const diff = DIFFICULTIES[name];
     const diffTag = diff ? `<span class="diff-pill diff-${diff.toLowerCase()}" title="LeetCode difficulty">${DIFF_LABEL[diff]}</span>` : '';
+    const prioTag = priority ? `<span class="priority-pill priority-${priority}" title="${priority === 'skip' ? 'Can skip given 13-day timeline' : 'Lower-priority — do if time permits'}">${PRIORITY_LABEL[priority]}</span>` : '';
     const check = `<span class="progress-check" data-name="${name}" title="Mark complete">${isDone ? '✓' : ''}</span>`;
     return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
       ${check}
       <span class="name">${name}</span>
       ${diffTag}
+      ${prioTag}
       ${tag}
       ${badge}
       <span class="open-icon">OPEN →</span>
