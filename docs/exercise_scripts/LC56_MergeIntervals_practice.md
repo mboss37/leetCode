@@ -52,7 +52,7 @@ from typing import List
 
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        intervals.sort(key=lambda x: x[0])
+        intervals.sort()
         merged = []
         for current in intervals:
             if not merged or current[0] > merged[-1][1]:
@@ -95,7 +95,7 @@ Sorted: `[[1,3], [2,6], [8,10], [15,18]]` (already sorted).
 
 | Trap | What goes wrong | Fix |
 |---|---|---|
-| Forgetting to sort | Adjacent overlaps aren't adjacent in input | `intervals.sort(key=lambda x: x[0])` |
+| Forgetting to sort | Adjacent overlaps aren't adjacent in input | `intervals.sort()` |
 | Using `current[0] >= merged[-1][1]` | Touching intervals NOT merged ([1,4] and [4,5] stay separate) | Use `>` strictly; `≤` overlap rule |
 | `merged[-1][1] = current[1]` instead of max | Shrinks last.end when current is nested | `max(merged[-1][1], current[1])` |
 | Building result with tuples instead of lists | LC accepts both; tuples are immutable so can't extend | Use lists |
