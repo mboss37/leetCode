@@ -415,16 +415,28 @@
     background: var(--ink-3);
     border-color: var(--ink-3);
   }
+  .problem-list li.has-low {
+    background: #d8d4c5;
+    border-left-color: var(--ink-3);
+    color: var(--ink-3);
+  }
+  .problem-list li.has-low .name {
+    color: var(--ink-3);
+  }
   .problem-list li.has-skip {
-    opacity: 0.55;
+    background: #b8b4a8;
+    border-left-color: var(--ink-3);
+    color: var(--ink-2);
   }
   .problem-list li.has-skip .name {
+    color: var(--ink-2);
     text-decoration: line-through;
-    text-decoration-thickness: 1px;
-    text-decoration-color: var(--ink-3);
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--ink-2);
   }
-  .problem-list li.has-low {
-    opacity: 0.85;
+  .problem-list li.has-skip .pattern-tag,
+  .problem-list li.has-skip .visual-badge {
+    opacity: 0.5;
   }
   .problem-list li .progress-check {
     width: 16px;
