@@ -53,17 +53,17 @@ Three pointers:
 
 ### Trace on `1 → 2 → 3 → None`
 
-| step | prev | curr | next_node | after curr.next = prev | result so far |
-|---|---|---|---|---|---|
-| start | None | 1 | — | — | 1 → 2 → 3 |
-| 1 | None | 1 | 2 | 1 → None | None ← 1   2 → 3 |
-| advance | 1 | 2 | — | — | (prev=1, curr=2) |
-| 2 | 1 | 2 | 3 | 2 → 1 | None ← 1 ← 2   3 |
-| advance | 2 | 3 | — | — | (prev=2, curr=3) |
-| 3 | 2 | 3 | None | 3 → 2 | None ← 1 ← 2 ← 3 |
-| advance | 3 | None | — | — | exit loop |
+```
+Start:   prev = None,  curr = 1
+```
 
-Return `prev = 3`. New list: `3 → 2 → 1 → None`. ✓
+| iter | curr (start) | `next_node = curr.next` | `curr.next = prev` | `prev = curr` | `curr = next_node` |
+|---|---|---|---|---|---|
+| 1 | 1 | next_node = 2 | 1.next → None | prev = 1 | curr = 2 |
+| 2 | 2 | next_node = 3 | 2.next → 1 | prev = 2 | curr = 3 |
+| 3 | 3 | next_node = None | 3.next → 2 | prev = 3 | curr = None |
+
+Loop exits (curr is None). `return prev = 3`. New chain: `3 → 2 → 1 → None` ✓
 
 ### Complexity
 
