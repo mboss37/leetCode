@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Temperatures — monotonic stack · interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:     #f3eddc;
+    --paper-2:   #ebe2cc;
+    --paper-3:   #e3d8bd;
+    --ink:       #1a1410;
+    --ink-2:     #3c352d;
+    --ink-3:     #6b6155;
+    --accent:    #8b2c1c;
+    --accent-2:  #b34a2a;
+    --tan:       #a07c52;
+    --gold:      #f4dfa8;
+    --gold-2:    #ead09a;
+    --muted:     #5a5147;
+    --hair:      #c8bea4;
+    --good:      #4a6b3a;
+    --good-soft: #d9e3cf;
+    --bad:       #a3261c;
+    --bad-soft:  #f0d6d0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 5%, rgba(139,44,28,0.04), transparent 55%),
+      radial-gradient(ellipse at 90% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 24px 60px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  .home-link {
+    position: fixed;
+    top: 20px; left: 20px;
+    background: var(--ink); color: var(--paper);
+    text-decoration: none;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    z-index: 100;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: var(--accent); }
+
+  /* ===== HEADER ===== */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  header.top::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -3px;
+    height: 1px; background: var(--accent);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900; font-size: 54px;
+    line-height: 0.9; letter-spacing: -0.04em;
+    margin: 0 0 6px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header h1 em {
+    font-style: italic; color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header .sub {
+    font-family: 'Fraunces', serif; font-style: italic;
+    color: var(--ink-2); font-size: 18px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===== INFO BAR ===== */
+  .info-bar {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 14px 22px;
+    margin-bottom: 22px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+  .info-bar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+  .info-bar .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  .info-bar .pill .lbl {
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 10px;
+    margin-right: 6px;
+  }
+  .info-bar .pill .val {
+    color: var(--ink); font-weight: 700;
+  }
+
+  /* ===== OP LOG ===== */
+  .op-log-row {
+    display: flex; gap: 6px;
+    justify-content: center;
+    margin: 18px 0 26px;
+    flex-wrap: wrap;
+  }
+  .op-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 6px 12px;
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    color: var(--ink-3);
+    transition: all 0.25s;
+  }
+  .op-pill.done { opacity: 0.5; }
+  .op-pill.current {
+    background: var(--accent); color: var(--paper);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px -3px rgba(139,44,28,0.4);
+    font-weight: 700;
+  }
+
+  /* ===== CONTROLS ===== */
+  .controls {
+    display: flex; gap: 10px;
+    align-items: center; flex-wrap: wrap;
+    padding: 14px 18px;
+    background: var(--ink); color: var(--paper);
+    margin-bottom: 22px;
+  }
+  .controls button {
+    background: var(--accent); color: var(--paper);
+    border: none;
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.08em;
+    cursor: pointer; text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--accent-2); }
+  .controls button:disabled { background: var(--ink-3); cursor: not-allowed; }
+  .controls button.ghost { background: transparent; border: 1px solid var(--paper); }
+  .controls .step-info {
+    font-family: 'Fraunces', serif; font-style: italic;
+    margin-left: auto; font-size: 16px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .controls .step-info .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold); font-weight: 700; font-style: normal;
+  }
+
+  /* ===== STAGE ===== */
+  .stage {
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 28px 32px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+
+  /* ===== TEMP & RESULT ROWS ===== */
+  .row-section {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .row-section .row-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+  .row-section .data-row {
+    display: inline-flex;
+    gap: 4px;
+  }
+  .row-section .cell {
+    width: 56px;
+    height: 50px;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--paper);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .row-section .cell .v {
+    font-size: 16px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .row-section .cell .idx {
+    font-size: 9px;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .row-section .cell.processed { opacity: 0.55; }
+  .row-section .cell.current {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px -4px rgba(139,44,28,0.4);
+  }
+  .row-section .cell.current .v { color: var(--paper); }
+  .row-section .cell.current .idx { color: var(--gold); }
+  .row-section .cell.popped {
+    background: var(--good-soft);
+    border-color: var(--good);
+  }
+  .row-section .cell.in-stack {
+    background: var(--gold);
+    border-color: var(--accent);
+  }
+  .row-section.result .cell {
+    width: 48px;
+    height: 40px;
+  }
+  .row-section.result .cell .v { font-size: 14px; }
+  .row-section.result .cell.zero .v { color: var(--ink-3); }
+  .row-section.result .cell.just-set {
+    background: var(--good-soft);
+    border-color: var(--good);
+  }
+
+  /* ===== STAGE LAYOUT ===== */
+  .stage-grid {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ===== STACK PANEL ===== */
+  .stack-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .stack-col .stack-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stack-container {
+    width: 150px;
+    min-height: 280px;
+    border-left: 2px solid var(--ink);
+    border-right: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper-2);
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 6px;
+    gap: 5px;
+    position: relative;
+  }
+  .stack-container::before {
+    content: 'TOP →';
+    position: absolute;
+    top: 6px;
+    right: -54px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+  }
+  .stack-item {
+    height: 38px;
+    background: var(--gold);
+    border: 1px solid var(--ink);
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    align-items: center;
+    padding: 0 8px;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.3s;
+    animation: pop-in 0.3s ease-out;
+  }
+  .stack-item .si {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .stack-item .st {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .stack-item.top {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .stack-item.top .si { color: var(--gold); }
+  .stack-item.top .st { color: var(--paper); }
+  .stack-item.popping {
+    animation: pop-out 0.3s ease-out forwards;
+  }
+  @keyframes pop-in {
+    0%   { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes pop-out {
+    0%   { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-20px); opacity: 0; }
+  }
+  .stack-container .empty-label {
+    color: var(--ink-3);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    text-align: center;
+    padding: 100px 0;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===== INFO PANEL ===== */
+  .info-panel {
+    background: var(--paper-2);
+    border-left: 4px solid var(--ink-3);
+    padding: 14px 20px;
+    margin-top: 18px;
+    transition: all 0.2s;
+  }
+  .info-panel.push   { border-left-color: var(--accent); }
+  .info-panel.pop    { border-left-color: var(--good); background: var(--good-soft); }
+  .info-panel.start  { border-left-color: var(--ink-3); }
+
+  .info-panel .action {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .info-panel .action-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .info-panel.push .action-val { color: var(--accent); }
+  .info-panel.pop  .action-val { color: var(--good); }
+  .info-panel .msg {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-2);
+    line-height: 1.45;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===== TAKEAWAY ===== */
+  .takeaway {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 22px 26px;
+    position: relative;
+    margin-top: 22px;
+  }
+  .takeaway::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px; background: var(--accent);
+  }
+  .takeaway h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800; font-size: 22px;
+    margin: 0 0 12px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 24;
+  }
+  .takeaway h3 em {
+    color: var(--accent);
+    font-style: italic;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .takeaway p {
+    margin: 8px 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .takeaway code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 6px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 720px) {
+    body { padding: 24px 14px 40px; }
+    .home-link { top: 12px; left: 12px; padding: 6px 10px; font-size: 11px; }
+    header h1 { font-size: 38px; }
+    header .sub { font-size: 15px; }
+    .stage { padding: 18px 14px; }
+    .stage-grid { grid-template-columns: 1fr; gap: 18px; }
+    .stack-col .stack-container { width: 130px; }
+    .row-section .cell { width: 44px; height: 44px; }
+    .row-section .cell .v { font-size: 13px; }
+    .row-section.result .cell { width: 38px; height: 36px; }
+    .info-bar { font-size: 11px; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .controls .step-info { margin-left: 0; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<a href="index.html" class="home-link">← HOME</a>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Daily Temperatures<em>.</em></h1>
+    <div class="sub">— monotonic stack: each day waits in line for a warmer one. <em>Push once, pop once</em> per index → O(n).</div>
+  </header>
+
+  <div class="info-bar">
+    <span class="pill"><span class="lbl">Input</span><span class="val">[73, 74, 75, 71, 69, 72, 76, 73]</span></span>
+    <span class="pill"><span class="lbl">Pattern</span><span class="val">Monotonic Stack</span></span>
+    <span class="pill"><span class="lbl">Complexity</span><span class="val">O(n)</span></span>
+  </div>
+
+  <div class="op-log-row" id="op-log"></div>
+
+  <div class="controls">
+    <button id="btn-prev">← Prev</button>
+    <button id="btn-next">Next →</button>
+    <button id="btn-reset" class="ghost">Reset</button>
+    <button id="btn-play" class="ghost">▶ Play</button>
+    <span class="step-info">Step <span class="num" id="step-counter">0</span> of <span class="num" id="step-total">0</span></span>
+  </div>
+
+  <div class="stage">
+    <div class="stage-grid">
+
+      <!-- LEFT: temps + result -->
+      <div>
+        <div class="row-section">
+          <div class="row-label">Temperatures</div>
+          <div class="data-row" id="temps-row"></div>
+        </div>
+
+        <div class="row-section result" style="margin-top: 26px;">
+          <div class="row-label">Result (days until warmer)</div>
+          <div class="data-row" id="result-row"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: stack -->
+      <div class="stack-col">
+        <div class="stack-label">Stack (indices)</div>
+        <div class="stack-container" id="stack-container">
+          <div class="empty-label">empty</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-panel" id="info-panel">
+      <div class="action">Action</div>
+      <div class="action-val" id="info-action">Press NEXT to begin</div>
+      <div class="msg" id="info-msg">Walk left to right. Each index waits in the stack for a warmer day. When a warmer day arrives, every smaller-temperature day below it gets its answer in one shot.</div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <h3>The trick — <em>indices</em>, not values<em>.</em></h3>
+    <p>The stack stores <strong>indices of days waiting for an answer</strong>, not the temperatures themselves. We need indices because the answer is *<code>j − i</code>* (how many days to wait), and we need both endpoints to compute that gap.</p>
+    <p><strong>Stack invariant:</strong> indices on the stack are kept in <strong>strictly decreasing temperature order</strong> from bottom to top. As soon as a new day's temperature is greater than the top, that top index has found its warmer day → pop it, fill in its result.</p>
+    <p><strong>Why O(n):</strong> each index is pushed exactly once and popped at most once. The inner <code>while</code> looks like nested loops, but its total work across the whole array is bounded by n. Result: 2n operations max → O(n).</p>
+    <p>Anything left on the stack at the end never found a warmer day → its slot in <code>result</code> stays at the default <code>0</code>.</p>
+    <p>Same family pattern in: <em>Next Greater Element</em>, <em>Largest Rectangle in Histogram</em>, <em>Trapping Rain Water</em>, <em>Sum of Subarray Minimums</em>.</p>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   DAILY TEMPERATURES — VISUALIZATION
+   temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+   ============================================================ */
+
+const TEMPS = [73, 74, 75, 71, 69, 72, 76, 73];
+const N = TEMPS.length;
+
+/* Each "step" = one full outer iteration:
+   pop everything that just found a warmer day, then push the new index. */
+function buildStateAt(stepIdx) {
+  if (stepIdx === 0) {
+    return {
+      i: -1, stack: [], result: new Array(N).fill(0),
+      poppedThisStep: [], pushed: false,
+      action: 'start',
+      msg: 'Initial state — empty stack and zeroed result. Press NEXT to start at i=0.'
+    };
+  }
+  let stack = [];
+  let result = new Array(N).fill(0);
+  let lastPopped = [];
+  let lastPushed = false;
+  let lastMsg = '';
+  let lastI = -1;
+
+  for (let i = 0; i < stepIdx; i++) {
+    const t = TEMPS[i];
+    const popsThisIter = [];
+    while (stack.length > 0 && TEMPS[stack[stack.length - 1]] < t) {
+      const prev = stack.pop();
+      result[prev] = i - prev;
+      popsThisIter.push(prev);
+    }
+    stack.push(i);
+
+    if (i === stepIdx - 1) {
+      lastI = i;
+      lastPopped = popsThisIter.slice();
+      lastPushed = true;
+      if (popsThisIter.length === 0) {
+        lastMsg = `Temperature ${t} is not warmer than the stack top — just push i=${i} and wait.`;
+      } else {
+        const lines = popsThisIter.map(p => `result[${p}] = ${i} - ${p} = ${i - p}`).join('; ');
+        lastMsg = `Temperature ${t} > the temperatures at the top of the stack. Pop them and assign their answers: ${lines}. Then push i=${i}.`;
+      }
+    }
+  }
+
+  return {
+    i: lastI,
+    stack,
+    result,
+    poppedThisStep: lastPopped,
+    pushed: lastPushed,
+    action: lastPopped.length > 0 ? 'pop' : 'push',
+    msg: lastMsg
+  };
+}
+
+/* ----- DOM refs ----- */
+const opLogEl = document.getElementById('op-log');
+const tempsRowEl = document.getElementById('temps-row');
+const resultRowEl = document.getElementById('result-row');
+const stackContainerEl = document.getElementById('stack-container');
+const infoPanelEl = document.getElementById('info-panel');
+const infoActionEl = document.getElementById('info-action');
+const infoMsgEl = document.getElementById('info-msg');
+const stepCounterEl = document.getElementById('step-counter');
+const stepTotalEl = document.getElementById('step-total');
+const prevBtn = document.getElementById('btn-prev');
+const nextBtn = document.getElementById('btn-next');
+const resetBtn = document.getElementById('btn-reset');
+const playBtn = document.getElementById('btn-play');
+
+stepTotalEl.textContent = N;
+
+function renderOpLog(stepIdx) {
+  const pieces = [];
+  for (let i = 0; i < N; i++) {
+    let cls = 'op-pill';
+    if (i < stepIdx) cls += ' done';
+    if (i === stepIdx - 1) cls += ' current';
+    pieces.push(`<span class="${cls}">i=${i} (${TEMPS[i]})</span>`);
+  }
+  opLogEl.innerHTML = pieces.join('');
+}
+
+function renderTemps(state) {
+  const cells = [];
+  for (let i = 0; i < N; i++) {
+    let cls = 'cell';
+    if (state.i >= 0 && i === state.i) cls += ' current';
+    else if (state.stack.includes(i)) cls += ' in-stack';
+    else if (state.poppedThisStep.includes(i)) cls += ' popped';
+    else if (state.i >= 0 && i < state.i) cls += ' processed';
+    cells.push(`<div class="${cls}">
+      <div class="v">${TEMPS[i]}</div>
+      <div class="idx">i=${i}</div>
+    </div>`);
+  }
+  tempsRowEl.innerHTML = cells.join('');
+}
+
+function renderResult(state) {
+  const cells = [];
+  for (let i = 0; i < N; i++) {
+    let cls = 'cell';
+    if (state.result[i] === 0) cls += ' zero';
+    if (state.poppedThisStep.includes(i)) cls += ' just-set';
+    cells.push(`<div class="${cls}">
+      <div class="v">${state.result[i]}</div>
+      <div class="idx">${i}</div>
+    </div>`);
+  }
+  resultRowEl.innerHTML = cells.join('');
+}
+
+function renderStack(state) {
+  if (state.stack.length === 0) {
+    stackContainerEl.innerHTML = '<div class="empty-label">empty</div>';
+    return;
+  }
+  // top is the LAST pushed element (highest index in array)
+  const items = state.stack.map((idx, pos) => {
+    const isTop = pos === state.stack.length - 1;
+    return `<div class="stack-item ${isTop ? 'top' : ''}">
+      <span class="si">i=${idx}</span>
+      <span class="st">${TEMPS[idx]}°</span>
+    </div>`;
+  });
+  stackContainerEl.innerHTML = items.join('');
+}
+
+function renderInfo(state, stepIdx) {
+  if (stepIdx === 0) {
+    infoPanelEl.className = 'info-panel start';
+    infoActionEl.textContent = 'Initial state';
+    infoMsgEl.textContent = state.msg;
+    return;
+  }
+  infoPanelEl.className = 'info-panel ' + state.action;
+  if (state.poppedThisStep.length > 0) {
+    infoActionEl.textContent = `i=${state.i}: pop ×${state.poppedThisStep.length}, then push ${state.i}`;
+  } else {
+    infoActionEl.textContent = `i=${state.i}: push ${state.i} (no warmer than top)`;
+  }
+  infoMsgEl.textContent = state.msg;
+}
+
+let currentStep = 0;
+let playInterval = null;
+
+function render() {
+  const state = buildStateAt(currentStep);
+  stepCounterEl.textContent = currentStep;
+  renderOpLog(currentStep);
+  renderTemps(state);
+  renderResult(state);
+  renderStack(state);
+  renderInfo(state, currentStep);
+  prevBtn.disabled = currentStep <= 0;
+  nextBtn.disabled = currentStep >= N;
+  playBtn.textContent = playInterval ? '■ Stop' : '▶ Play';
+}
+
+function stopPlay() {
+  if (playInterval) { clearInterval(playInterval); playInterval = null; }
+}
+
+prevBtn.addEventListener('click', () => { stopPlay(); currentStep = Math.max(0, currentStep - 1); render(); });
+nextBtn.addEventListener('click', () => { stopPlay(); currentStep = Math.min(N, currentStep + 1); render(); });
+resetBtn.addEventListener('click', () => { stopPlay(); currentStep = 0; render(); });
+playBtn.addEventListener('click', () => {
+  if (playInterval) { stopPlay(); render(); return; }
+  if (currentStep >= N) currentStep = 0;
+  playInterval = setInterval(() => {
+    if (currentStep >= N) { stopPlay(); render(); return; }
+    currentStep++;
+    render();
+  }, 1400);
+  render();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' && !nextBtn.disabled) { stopPlay(); currentStep++; render(); }
+  else if (e.key === 'ArrowLeft' && !prevBtn.disabled) { stopPlay(); currentStep--; render(); }
+  else if (e.key === ' ') { e.preventDefault(); playBtn.click(); }
+  else if (e.key === 'r' || e.key === 'R') resetBtn.click();
+});
+
+render();
+</script>
+</body>
+</html>
