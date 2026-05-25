@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Longest Repeating Char Replacement — interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:     #f3eddc;
+    --paper-2:   #ebe2cc;
+    --paper-3:   #e3d8bd;
+    --ink:       #1a1410;
+    --ink-2:     #3c352d;
+    --ink-3:     #6b6155;
+    --accent:    #8b2c1c;
+    --accent-2:  #b34a2a;
+    --tan:       #a07c52;
+    --gold:      #f4dfa8;
+    --gold-2:    #ead09a;
+    --muted:     #5a5147;
+    --hair:      #c8bea4;
+    --good:      #4a6b3a;
+    --good-soft: #d9e3cf;
+    --bad:       #a3261c;
+    --bad-soft:  #f0d6d0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 5%, rgba(139,44,28,0.04), transparent 55%),
+      radial-gradient(ellipse at 90% 95%, rgba(160,124,82,0.06), transparent 55%);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 24px 60px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  .home-link {
+    position: fixed;
+    top: 20px; left: 20px;
+    background: var(--ink); color: var(--paper);
+    text-decoration: none;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    z-index: 100;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: var(--accent); }
+
+  /* ===== HEADER ===== */
+  header.top {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  header.top::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -3px;
+    height: 1px; background: var(--accent);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900; font-size: 54px;
+    line-height: 0.9; letter-spacing: -0.04em;
+    margin: 0 0 6px;
+    font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  }
+  header h1 em {
+    font-style: italic; color: var(--accent);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  }
+  header .sub {
+    font-family: 'Fraunces', serif; font-style: italic;
+    color: var(--ink-2); font-size: 18px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+
+  /* ===== INFO BAR ===== */
+  .info-bar {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 14px 22px;
+    margin-bottom: 22px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+  .info-bar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+  .info-bar .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  .info-bar .pill .lbl {
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 10px;
+    margin-right: 6px;
+  }
+  .info-bar .pill .val {
+    color: var(--ink); font-weight: 700;
+  }
+
+  /* ===== OP LOG ===== */
+  .op-log-row {
+    display: flex; gap: 6px;
+    justify-content: center;
+    margin: 18px 0 26px;
+    flex-wrap: wrap;
+  }
+  .op-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 6px 12px;
+    background: var(--paper-2);
+    border: 1px solid var(--hair);
+    color: var(--ink-3);
+    transition: all 0.25s;
+  }
+  .op-pill.done { opacity: 0.5; }
+  .op-pill.current {
+    background: var(--accent); color: var(--paper);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px -3px rgba(139,44,28,0.4);
+    font-weight: 700;
+  }
+
+  /* ===== CONTROLS ===== */
+  .controls {
+    display: flex; gap: 10px;
+    align-items: center; flex-wrap: wrap;
+    padding: 14px 18px;
+    background: var(--ink); color: var(--paper);
+    margin-bottom: 22px;
+  }
+  .controls button {
+    background: var(--accent); color: var(--paper);
+    border: none;
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.08em;
+    cursor: pointer; text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--accent-2); }
+  .controls button:disabled { background: var(--ink-3); cursor: not-allowed; }
+  .controls button.ghost { background: transparent; border: 1px solid var(--paper); }
+  .controls .step-info {
+    font-family: 'Fraunces', serif; font-style: italic;
+    margin-left: auto; font-size: 16px;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .controls .step-info .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold); font-weight: 700; font-style: normal;
+  }
+
+  /* ===== STAGE ===== */
+  .stage {
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 28px 32px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+
+  /* ===== STRING ROW ===== */
+  .string-row-wrap {
+    text-align: center;
+    margin: 8px 0 28px;
+  }
+  .string-row {
+    display: inline-flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .string-row .ch {
+    width: 44px;
+    height: 50px;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    background: var(--paper);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .string-row .ch .idx {
+    position: absolute;
+    bottom: -18px;
+    font-size: 9px;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .string-row .ch.in-window {
+    background: var(--gold);
+  }
+  .string-row .ch.left-edge {
+    background: var(--gold-2);
+    border-color: var(--accent);
+    border-width: 2.5px;
+  }
+  .string-row .ch.right-edge {
+    background: var(--gold-2);
+    border-color: var(--accent);
+    border-width: 2.5px;
+  }
+  .string-row .ch.processed {
+    opacity: 0.5;
+  }
+  .string-row .ch.left-edge.right-edge {
+    /* single-cell window — both pointers on same char */
+    background: var(--gold);
+  }
+
+  /* finger labels above the row */
+  .pointer-row {
+    display: inline-flex;
+    gap: 4px;
+    height: 18px;
+    margin-bottom: 0;
+    position: relative;
+  }
+  .pointer-row .slot {
+    width: 44px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ===== METRICS PANEL ===== */
+  .metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 20px 0;
+  }
+  .metrics-col .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 16px;
+    margin-bottom: 12px;
+    text-align: center;
+    font-variation-settings: "opsz" 24;
+    color: var(--ink);
+  }
+  .counts-table {
+    border: 2px solid var(--ink);
+    background: var(--paper-2);
+    padding: 10px 12px;
+    min-height: 110px;
+  }
+  .counts-table .empty-label {
+    color: var(--ink-3);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    text-align: center;
+    padding: 30px 0;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  .counts-table .crow {
+    display: grid;
+    grid-template-columns: 40px 28px 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 4px;
+    border-bottom: 1px dashed var(--hair);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .counts-table .crow:last-child { border-bottom: none; }
+  .counts-table .crow .ck {
+    color: var(--accent);
+    font-weight: 700;
+    text-align: center;
+    background: var(--paper);
+    border: 1px solid var(--accent);
+    padding: 1px 0;
+  }
+  .counts-table .crow .arrow { color: var(--ink-3); text-align: center; }
+  .counts-table .crow .cv { color: var(--ink); font-weight: 700; }
+  .counts-table .crow.is-max .cv {
+    background: var(--accent);
+    color: var(--paper);
+    padding: 1px 8px;
+    border-radius: 1px;
+  }
+
+  /* check-panel: window calculation */
+  .check-panel {
+    border: 2px solid var(--ink);
+    background: var(--paper-2);
+    padding: 12px 16px;
+    min-height: 110px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+  }
+  .check-panel .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .check-panel .lbl {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 10px;
+  }
+  .check-panel .val {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .check-panel .verdict {
+    margin-top: 4px;
+    padding: 6px 10px;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .check-panel .verdict.valid {
+    background: var(--good-soft);
+    color: var(--good);
+    border: 1px solid var(--good);
+  }
+  .check-panel .verdict.shrink {
+    background: var(--bad-soft);
+    color: var(--bad);
+    border: 1px solid var(--bad);
+  }
+
+  /* ===== INFO PANEL ===== */
+  .info-panel {
+    background: var(--paper-2);
+    border-left: 4px solid var(--ink-3);
+    padding: 14px 20px;
+    margin-top: 18px;
+    transition: all 0.2s;
+  }
+  .info-panel.expand { border-left-color: var(--accent); }
+  .info-panel.shrink { border-left-color: var(--bad);  background: var(--bad-soft); }
+  .info-panel.record { border-left-color: var(--good); background: var(--good-soft); }
+
+  .info-panel .action {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .info-panel .action-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .info-panel.expand .action-val { color: var(--accent); }
+  .info-panel.shrink .action-val { color: var(--bad); }
+  .info-panel.record .action-val { color: var(--good); }
+  .info-panel .msg {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-2);
+    line-height: 1.45;
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+
+  /* result row */
+  .result-row {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+    margin-top: 22px;
+  }
+  .result-row .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .result-row .value {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 26px;
+    color: var(--gold);
+    line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+
+  /* ===== TAKEAWAY ===== */
+  .takeaway {
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    padding: 22px 26px;
+    position: relative;
+  }
+  .takeaway::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px; background: var(--accent);
+  }
+  .takeaway h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800; font-size: 22px;
+    margin: 0 0 12px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 24;
+  }
+  .takeaway h3 em {
+    color: var(--accent);
+    font-style: italic;
+    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
+  }
+  .takeaway p {
+    margin: 8px 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .takeaway code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gold);
+    padding: 1px 6px;
+    font-size: 13px;
+  }
+  .takeaway ul { margin: 8px 0; padding-left: 22px; }
+  .takeaway li { margin: 4px 0; color: var(--ink-2); }
+
+  @media (max-width: 720px) {
+    body { padding: 24px 14px 40px; }
+    .home-link { top: 12px; left: 12px; padding: 6px 10px; font-size: 11px; }
+    header h1 { font-size: 38px; }
+    header .sub { font-size: 15px; }
+    .stage { padding: 18px 14px; }
+    .metrics { grid-template-columns: 1fr; gap: 16px; }
+    .info-bar { font-size: 11px; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .controls .step-info { margin-left: 0; text-align: center; }
+    .string-row .ch { width: 32px; height: 38px; font-size: 14px; }
+    .pointer-row .slot { width: 32px; }
+  }
+</style>
+</head>
+<body>
+<a href="index.html" class="home-link">← HOME</a>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Long. Repeating Char<em>.</em></h1>
+    <div class="sub">— sliding window with the <em>"swap budget"</em> check: <code>size − max_count ≤ k</code>.</div>
+  </header>
+
+  <div class="info-bar">
+    <span class="pill"><span class="lbl">String</span><span class="val">"AABABBA"</span></span>
+    <span class="pill"><span class="lbl">k</span><span class="val">1</span></span>
+    <span class="pill"><span class="lbl">Pattern</span><span class="val">Sliding Window + max_count</span></span>
+    <span class="pill"><span class="lbl">Complexity</span><span class="val">O(n)</span></span>
+  </div>
+
+  <div class="op-log-row" id="op-log"></div>
+
+  <div class="controls">
+    <button id="btn-prev">← Prev</button>
+    <button id="btn-next">Next →</button>
+    <button id="btn-reset" class="ghost">Reset</button>
+    <button id="btn-play" class="ghost">▶ Play</button>
+    <span class="step-info">Step <span class="num" id="step-counter">0</span> of <span class="num" id="step-total">0</span></span>
+  </div>
+
+  <div class="stage">
+
+    <!-- string with L/R fingers -->
+    <div class="string-row-wrap">
+      <div class="pointer-row" id="pointer-row"></div>
+      <div class="string-row" id="string-row"></div>
+    </div>
+
+    <!-- two metrics: counts + check -->
+    <div class="metrics">
+      <div class="metrics-col">
+        <div class="name">Counts in window</div>
+        <div class="counts-table" id="counts-table">
+          <div class="empty-label">empty</div>
+        </div>
+      </div>
+      <div class="metrics-col">
+        <div class="name">Validity check</div>
+        <div class="check-panel" id="check-panel">
+          <div class="row"><span class="lbl">window size</span><span class="val" id="m-size">—</span></div>
+          <div class="row"><span class="lbl">max_count</span><span class="val" id="m-max">—</span></div>
+          <div class="row"><span class="lbl">size − max_count</span><span class="val" id="m-diff">—</span></div>
+          <div class="row"><span class="lbl">≤ k = 1?</span><span class="val" id="m-cmp">—</span></div>
+          <div class="verdict" id="m-verdict">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-panel" id="info-panel">
+      <div class="action">Action</div>
+      <div class="action-val" id="info-action">Press NEXT to begin</div>
+      <div class="msg" id="info-msg">A 7-char string with k=1 swap. Watch how the window grows when valid and shrinks from the left when not.</div>
+    </div>
+  </div>
+
+  <div class="result-row">
+    <span class="label">Best window length so far</span>
+    <span class="value" id="result-val">0</span>
+  </div>
+
+  <div class="takeaway">
+    <h3>Why <em>size − max_count</em> ≤ k<em>.</em></h3>
+    <p>Inside any window, the most-common letter appears <code>max_count</code> times. Every <em>other</em> letter is something we'd have to swap to make the whole window the same letter.</p>
+    <p>So <code>window_size − max_count</code> = the number of "wrong" letters we'd need to replace. If that's <code>≤ k</code>, the window is achievable within our swap budget. If not, shrink from the left.</p>
+    <p><b>The clever optimization:</b> we never refresh <code>max_count</code> when the window shrinks. It can only go up across the whole run. A "stale" max_count just means the window stays open one or two extra steps — but the <code>best</code> we record is always achievable, because <code>best ≤ max_count + k</code> and <code>max_count</code> was set by a real window.</p>
+    <p>Net: each character is touched O(1) times by RIGHT (push) and O(1) times by LEFT (pop). Total <strong>O(n)</strong>. The set-of-substrings brute force is O(n³).</p>
+    <p>Same shape carries over to: <em>Longest Substring Without Repeating</em>, <em>Min Window Substring</em>, <em>Permutation in String</em>.</p>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   LONGEST REPEATING CHARACTER REPLACEMENT — VISUALIZATION
+   s = "AABABBA", k = 1
+   Each "step" = one full outer iteration (advance right + maybe shrink).
+   ============================================================ */
+
+const S = "AABABBA";
+const K = 1;
+const N = S.length;
+
+/* Each step: right advances by 1, optional shrinks happen, best updates.
+   We record the END state of the step. */
+function buildStateAt(stepIdx) {
+  if (stepIdx === 0) {
+    return {
+      left: 0, right: -1, counts: {}, max_count: 0, best: 0,
+      shrank: 0, action: 'start',
+      msg: 'Initial state — no characters in the window yet. Press NEXT to push the first character.',
+      verdict: '—', size: 0, diff: 0
+    };
+  }
+  // Replay up to and including step `stepIdx` (1-indexed).
+  let left = 0;
+  let counts = {};
+  let max_count = 0;
+  let best = 0;
+  let lastAction = '';
+  let lastShrank = 0;
+  let lastMsg = '';
+
+  for (let r = 0; r < stepIdx; r++) {
+    const ch = S[r];
+    counts[ch] = (counts[ch] || 0) + 1;
+    max_count = Math.max(max_count, counts[ch]);
+
+    let shrinks = 0;
+    while ((r - left + 1) - max_count > K) {
+      const lch = S[left];
+      counts[lch] -= 1;
+      if (counts[lch] === 0) delete counts[lch];
+      left += 1;
+      shrinks += 1;
+    }
+    const winSize = r - left + 1;
+    if (winSize > best) best = winSize;
+
+    if (r === stepIdx - 1) {
+      lastShrank = shrinks;
+      const before = r - (left - shrinks) + 1;     // size before shrinks
+      const after  = winSize;
+      if (shrinks === 0) {
+        lastAction = `Add s[${r}] = '${ch}' to the window`;
+        lastMsg = `Window grows. counts['${ch}'] is now ${counts[ch] || (max_count >= 1 ? '?' : 1)}. Size − max_count = ${after - max_count} ≤ k=${K}, so window is valid.`;
+      } else {
+        lastAction = `Add s[${r}] = '${ch}', then shrink ×${shrinks}`;
+        lastMsg = `Adding '${ch}' made size − max_count > k. Drop characters from LEFT until the window is fixable again. Window went ${before} → ${after}.`;
+      }
+    }
+  }
+
+  const size = (stepIdx - 1) - left + 1;
+  const diff = size - max_count;
+  return {
+    left, right: stepIdx - 1, counts, max_count, best,
+    shrank: lastShrank, action: lastShrank > 0 ? 'shrink' : 'expand',
+    msg: lastMsg, size, diff,
+    verdict: diff <= K ? 'valid' : 'shrink',
+  };
+}
+
+/* ----- Rendering ----- */
+const opLogEl = document.getElementById('op-log');
+const stringRowEl = document.getElementById('string-row');
+const pointerRowEl = document.getElementById('pointer-row');
+const countsTableEl = document.getElementById('counts-table');
+const infoPanelEl = document.getElementById('info-panel');
+const infoActionEl = document.getElementById('info-action');
+const infoMsgEl = document.getElementById('info-msg');
+const stepCounterEl = document.getElementById('step-counter');
+const stepTotalEl = document.getElementById('step-total');
+const prevBtn = document.getElementById('btn-prev');
+const nextBtn = document.getElementById('btn-next');
+const resetBtn = document.getElementById('btn-reset');
+const playBtn = document.getElementById('btn-play');
+const resultValEl = document.getElementById('result-val');
+
+const mSize = document.getElementById('m-size');
+const mMax  = document.getElementById('m-max');
+const mDiff = document.getElementById('m-diff');
+const mCmp  = document.getElementById('m-cmp');
+const mVerdict = document.getElementById('m-verdict');
+
+stepTotalEl.textContent = N;
+
+function renderOpLog(stepIdx) {
+  const pieces = [];
+  for (let r = 0; r < N; r++) {
+    let cls = 'op-pill';
+    if (r < stepIdx)    cls += ' done';
+    if (r === stepIdx - 1) cls += ' current';
+    pieces.push(`<span class="${cls}">r=${r} (${S[r]})</span>`);
+  }
+  opLogEl.innerHTML = pieces.join('');
+}
+
+function renderString(state) {
+  // characters
+  const cells = [];
+  for (let i = 0; i < N; i++) {
+    const inWindow = state.right >= 0 && i >= state.left && i <= state.right;
+    const isLeft = i === state.left && state.right >= 0;
+    const isRight = i === state.right;
+    const processed = state.right >= 0 && i > state.right;
+    let cls = 'ch';
+    if (inWindow) cls += ' in-window';
+    if (isLeft)   cls += ' left-edge';
+    if (isRight)  cls += ' right-edge';
+    if (processed) cls += ' processed';
+    cells.push(`<div class="${cls}">${S[i]}<span class="idx">${i}</span></div>`);
+  }
+  stringRowEl.innerHTML = cells.join('');
+
+  // pointer labels above
+  const slots = [];
+  for (let i = 0; i < N; i++) {
+    let label = '';
+    if (state.right >= 0 && i === state.left && i === state.right) label = 'L=R';
+    else if (state.right >= 0 && i === state.left) label = 'L';
+    else if (i === state.right) label = 'R';
+    slots.push(`<div class="slot">${label}</div>`);
+  }
+  pointerRowEl.innerHTML = slots.join('');
+}
+
+function renderCounts(state) {
+  const keys = Object.keys(state.counts).sort();
+  if (keys.length === 0) {
+    countsTableEl.innerHTML = '<div class="empty-label">empty</div>';
+    return;
+  }
+  const rows = keys.map(k => {
+    const cls = state.counts[k] === state.max_count ? 'crow is-max' : 'crow';
+    return `<div class="${cls}">
+      <span class="ck">${k}</span>
+      <span class="arrow">→</span>
+      <span class="cv">${state.counts[k]}</span>
+    </div>`;
+  });
+  countsTableEl.innerHTML = rows.join('');
+}
+
+function renderCheck(state) {
+  if (state.right < 0) {
+    mSize.textContent = '—'; mMax.textContent = '—';
+    mDiff.textContent = '—'; mCmp.textContent = '—';
+    mVerdict.textContent = '—'; mVerdict.className = 'verdict';
+    return;
+  }
+  mSize.textContent = state.size;
+  mMax.textContent = state.max_count;
+  mDiff.textContent = state.diff;
+  mCmp.textContent = state.diff <= K ? `${state.diff} ≤ ${K} ✓` : `${state.diff} > ${K} ✗`;
+  mVerdict.textContent = state.diff <= K ? 'window is valid' : 'shrunk to validate';
+  mVerdict.className = 'verdict ' + state.verdict;
+}
+
+function renderInfo(state, stepIdx) {
+  if (stepIdx === 0) {
+    infoPanelEl.className = 'info-panel';
+    infoActionEl.textContent = 'Initial state';
+    infoMsgEl.textContent = state.msg;
+    return;
+  }
+  infoPanelEl.className = 'info-panel ' + (state.shrank > 0 ? 'shrink' : 'expand');
+  infoActionEl.textContent = state.action === 'shrink' ? `r=${state.right}: expanded then shrunk ×${state.shrank}` : `r=${state.right}: expanded window`;
+  infoMsgEl.textContent = state.msg;
+}
+
+let currentStep = 0;
+let playInterval = null;
+
+function render() {
+  const state = buildStateAt(currentStep);
+  stepCounterEl.textContent = currentStep;
+  resultValEl.textContent = state.best;
+  renderOpLog(currentStep);
+  renderString(state);
+  renderCounts(state);
+  renderCheck(state);
+  renderInfo(state, currentStep);
+  prevBtn.disabled = currentStep <= 0;
+  nextBtn.disabled = currentStep >= N;
+  playBtn.textContent = playInterval ? '■ Stop' : '▶ Play';
+}
+
+function stopPlay() {
+  if (playInterval) { clearInterval(playInterval); playInterval = null; }
+}
+
+prevBtn.addEventListener('click', () => { stopPlay(); currentStep = Math.max(0, currentStep - 1); render(); });
+nextBtn.addEventListener('click', () => { stopPlay(); currentStep = Math.min(N, currentStep + 1); render(); });
+resetBtn.addEventListener('click', () => { stopPlay(); currentStep = 0; render(); });
+playBtn.addEventListener('click', () => {
+  if (playInterval) { stopPlay(); render(); return; }
+  if (currentStep >= N) currentStep = 0;
+  playInterval = setInterval(() => {
+    if (currentStep >= N) { stopPlay(); render(); return; }
+    currentStep++;
+    render();
+  }, 1400);
+  render();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' && !nextBtn.disabled) { stopPlay(); currentStep++; render(); }
+  else if (e.key === 'ArrowLeft' && !prevBtn.disabled) { stopPlay(); currentStep--; render(); }
+  else if (e.key === ' ') { e.preventDefault(); playBtn.click(); }
+  else if (e.key === 'r' || e.key === 'R') resetBtn.click();
+});
+
+render();
+</script>
+</body>
+</html>
