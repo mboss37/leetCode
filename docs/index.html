@@ -394,6 +394,50 @@
     background: rgba(139, 44, 28, 0.08);
     border-color: var(--accent);
   }
+  .problem-list li .priority-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    letter-spacing: 0.08em;
+    border: 1px solid;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+  .problem-list li .priority-pill.priority-low {
+    color: var(--ink-3);
+    background: transparent;
+    border-color: var(--ink-3);
+    border-style: dashed;
+  }
+  .problem-list li .priority-pill.priority-skip {
+    color: var(--paper);
+    background: var(--ink-3);
+    border-color: var(--ink-3);
+  }
+  .problem-list li.has-low {
+    background: #d8d4c5;
+    border-left-color: var(--ink-3);
+    color: var(--ink-3);
+  }
+  .problem-list li.has-low .name {
+    color: var(--ink-3);
+  }
+  .problem-list li.has-skip {
+    background: #b8b4a8;
+    border-left-color: var(--ink-3);
+    color: var(--ink-2);
+  }
+  .problem-list li.has-skip .name {
+    color: var(--ink-2);
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--ink-2);
+  }
+  .problem-list li.has-skip .pattern-tag,
+  .problem-list li.has-skip .visual-badge {
+    opacity: 0.5;
+  }
   .problem-list li .progress-check {
     width: 16px;
     height: 16px;
@@ -824,6 +868,7 @@
     .problem-list li .name { flex: 1 1 auto; min-width: 60%; }
     .problem-list li .pattern-tag { font-size: 8px; padding: 1px 4px; }
     .problem-list li .diff-pill   { font-size: 8px; padding: 1px 4px; }
+    .problem-list li .priority-pill { font-size: 8px; padding: 1px 4px; }
     .problem-list li .visual-badge { font-size: 8px; padding: 2px 5px; }
     .problem-list li .num-tag { display: none; }
     .problem-list li .open-icon { display: none; }
@@ -963,6 +1008,36 @@
       <div class="desc">— Push, pop, and peek visualized. Two scenes: Valid Parentheses matching, and Min Stack with its auxiliary stack synced in parallel.</div>
       <div class="footer-row">
         <div class="features">two scenarios · LIFO visual · sync view</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+    <a href="lru_cache_visual.html" class="tool">
+      <div class="tag"><b class="step-num">8</b> Walkthrough · LC 146</div>
+      <h2>LRU Cache<em>.</em></h2>
+      <div class="desc">— Watch the hash map and doubly-linked list stay in sync through put / get / evict. See exactly why <em>move_to_end</em> and <em>popitem</em> are O(1).</div>
+      <div class="footer-row">
+        <div class="features">hash + DLL · move-to-head · evict tail</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+    <a href="longest_repeating_visual.html" class="tool">
+      <div class="tag"><b class="step-num">9</b> Walkthrough · LC 424</div>
+      <h2>Longest Repeating<em>.</em></h2>
+      <div class="desc">— Sliding window with the swap-budget check <code>size − max_count ≤ k</code>. Watch L and R fingers walk the string and the counts table stay in sync.</div>
+      <div class="footer-row">
+        <div class="features">window grows · shrinks left · max_count never resets</div>
+        <div class="open-arrow">OPEN →</div>
+      </div>
+    </a>
+
+    <a href="daily_temperatures_visual.html" class="tool">
+      <div class="tag"><b class="step-num">10</b> Walkthrough · LC 739</div>
+      <h2>Daily Temperatures<em>.</em></h2>
+      <div class="desc">— Monotonic stack: each day waits in line for a warmer one. Watch indices push, pop, and fill the result array as warmer days arrive.</div>
+      <div class="footer-row">
+        <div class="features">push once · pop once · O(n) amortized</div>
         <div class="open-arrow">OPEN →</div>
       </div>
     </a>
@@ -1168,6 +1243,9 @@ const VISUALS = {
   'Binary Search':                      'binary_search_visual.html',
   'Search Insert Position':             'binary_search_visual.html',
   'Find First and Last Position':       'binary_search_visual.html',
+  'LRU Cache':                          'lru_cache_visual.html',
+  'Longest Repeating Character Replacement': 'longest_repeating_visual.html',
+  'Daily Temperatures':                 'daily_temperatures_visual.html',
 };
 
 /* ===== Problem → pattern map (drives sub-list tags + the modal badge) ===== */
@@ -1264,6 +1342,18 @@ const DIFFICULTIES = {
   'Merge Strings Alternately': 'E',
 };
 const DIFF_LABEL = { 'E': 'EASY', 'M': 'MED', 'H': 'HARD' };
+
+/* ===== Priority hints (which problems can be deprioritized given limited time) ===== */
+const PRIORITY = {
+  'Maximum Depth of Binary Tree':       'low',   // tree recursion
+  'Invert Binary Tree':                 'low',   // tree recursion
+  'Binary Tree Level Order Traversal':  'low',   // BFS on tree
+  'Coin Change':                        'low',   // DP
+  'Longest Palindromic Substring':      'low',   // DP / expand around center
+  'Number of Islands':                  'skip',  // grid DFS/BFS (graph)
+  'Word Search':                        'skip',  // backtracking (grid)
+};
+const PRIORITY_LABEL = { 'low': 'LOW PRI', 'skip': 'SKIP' };
 
 /* ===== Progress tracking (localStorage) ===== */
 const DONE_KEY = 'problems_done_v1';
@@ -1403,16 +1493,21 @@ function renderList(elId, items, phaseId) {
     const visual = VISUALS[name];
     const meta = PROBLEMS_META[name];
     const isDone = doneSet.has(name);
-    const cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
+    const priority = PRIORITY[name];
+    let cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
+    if (priority === 'low')  cls += ' has-low';
+    if (priority === 'skip') cls += ' has-skip';
     const tag = meta ? `<span class="pattern-tag">${meta.pattern}</span>` : '';
     const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
     const diff = DIFFICULTIES[name];
     const diffTag = diff ? `<span class="diff-pill diff-${diff.toLowerCase()}" title="LeetCode difficulty">${DIFF_LABEL[diff]}</span>` : '';
+    const prioTag = priority ? `<span class="priority-pill priority-${priority}" title="${priority === 'skip' ? 'Can skip given 13-day timeline' : 'Lower-priority — do if time permits'}">${PRIORITY_LABEL[priority]}</span>` : '';
     const check = `<span class="progress-check" data-name="${name}" title="Mark complete">${isDone ? '✓' : ''}</span>`;
     return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
       ${check}
       <span class="name">${name}</span>
       ${diffTag}
+      ${prioTag}
       ${tag}
       ${badge}
       <span class="open-icon">OPEN →</span>

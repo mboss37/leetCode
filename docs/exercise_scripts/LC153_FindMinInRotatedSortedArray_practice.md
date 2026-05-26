@@ -41,36 +41,36 @@ class Solution:
         left, right = 0, len(nums) - 1
         while left < right:
             mid = (left + right) // 2
-            if nums[mid] > nums[right]:
-                left = mid + 1     # pivot is in the right half
+            if nums[left] <= nums[mid]:
+                # left half [left..mid] is sorted
+                if nums[mid] <= nums[right]:
+                    # whole range is sorted → min is at left
+                    return nums[left]
+                # rotation is in right half → min is there
+                left = mid + 1
             else:
-                right = mid        # min is in the left half (could be mid)
+                # left half has the rotation → min is in [left..mid]
+                right = mid
         return nums[left]
 ```
 
 ### The key insight
 
-In a rotated sorted array, **one half is always sorted**. Compare `nums[mid]` to `nums[right]`:
+In a rotated sorted array, **one half is always sorted**. Compare `nums[left]` to `nums[mid]` (same comparison as LC 33):
 
-- **`nums[mid] > nums[right]`** → the right half contains the rotation pivot (and therefore the min). Search RIGHT: `left = mid + 1`.
-- **`nums[mid] ≤ nums[right]`** → the right half is sorted, so the min is in the left half (or is mid itself). Search LEFT: `right = mid` (don't exclude mid).
-
-### Why compare to `right`, not `left`
-
-Compare to `left` and you can't always tell which half is sorted — `nums[mid] ≥ nums[left]` happens in both rotated and non-rotated cases. Comparing to `right` uniquely identifies which side contains the pivot.
+- **`nums[left] ≤ nums[mid]`** → left half `[left..mid]` is sorted. The min is either at `left` (if the whole range is sorted) or in the right half (if rotation is there).
+- **`nums[left] > nums[mid]`** → left half contains the rotation pivot. The min is in `[left..mid]`. Search LEFT: `right = mid` (don't exclude mid).
 
 ### Why `right = mid` (not `mid - 1`)
 
-When `nums[mid] ≤ nums[right]`, `nums[mid]` could BE the min. Excluding it with `right = mid - 1` would skip past the answer.
+When the rotation is in the left half, `nums[mid]` could BE the min. Excluding it with `right = mid - 1` would skip past the answer.
 
 ### Trace on `[4, 5, 6, 7, 0, 1, 2]`
 
-| left | right | mid | nums[mid] | nums[right] | compare | action |
-|---|---|---|---|---|---|---|
-| 0 | 6 | 3 | 7 | 2 | 7 > 2 | left = 4 |
-| 4 | 6 | 5 | 1 | 2 | 1 < 2 | right = 5 |
-| 4 | 5 | 4 | 0 | 1 | 0 < 1 | right = 4 |
-| 4 | 4 | — exit — | | | | return nums[4] = 0 |
+| left | right | mid | nums[left] | nums[mid] | nums[right] | which half sorted? | action |
+|---|---|---|---|---|---|---|---|
+| 0 | 6 | 3 | 4 | 7 | 2 | left sorted (4≤7) | mid 7 > right 2 → rotation right → left = 4 |
+| 4 | 6 | 5 | 0 | 1 | 2 | left sorted (0≤1) | mid 1 ≤ right 2 → whole range sorted → return nums[4] = 0 |
 
 Returns **0** ✓
 
@@ -85,16 +85,20 @@ Returns **0** ✓
 
 | Trap | What goes wrong | Fix |
 |---|---|---|
-| Comparing to `left` instead of `right` | Can't reliably identify the rotated half | Compare to `right` |
+| Forgetting the `nums[mid] <= nums[right]` early-return | Loop never terminates on already-sorted ranges; or you miscompute which half has the rotation | Inner check after `nums[left] <= nums[mid]`: if `nums[mid] <= nums[right]`, range is sorted → return `nums[left]` |
 | `right = mid - 1` when min could BE mid | Skips the answer | `right = mid` |
 | `while left <= right` | Off-by-one — never exits if left == right | `while left < right` strictly |
-| Returning `nums[mid]` from inside the loop | mid moves before convergence | Return `nums[left]` after the loop |
+| Returning `nums[mid]` from inside the loop | mid moves before convergence | Return `nums[left]` after the loop (or via the early-return) |
 
 ---
 
 ## Interview Out-Loud
 
-> "One half of a rotated sorted array is always sorted. I'll use binary search comparing nums[mid] to nums[right]. If mid > right, the pivot is in the right half — go right. Otherwise the right half is sorted, so the min is in the left half or is mid itself — go left, keeping mid in scope.
+> "One half of a rotated sorted array is always sorted. I'll use binary search comparing nums[left] to nums[mid] — same convention as LC 33.
+>
+> If left ≤ mid, the left half is sorted. Then I check if mid ≤ right too — if yes, the whole range is sorted and the min is at left. Otherwise the rotation is in the right half, so I narrow there.
+>
+> If left > mid, the rotation is in the left half — narrow there with right = mid (keeping mid in scope, since it could BE the min).
 >
 > Loop while left < right. When they meet, that's the min.
 >
