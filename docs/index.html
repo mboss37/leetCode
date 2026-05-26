@@ -888,6 +888,7 @@
         <span class="phase-pill"><b>A</b> Foundations</span>
         <span class="phase-pill"><b>B</b> Depth</span>
         <span class="phase-pill"><b>C</b> Mock</span>
+        <span class="phase-pill"><b>+</b> OOP</span>
       </div>
     </div>
   </header>
@@ -1004,6 +1005,18 @@
     <ul class="problem-list" id="phase-c-list"></ul>
   </div>
 
+  <!-- =================== OOP PRINCIPLES =================== -->
+  <div class="section-label"><span class="num">v.</span> OOP Principles — Object-Oriented Design Foundations <span class="learn-path">— a different skill from the LeetCode phases</span></div>
+  <div class="phase-block">
+    <div class="phase-heading">
+      <h3>OOP<em>.</em></h3>
+      <span class="dates">The four pillars + composition</span>
+      <span class="progress-summary" data-phase-pill="OOP"></span>
+      <span class="count-pill">5 exercises</span>
+    </div>
+    <ul class="problem-list" id="oop-list"></ul>
+  </div>
+
   <!-- =================== MODAL (markdown viewer) =================== -->
   <div class="modal" id="modal" role="dialog" aria-modal="true">
     <div class="modal-overlay" id="modal-overlay"></div>
@@ -1089,6 +1102,15 @@ const PHASE_C = [
   'Merge Strings Alternately',
 ];
 
+/* ===== OOP principle exercises (separate track — not LeetCode phases) ===== */
+const OOP = [
+  'Bank Account',
+  'Employee Hierarchy',
+  'Shapes & Areas',
+  'Payment Processor',
+  'Computer Build',
+];
+
 /* ===== Practice script paths — every problem links to its markdown walkthrough ===== */
 const SCRIPTS = {
   'Two Sum':                          'exercise_scripts/LC1_TwoSum_practice.md',
@@ -1130,6 +1152,11 @@ const SCRIPTS = {
   'Product of Array Except Self':     'exercise_scripts/LC238_ProductExceptSelf_practice.md',
   'Longest Palindromic Substring':    'exercise_scripts/LC5_LongestPalindromicSubstring_practice.md',
   'Merge Strings Alternately':        'exercise_scripts/LC1768_MergeStringsAlternately_practice.md',
+  'Bank Account':                     'exercise_scripts/OOP1_Encapsulation_practice.md',
+  'Employee Hierarchy':               'exercise_scripts/OOP2_Inheritance_practice.md',
+  'Shapes & Areas':                   'exercise_scripts/OOP3_Polymorphism_practice.md',
+  'Payment Processor':                'exercise_scripts/OOP4_Abstraction_practice.md',
+  'Computer Build':                   'exercise_scripts/OOP5_Composition_practice.md',
 };
 
 /* ===== Visual walkthrough map ===== */
@@ -1184,6 +1211,11 @@ const PROBLEMS_META = {
   'Product of Array Except Self':         { pattern: 'Prefix + Suffix',  flashcardCat: 'array-misc' },
   'Longest Palindromic Substring':        { pattern: 'Expand-Center',    flashcardCat: 'array-misc' },
   'Merge Strings Alternately':            { pattern: 'Two Pointers',     flashcardCat: 'two-pointers' },
+  'Bank Account':                         { pattern: 'Encapsulation',    oop: true },
+  'Employee Hierarchy':                   { pattern: 'Inheritance',      oop: true },
+  'Shapes & Areas':                       { pattern: 'Polymorphism',     oop: true },
+  'Payment Processor':                    { pattern: 'Abstraction',      oop: true },
+  'Computer Build':                       { pattern: 'Composition',      oop: true },
 };
 
 /* ===== LeetCode difficulty by problem ===== */
@@ -1245,7 +1277,7 @@ function saveDone(set) {
 const doneSet = loadDone();
 
 /* ===== Flat ordered list for modal prev/next (Phase A → B → C) ===== */
-const ALL_PROBLEMS = [...PHASE_A, ...PHASE_B, ...PHASE_C];
+const ALL_PROBLEMS = [...PHASE_A, ...PHASE_B, ...PHASE_C, ...OOP];
 
 /* ===== Modal logic ===== */
 const modalEl       = document.getElementById('modal');
@@ -1264,6 +1296,14 @@ function phaseLabelFor(name) {
 function buildPatternBadge(name) {
   const meta = PROBLEMS_META[name];
   if (!meta) return '';
+  if (meta.oop) {
+    const parts = [
+      `<span class="phase-tag">OOP</span>`,
+      `<span><span class="lbl">Principle:</span> <b>${meta.pattern}</b></span>`,
+      `<a href="#" onclick="openScript('Python Idioms','python_idioms.md'); return false;">↗ idioms</a>`,
+    ];
+    return `<div class="modal-pattern-badge">${parts.join('')}</div>`;
+  }
   const phase = phaseLabelFor(name);
   const visual = VISUALS[name];
   const parts = [];
@@ -1410,6 +1450,7 @@ function renderAllLists() {
   renderList('phase-a-list', PHASE_A, 'A');
   renderList('phase-b-list', PHASE_B, 'B');
   renderList('phase-c-list', PHASE_C, 'C');
+  renderList('oop-list', OOP, 'OOP');
 }
 renderAllLists();
 
