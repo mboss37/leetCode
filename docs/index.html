@@ -173,6 +173,49 @@
     letter-spacing: 0;
   }
 
+  /* ========= VIEW TOGGLE ========= */
+  .view-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+  }
+  .view-toggle-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-right: 2px;
+  }
+  .view-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px solid var(--hair);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+  .view-btn:hover { background: var(--paper-2); }
+  .view-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .view-toggle-hint {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    font-variation-settings: "opsz" 14, "SOFT" 100, "WONK" 1;
+  }
+  @media (max-width: 720px) { .view-toggle-hint { display: none; } }
+
   /* ========= TOOL CARDS GRID ========= */
   .tools {
     display: grid;
@@ -815,40 +858,6 @@
     line-height: 1.6;
   }
   footer .accent { color: var(--accent); font-weight: 700; }
-  footer .deploy {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 16px 20px;
-    margin-top: 16px;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-  }
-  footer .deploy code {
-    background: rgba(243,237,220,0.15);
-    color: var(--gold);
-    padding: 1px 6px;
-    border-radius: 2px;
-    font-size: 11px;
-  }
-  footer .deploy h4 {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 700;
-    color: var(--gold);
-    font-size: 14px;
-    margin: 0 0 8px;
-    letter-spacing: 0;
-    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
-    text-transform: none;
-  }
-  footer .deploy ol {
-    margin: 0;
-    padding-left: 18px;
-    color: var(--paper-2);
-  }
-  footer .deploy ol li {
-    padding: 2px 0;
-  }
 
   @media (max-width: 720px) {
     html, body { overflow-x: hidden; max-width: 100%; }
@@ -1044,6 +1053,17 @@
 
   </section>
 
+  <!-- =================== VIEW TOGGLE =================== -->
+  <div class="view-toggle">
+    <span class="view-toggle-label">View by</span>
+    <button id="view-by-phase" class="view-btn active">Phase</button>
+    <button id="view-by-pattern" class="view-btn">Pattern</button>
+    <span class="view-toggle-hint">— group the same problems by learning phase or by algorithm pattern</span>
+  </div>
+
+  <!-- =================== PHASE VIEW =================== -->
+  <div id="view-phase">
+
   <!-- =================== PHASE A =================== -->
   <div class="section-label"><span class="num">ii.</span> Phase A — Recovery + Foundations</div>
   <div class="phase-block">
@@ -1092,6 +1112,13 @@
     <ul class="problem-list" id="oop-list"></ul>
   </div>
 
+  </div><!-- /view-phase -->
+
+  <!-- =================== PATTERN VIEW (rendered by JS) =================== -->
+  <div id="view-pattern" style="display:none">
+    <div class="section-label"><span class="num">★</span> By Pattern — same problems, grouped by technique <span class="learn-path">— drill one pattern at a time</span></div>
+  </div>
+
   <!-- =================== MODAL (markdown viewer) =================== -->
   <div class="modal" id="modal" role="dialog" aria-modal="true">
     <div class="modal-overlay" id="modal-overlay"></div>
@@ -1113,16 +1140,6 @@
   <!-- =================== FOOTER =================== -->
   <footer>
     <div><span class="accent">CODING PREP</span> · <span class="dim">visual learning hub</span> · <span class="dim">v1.0</span></div>
-    <div class="deploy">
-      <h4>Deploy to GitHub Pages — one-time setup</h4>
-      <ol>
-        <li>Push this repo to GitHub.</li>
-        <li>Repo settings → Pages → Source: <code>main</code> branch, folder: <code>/docs</code>.</li>
-        <li>Wait ~1 min for build. URL will be: <code>https://&lt;username&gt;.github.io/&lt;repo&gt;/</code></li>
-        <li>This index page is the entry — all other HTMLs link relatively.</li>
-        <li>Markdown files render as raw text on Pages; use the GitHub repo view for rendered versions.</li>
-      </ol>
-    </div>
   </footer>
 
 </div>
@@ -1347,6 +1364,21 @@ const DIFFICULTIES = {
 };
 const DIFF_LABEL = { 'E': 'EASY', 'M': 'MED', 'H': 'HARD' };
 
+/* ===== Pattern grouping for the "By Pattern" view (same problems, regrouped) ===== */
+const PATTERN_GROUPS = [
+  { label: 'Hashing — Map & Set', items: ['Two Sum', 'Contains Duplicate', 'Valid Anagram', 'Group Anagrams', 'Longest Consecutive Sequence', 'Logger Rate Limit', 'Insert Delete GetRandom O(1)', 'Design HashMap'] },
+  { label: 'Two Pointers', items: ['Valid Palindrome', 'Two Sum Sorted', 'Three Sum', 'Three Sum Closest', 'Container With Most Water', 'Merge Strings Alternately', 'Remove Nth Node From End'] },
+  { label: 'Sliding Window', items: ['Longest Substring', 'Longest Repeating Character Replacement'] },
+  { label: 'Binary Search', items: ['Binary Search', 'Search Insert Position', 'Find First and Last Position', 'Find Minimum in Rotated Sorted Array', 'Search in Rotated Sorted Array'] },
+  { label: 'Stack', items: ['Valid Parentheses', 'Min Stack', 'Daily Temperatures'] },
+  { label: 'Heap', items: ['Top K Frequent Elements'] },
+  { label: 'Linked List', items: ['Reverse Linked List', 'LRU Cache'] },
+  { label: 'Trees & Graphs', items: ['Maximum Depth of Binary Tree', 'Invert Binary Tree', 'Binary Tree Level Order Traversal', 'Number of Islands', 'Word Search'] },
+  { label: 'DP & Greedy', items: ['Best Time to Buy and Sell Stock', 'Maximum Subarray', 'Coin Change'] },
+  { label: 'Arrays & Intervals', items: ['Merge Intervals', 'Product of Array Except Self', 'Longest Palindromic Substring'] },
+  { label: 'OOP Principles', items: ['Bank Account', 'Employee Hierarchy', 'Shapes & Areas', 'Payment Processor', 'Computer Build'] },
+];
+
 /* ===== Priority hints (which problems can be deprioritized given limited time) ===== */
 const PRIORITY = {
   'Maximum Depth of Binary Tree':       'low',   // tree recursion
@@ -1489,43 +1521,41 @@ document.getElementById('open-idioms').addEventListener('click', (e) => {
 });
 
 /* ===== Render lists with clickable items, pattern tags, progress checkbox ===== */
-function renderList(elId, items, phaseId) {
-  const el = document.getElementById(elId);
-  if (!el) return;
-  el.innerHTML = items.map((name, i) => {
-    const path = SCRIPTS[name];
-    const visual = VISUALS[name];
-    const meta = PROBLEMS_META[name];
-    const isDone = doneSet.has(name);
-    const priority = PRIORITY[name];
-    let cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
-    if (priority === 'low')  cls += ' has-low';
-    if (priority === 'skip') cls += ' has-skip';
-    const tag = meta ? `<span class="pattern-tag">${meta.pattern}</span>` : '';
-    const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
-    const diff = DIFFICULTIES[name];
-    const diffTag = diff ? `<span class="diff-pill diff-${diff.toLowerCase()}" title="LeetCode difficulty">${DIFF_LABEL[diff]}</span>` : '';
-    const prioTag = priority ? `<span class="priority-pill priority-${priority}" title="${priority === 'skip' ? 'Can skip given 13-day timeline' : 'Lower-priority — do if time permits'}">${PRIORITY_LABEL[priority]}</span>` : '';
-    const check = `<span class="progress-check" data-name="${name}" title="Mark complete">${isDone ? '✓' : ''}</span>`;
-    return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
-      ${check}
-      <span class="name">${name}</span>
-      ${diffTag}
-      ${prioTag}
-      ${tag}
-      ${badge}
-      <span class="open-icon">OPEN →</span>
-      <span class="num-tag">${(i+1).toString().padStart(2,'0')}</span>
-    </li>`;
-  }).join('');
+function liHTML(name, i) {
+  const path = SCRIPTS[name];
+  const visual = VISUALS[name];
+  const meta = PROBLEMS_META[name];
+  const isDone = doneSet.has(name);
+  const priority = PRIORITY[name];
+  let cls = (path ? 'clickable' : 'unavailable') + (isDone ? ' done' : '');
+  if (priority === 'low')  cls += ' has-low';
+  if (priority === 'skip') cls += ' has-skip';
+  const tag = meta ? `<span class="pattern-tag">${meta.pattern}</span>` : '';
+  const badge = visual ? `<a class="visual-badge" href="${visual}" title="Open visual walkthrough" onclick="event.stopPropagation()">▶ VISUAL</a>` : '';
+  const diff = DIFFICULTIES[name];
+  const diffTag = diff ? `<span class="diff-pill diff-${diff.toLowerCase()}" title="LeetCode difficulty">${DIFF_LABEL[diff]}</span>` : '';
+  const prioTag = priority ? `<span class="priority-pill priority-${priority}" title="${priority === 'skip' ? 'Can skip given 13-day timeline' : 'Lower-priority — do if time permits'}">${PRIORITY_LABEL[priority]}</span>` : '';
+  const check = `<span class="progress-check" data-name="${name}" title="Mark complete">${isDone ? '✓' : ''}</span>`;
+  return `<li class="${cls}" data-name="${name}" data-path="${path || ''}">
+    ${check}
+    <span class="name">${name}</span>
+    ${diffTag}
+    ${prioTag}
+    ${tag}
+    ${badge}
+    <span class="open-icon">OPEN →</span>
+    <span class="num-tag">${(i+1).toString().padStart(2,'0')}</span>
+  </li>`;
+}
 
-  el.querySelectorAll('li.clickable').forEach(li => {
+function wireListEvents(scope) {
+  scope.querySelectorAll('li.clickable').forEach(li => {
     li.addEventListener('click', (e) => {
       if (e.target.classList.contains('progress-check') || e.target.classList.contains('visual-badge')) return;
       openScript(li.dataset.name, li.dataset.path);
     });
   });
-  el.querySelectorAll('.progress-check').forEach(c => {
+  scope.querySelectorAll('.progress-check').forEach(c => {
     c.addEventListener('click', (e) => {
       e.stopPropagation();
       const name = c.dataset.name;
@@ -1535,7 +1565,37 @@ function renderList(elId, items, phaseId) {
       renderAllLists();
     });
   });
+}
+
+function renderList(elId, items, phaseId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = items.map((name, i) => liHTML(name, i)).join('');
+  wireListEvents(el);
   updateProgressPill(phaseId, items);
+}
+
+function renderPatternView() {
+  const container = document.getElementById('view-pattern');
+  if (!container) return;
+  // keep the section-label (first child), replace any prior group blocks
+  const header = container.querySelector('.section-label');
+  container.innerHTML = '';
+  if (header) container.appendChild(header);
+  PATTERN_GROUPS.forEach(g => {
+    const done = g.items.filter(n => doneSet.has(n)).length;
+    const block = document.createElement('div');
+    block.className = 'phase-block';
+    block.innerHTML = `
+      <div class="phase-heading">
+        <h3>${g.label}<em>.</em></h3>
+        <span class="progress-summary">${done ? `${done}/${g.items.length} done` : ''}</span>
+        <span class="count-pill">${g.items.length}</span>
+      </div>
+      <ul class="problem-list">${g.items.map((name, i) => liHTML(name, i)).join('')}</ul>`;
+    container.appendChild(block);
+  });
+  wireListEvents(container);
 }
 
 function updateProgressPill(phaseId, items) {
@@ -1550,8 +1610,27 @@ function renderAllLists() {
   renderList('phase-b-list', PHASE_B, 'B');
   renderList('phase-c-list', PHASE_C, 'C');
   renderList('oop-list', OOP, 'OOP');
+  renderPatternView();
 }
 renderAllLists();
+
+/* ===== View toggle: Phase vs Pattern ===== */
+const VIEW_KEY = 'view_mode_v1';
+function setView(mode) {
+  const phaseView   = document.getElementById('view-phase');
+  const patternView = document.getElementById('view-pattern');
+  const byPhaseBtn  = document.getElementById('view-by-phase');
+  const byPatternBtn= document.getElementById('view-by-pattern');
+  const pattern = mode === 'pattern';
+  phaseView.style.display   = pattern ? 'none' : '';
+  patternView.style.display = pattern ? '' : 'none';
+  byPatternBtn.classList.toggle('active', pattern);
+  byPhaseBtn.classList.toggle('active', !pattern);
+  localStorage.setItem(VIEW_KEY, mode);
+}
+document.getElementById('view-by-phase').addEventListener('click', () => setView('phase'));
+document.getElementById('view-by-pattern').addEventListener('click', () => setView('pattern'));
+setView(localStorage.getItem(VIEW_KEY) || 'phase');
 
 /* ===== Deep-link: open ?problem=Name on load (used by flashcards) ===== */
 (() => {
