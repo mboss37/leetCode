@@ -858,40 +858,6 @@
     line-height: 1.6;
   }
   footer .accent { color: var(--accent); font-weight: 700; }
-  footer .deploy {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 16px 20px;
-    margin-top: 16px;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-  }
-  footer .deploy code {
-    background: rgba(243,237,220,0.15);
-    color: var(--gold);
-    padding: 1px 6px;
-    border-radius: 2px;
-    font-size: 11px;
-  }
-  footer .deploy h4 {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 700;
-    color: var(--gold);
-    font-size: 14px;
-    margin: 0 0 8px;
-    letter-spacing: 0;
-    font-variation-settings: "opsz" 24, "SOFT" 100, "WONK" 1;
-    text-transform: none;
-  }
-  footer .deploy ol {
-    margin: 0;
-    padding-left: 18px;
-    color: var(--paper-2);
-  }
-  footer .deploy ol li {
-    padding: 2px 0;
-  }
 
   @media (max-width: 720px) {
     html, body { overflow-x: hidden; max-width: 100%; }
@@ -1174,16 +1140,6 @@
   <!-- =================== FOOTER =================== -->
   <footer>
     <div><span class="accent">CODING PREP</span> · <span class="dim">visual learning hub</span> · <span class="dim">v1.0</span></div>
-    <div class="deploy">
-      <h4>Deploy to GitHub Pages — one-time setup</h4>
-      <ol>
-        <li>Push this repo to GitHub.</li>
-        <li>Repo settings → Pages → Source: <code>main</code> branch, folder: <code>/docs</code>.</li>
-        <li>Wait ~1 min for build. URL will be: <code>https://&lt;username&gt;.github.io/&lt;repo&gt;/</code></li>
-        <li>This index page is the entry — all other HTMLs link relatively.</li>
-        <li>Markdown files render as raw text on Pages; use the GitHub repo view for rendered versions.</li>
-      </ol>
-    </div>
   </footer>
 
 </div>
