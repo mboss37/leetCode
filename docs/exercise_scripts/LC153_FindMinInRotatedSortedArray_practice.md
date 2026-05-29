@@ -41,15 +41,15 @@ class Solution:
         left, right = 0, len(nums) - 1
         while left < right:
             mid = (left + right) // 2
+            # Is the left half sorted?
             if nums[left] <= nums[mid]:
-                # left half [left..mid] is sorted
+                # Is the current search slice [left..right] also sorted? (no drop at all here)
                 if nums[mid] <= nums[right]:
-                    # whole range is sorted → min is at left
                     return nums[left]
-                # rotation is in right half → min is there
+                # Only the left is sorted → the drop is on the right
                 left = mid + 1
             else:
-                # left half has the rotation → min is in [left..mid]
+                # Left half is NOT sorted → the drop is on the left
                 right = mid
         return nums[left]
 ```
