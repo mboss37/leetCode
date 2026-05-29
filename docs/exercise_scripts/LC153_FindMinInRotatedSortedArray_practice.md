@@ -43,7 +43,7 @@ class Solution:
             mid = (left + right) // 2
             # Is the left half sorted?
             if nums[left] <= nums[mid]:
-                # Is the right half ALSO sorted? (then the whole thing is sorted)
+                # Is the current search slice [left..right] also sorted? (no drop at all here)
                 if nums[mid] <= nums[right]:
                     return nums[left]
                 # Only the left is sorted → the drop is on the right
