@@ -29,6 +29,7 @@ venv/
 playground.py
 
 # Internal — never publish (personal prep state)
+docs/fde_prep.html
 docs/prep_plan.md
 TASKS.md
 CLAUDE.md
