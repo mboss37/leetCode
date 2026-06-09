@@ -24,6 +24,18 @@ Width = index distance. Height = the **shorter** of the two lines (water spills 
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+Requirements capture is scored before any code goes down — pick the ones that genuinely shape your approach:
+
+- **"Can heights be zero?"** — Yes, down to 0. The area can be 0; the formula handles it with no special case.
+- **"Do I return the area or the two indices?"** — The area, one integer. Ask before storing indices you do not need.
+- **"Do lines between the chosen pair matter?"** — No. Lines have no width and do not block water; only the chosen pair counts.
+- **"Is the array guaranteed non-empty?"** — n ≥ 2, so a valid pair always exists; no empty-input branch.
+- **"Is the input sorted in any way?"** — No. If it were, the answer structure would change completely.
+
+---
+
 ## 1. NOT RECOMMENDED — Brute Force (O(n²))
 
 ```python
@@ -172,6 +184,17 @@ Returns **49** ✓
 > Why always the shorter? Because moving the taller cannot help: width shrinks, and the height is already capped by the shorter line — it can't go above that no matter what we pair the taller with. Only moving the shorter has any chance of finding a taller-than-current-shorter partner.
 >
 > Each pointer moves at most n times total, so O(n) time, O(1) space."
+
+---
+
+## Likely Follow-ups
+
+One question, several parts — once the greedy works, expect the interviewer to push on it.
+
+- **"Convince me the greedy is correct. Why move the shorter side?"** → Moving the taller side shrinks width while height stays capped by the shorter line — area can only drop. Walk the proof from Section 2.
+- **"Also return the indices of the best pair."** → Save `(left, right)` whenever `max_area` updates. Two extra variables.
+- **"Heights are equal — which pointer do you move?"** → Either is safe; the optimum is not lost. State it, do not hand-wave it.
+- **"Now water is trapped between ALL bars — Trapping Rain Water."** → Same two pointers, but track the running max on each side and add up trapped water per step.
 
 ---
 

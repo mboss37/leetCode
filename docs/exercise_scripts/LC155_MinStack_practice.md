@@ -23,6 +23,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can pop, top, or getMin be called on an empty stack?"** — No, guaranteed non-empty here. Otherwise you'd raise or return None — agree on which.
+- **"Can values repeat, including repeated minimums?"** — Yes. Storing the min at every level handles duplicate mins safely; a single min variable does not.
+- **"Should pop return the removed value?"** — No, it returns nothing here. Easy to add if wanted.
+- **"Is O(1) required for all four ops, or just getMin?"** — All four. That rules out scanning the stack for the min.
+
+---
+
 ## 1. Naive (verbal baseline only — DON'T WRITE)
 
 Single stack. `getMin()` scans all elements to find the minimum.
@@ -150,6 +161,17 @@ This is a **real OOP problem**, unlike the algorithm problems wrapped in `class 
 - **`self`** = "this instance." Methods read and write via `self.xxx` to share state.
 
 If you create two instances, they have **separate state** — `ms1.push(5)` doesn't affect `ms2`.
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — once the two-stack version works, expect one of these.
+
+- **"Can you use less memory in the min stack?"** → Only push to minStack when `val <= minStack[-1]`; on pop, pop minStack only when the popped value equals its top.
+- **"Now add getMax too, still O(1)."** → A third parallel stack with the running maximum — same invariant, flipped comparison.
+- **"Could you do O(1) min on a queue instead of a stack?"** → Harder — needs a monotonic deque, the Sliding Window Maximum idea, because FIFO removal can evict the current min.
+- **"What if the values were huge objects, not ints?"** → Store indices or references in minStack instead of copies; the invariant doesn't change.
 
 ---
 

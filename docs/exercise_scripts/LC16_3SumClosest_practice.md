@@ -17,6 +17,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Do I return the sum, or the three numbers?"** — The sum, a single integer. That's why no dedup logic is needed at all.
+- **"If two sums are equally close, which one wins?"** — Spec promises exactly one solution. If they relax that, agree on a tie-break (e.g. the smaller sum).
+- **"May I sort the input?"** — Yes — values only are returned, so sorting is safe and unlocks the two-pointer scan.
+- **"Can an exact match happen, and may I stop there?"** — Yes. Distance 0 is unbeatable — return `target` immediately.
+- **"Same element three times?"** — No, three distinct indices. Values may repeat (`[0, 0, 0]` is valid input).
+
+---
+
 ## 1. Brute Force (O(n³))
 
 ```python
@@ -147,6 +159,17 @@ class Solution:
 | `abs(current) < closest_sum` | Comparing distance to a sum | `abs(current - target) < abs(closest - target)` |
 | Skip checks copied from LC 15 | Unnecessary complexity | Drop them — no dedup needed here |
 | Initialize from `numbers[:3]` (unsorted) | Just a taste issue | Either works; use `sorted_nums[:3]` for consistency |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — closest-sum questions usually bend back toward exact-sum ones.
+
+- **"Now require the sum to EQUAL the target, all triplets."** → That's LC 15 3Sum with a non-zero target: act only on exact matches and add the three dedup skips.
+- **"Return the triplet, not the sum."** → Store the three values (or indices into the sorted copy) every time `closest_sum` updates — two extra lines.
+- **"Generalize to four numbers closest to target."** → One more anchor loop around this code: O(n³) with the same inner scan and distance check.
+- **"Drop to TWO numbers closest to target."** → Just the inner part: sort, one converging two-pointer pass, track the best distance. Good warm-up answer.
 
 ---
 

@@ -22,6 +22,18 @@ Returns `[[3], [9, 20], [15, 7]]`.
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+Requirements capture is scored before any code goes down — pick the ones that genuinely shape your approach:
+
+- **"Can the tree be empty?"** — Yes, 0 nodes. Return `[]` — that is the early return at the top.
+- **"One flat list, or a list per level?"** — A list per level. This is exactly why plain BFS is not enough and you need the level-size snapshot.
+- **"Left-to-right within each level?"** — Yes. Enqueue the left child before the right.
+- **"Any shape guarantee — balanced, complete?"** — No. The queue can hold about half the nodes at the widest level; worth saying for space.
+- **"Values can repeat or be negative?"** — Yes to both; the traversal never looks at values, so nothing changes.
+
+---
+
 ## The pattern — BFS with level-size snapshot
 
 Plain BFS visits nodes in level order but doesn't TELL you when a level ends. The trick:
@@ -114,6 +126,17 @@ All are the same skeleton with a 1-line tweak.
 > Use `collections.deque` so popleft is O(1). Each node is enqueued once and dequeued once → O(n) time. O(n) space for the queue.
 >
 > Same skeleton extends to zigzag, right-side-view, average-of-levels — change just the append step."
+
+---
+
+## Likely Follow-ups
+
+One question that grows in parts — every extension here is the same skeleton with a one-line change.
+
+- **"Now zigzag: alternate left-to-right and right-to-left per level."** → Keep a level counter; reverse `level` before appending on odd levels (LC 103).
+- **"Return levels bottom-up."** → Same loop, return `result[::-1]` at the end (LC 107).
+- **"Return what you'd see from the right side."** → Append only the last node of each level (LC 199).
+- **"Just the depth of the tree?"** → Count outer-loop iterations — that is Maximum Depth, see the LC 104 practice script in this repo.
 
 ---
 

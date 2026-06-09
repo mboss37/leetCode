@@ -14,6 +14,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can the array be empty or have one element?"** — Yes. Both return `false` — no pair possible.
+- **"Do you want WHICH value repeats, or just true/false?"** — Just true/false. That's why a set is enough; a dict would be needed for indices.
+- **"Are values bounded to a small range?"** — If yes, a fixed-size boolean array beats a set. Here they're unbounded, so set.
+- **"Can I modify the input?"** — If yes, sorting in place and checking neighbors gives O(1) extra space at O(n log n) time.
+
+---
+
 ## Why This Problem Feels Harder Than Two Sum
 
 Two Sum was about **finding a pair** using a hashmap.  
@@ -146,6 +157,17 @@ This version shows you understand Python well. Many strong candidates use this.
 | Iterating with a list and `in` check | `x in list` is O(n) → total O(n²) | Use a set: `x in set` is O(1) |
 | Returning at end without checking | The `return False` after the loop is critical | Add `return False` after the loop ends |
 | Using a dict when a set is enough | Wastes space (storing dummy values) | Use `set` when you only need existence, not index |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect this one to mutate once your set version works.
+
+- **"Now return WHICH values are duplicated."** → Swap the set for a dict of counts, or keep a second set of repeats. Return its contents at the end.
+- **"True only if the duplicate is within k positions."** → That's Contains Duplicate II. Keep a sliding-window set of the last k values: add on entry, remove on exit.
+- **"The input is a huge stream that doesn't fit in memory."** → Exact answer needs external sort (sort chunks, check neighbors). For an approximate answer, mention a Bloom filter.
+- **"No extra space allowed."** → Sort in place, then one pass comparing each element to its neighbor. O(n log n) time, O(1) space.
 
 ---
 

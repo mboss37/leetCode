@@ -13,6 +13,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can I reuse each coin denomination unlimited times?"** — Yes. Unlimited reuse is what makes this DP over amounts, not subset-sum.
+- **"What should I return for amount = 0?"** — 0 coins. This is exactly the base case `dp[0] = 0`.
+- **"Is a coin of value 1 guaranteed?"** — No. So some amounts may be impossible — that's why -1 exists.
+- **"Do you want the count, or the actual coins used?"** — Count only. Reconstructing the coins needs an extra "which coin did I pick" array.
+- **"Can the coins list contain duplicates?"** — Possible, but harmless — duplicates never change the minimum.
+
+---
+
 ## Why NOT greedy
 
 > "Take the biggest coin that fits, repeat."
@@ -140,6 +152,17 @@ Some people find this more natural. Same O.
 > If dp[amount] stayed INF, return -1; otherwise return it.
 >
 > O(amount × number of coins) time, O(amount) space."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"Now count the NUMBER of ways to make the amount."** → That's LC 518 Coin Change II. Same dp array, but sum instead of min — and the coin loop must be OUTER so each combination is counted once.
+- **"Return the actual coins, not just the count."** → Keep a second array `choice[a]` = the coin used at `a`. Walk back from `amount`, subtracting `choice[a]` each step.
+- **"Can you do it top-down instead?"** → Memoized recursion (the Alternative section above). Same work, just lazy — only reachable amounts get computed.
+- **"What if amount is huge, like 10⁹?"** → The dp array no longer fits. Say it out loud: this needs a different idea (math on coin combinations); don't pretend dp scales.
 
 ---
 

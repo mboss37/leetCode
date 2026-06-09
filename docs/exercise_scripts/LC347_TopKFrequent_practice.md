@@ -18,6 +18,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"If two elements tie in frequency at the k boundary, which do I pick?"** — Spec guarantees the answer is unique, so no ties at the cut. Without that guarantee, ask for a tie-break rule.
+- **"Is k always valid — at most the number of unique elements?"** — Yes, guaranteed. No need to handle k being too big.
+- **"Return just the elements, or the elements with their counts?"** — Just the elements, any order.
+- **"Is 'better than O(n log n)' a hard requirement?"** — Yes. A full sort is rejected; O(n log k) or O(n) both pass.
+
+---
+
 ## 1. Verbal baseline (state only, don't write) — Sort by count, O(n log n)
 
 > *"Brute force is `Counter(nums)` then sort the items by count, take the top k. That's O(n log n) — sort dominates. Spec requires better than O(n log n), so this would be rejected."*
@@ -213,6 +224,17 @@ class Solution:
 > Time: O(n log k). Space: O(n) for the Counter.
 >
 > If asked to implement without `most_common`, I'd build the heap manually: push each (count, number) tuple, pop when the heap exceeds size k. If asked for true O(n), I'd use bucket sort — index numbers by frequency, walk from the highest bucket down."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — the k-variants here are almost guaranteed.
+
+- **"Now without `most_common`."** → The manual size-k min-heap — already written above in this script.
+- **"Can you do true O(n)?"** → Bucket sort by frequency — the bonus section above.
+- **"Top k frequent WORDS, ties broken alphabetically."** → Heap of `(-count, word)` tuples — negate the count so the heap orders by count descending, word ascending.
+- **"The numbers arrive as a stream — top k at any moment?"** → Keep the Counter updated per element; recompute the size-k heap on demand, or maintain it incrementally.
 
 ---
 

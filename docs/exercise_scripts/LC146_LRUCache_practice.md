@@ -21,6 +21,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can capacity be 0?"** — Spec says ≥ 1 here. If 0 were allowed, every put would evict immediately — worth a guard clause.
+- **"Does updating an existing key count as a 'use'?"** — Yes. Both get and put on an existing key refresh its recency. Missing this is the classic silent bug.
+- **"Does a get on a missing key change any state?"** — No. Just return -1, touch nothing.
+- **"Am I allowed to use `OrderedDict`, or do you want it built from scratch?"** — Ask this one out loud. The answer decides whether you write 15 lines or 50.
+
+---
+
 ## 1. RECOMMENDED — `collections.OrderedDict` (~15 lines)
 
 ```python
@@ -228,6 +239,17 @@ All O(1). Just verbose.
 > All O(1). If you want me to implement this without `OrderedDict`, I'd build a hash map mapping key to a doubly-linked-list node, with sentinel head and tail nodes to avoid empty-case branches."
 
 That last sentence shows you know the harder version exists without forcing you to write it.
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — LRU Cache is the classic "keep extending it" design question.
+
+- **"Now do it without `OrderedDict`."** → The manual hash map + doubly-linked list with sentinel nodes — already written above in this script.
+- **"Make it thread-safe."** → One lock around the bodies of get and put — one sentence is enough here.
+- **"Add a TTL — entries expire after some time."** → Store an expiry timestamp with each value; on get, treat an expired entry as missing and delete it.
+- **"Capacity can change at runtime."** → Add a `resize(n)` method: set the new capacity, then pop from the front until `len <= capacity`.
 
 ---
 

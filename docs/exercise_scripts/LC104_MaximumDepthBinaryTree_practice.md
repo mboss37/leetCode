@@ -12,6 +12,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on pinning down requirements first — pick the ones that genuinely change your code:
+
+- **"Is depth counted in nodes or edges?"** — Nodes here: a single node has depth 1. This is the classic off-by-one; settle it before coding.
+- **"Can the tree be empty?"** — Yes. Return 0 — that is the base case.
+- **"How deep can the tree be? Is recursion safe?"** — Up to 10⁴ nodes, possibly fully skewed. Mention iterative BFS if stack depth worries them.
+- **"Maximum depth, not minimum?"** — Maximum. Minimum depth is a different problem with a leaf subtlety — do not mix them up.
+
+---
+
 ## No meaningful brute force
 
 You must visit every node to know the depth — that's the O(n) floor. The recursion below IS the simplest expression of that visit-every-node pass; no slower baseline worth showing.
@@ -111,6 +122,17 @@ Level-by-level scan. Useful when you want to AVOID recursion stack (very deep tr
 > "Recursion. Base case: empty tree → 0. Otherwise, the depth of this tree is 1 plus the max depth of the deeper of the two subtrees.
 >
 > Three lines. O(n) time — every node visited once. O(h) recursion stack space — h is the tree height. Balanced tree → O(log n) stack. Skewed tree → O(n) stack."
+
+---
+
+## Likely Follow-ups
+
+One question, several parts — this warmup almost always grows.
+
+- **"Do it without recursion."** → The Iterative BFS alternative above: depth = number of levels drained.
+- **"Now minimum depth."** → Careful: must reach a LEAF. A node with one child cannot take `min` with the missing side's 0 — handle the one-child case.
+- **"Now the diameter, or check if it's balanced."** → Same recursion shape; combine the two subtree depths differently (sum for diameter, |diff| ≤ 1 for balanced).
+- **"Return the values level by level."** → That is Level Order Traversal — see the LC 102 practice script in this repo.
 
 ---
 

@@ -12,6 +12,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores requirements capture before any code — pick the ones that genuinely change your approach:
+
+- **"Can the list be empty?"** — Yes, 0 nodes is allowed. `prev = None` plus the `while curr` guard returns None correctly.
+- **"Reverse in place, or build a new list?"** — In place: flip the pointers, O(1) extra space. Copying values out would dodge the point.
+- **"Singly or doubly linked?"** — Singly. That is why you must save `curr.next` before overwriting it.
+- **"Iterative or recursive — any preference?"** — Either works; lead with iterative for O(1) space, offer recursive as the variant.
+- **"Return the new head?"** — Yes — that is `prev` at the end, not the old `head`.
+
+---
+
 ## No meaningful brute force
 
 Linked-list traversal is inherently O(n) — you must touch every node. The pointer-juggling approach below is the simplest correct version; there's no slower comparative worth writing as a baseline. (A recursive variant exists but trades stack for clarity, not complexity.)
@@ -109,6 +121,17 @@ Why O(n) space? The recursion stack goes `n` levels deep before unwinding.
 > The key is saving the next pointer BEFORE overwriting it — otherwise we lose the rest of the list.
 >
 > When curr is None, prev is the new head. O(n) time, O(1) space."
+
+---
+
+## Likely Follow-ups
+
+One question, several parts — once the loop works, expect the problem to grow.
+
+- **"Now do it recursively."** → The Alternative section above. Same O(n) time, but O(n) stack — say that trade-off out loud.
+- **"Reverse only positions m to n."** → Reverse Linked List II: dummy node, walk to m−1, run the same flip loop n−m+1 times, reconnect both ends.
+- **"Reverse in groups of k."** → Repeat the sublist reversal per group; if fewer than k remain, leave them as-is.
+- **"Use this to check if the list is a palindrome."** → Find the middle (slow/fast), reverse the second half, compare the two halves.
 
 ---
 

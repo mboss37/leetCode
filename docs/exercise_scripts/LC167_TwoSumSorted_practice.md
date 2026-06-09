@@ -24,6 +24,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Are the returned indices 0-indexed or 1-indexed?"** — 1-indexed here, unusually. This is THE trap — `[left + 1, right + 1]`.
+- **"Is constant extra space required?"** — Yes per spec. That rules out the hash map and forces two pointers.
+- **"Is the array guaranteed sorted ascending?"** — Yes, and the whole pointer argument depends on it. Unsorted input sends you back to the LC 1 hash map.
+- **"Exactly one solution, and can I reuse an element?"** — Exactly one; no reuse. Hence `while left < right` and a defensive `[]` if none.
+- **"Duplicates in the array?"** — Allowed (`[4, 4]`, target 8 is fine). Two different indices, so no special handling.
+
+---
+
 ## 1. Brute Force (O(n²)) — verbal baseline only
 
 ```python
@@ -159,6 +171,17 @@ LeetCode's spec is unusual here. Most array problems are 0-indexed; Two Sum Sort
 > Two indices: left at 0, right at n-1. While left is less than right (they can't reuse the same element), compute the sum. If it equals target, return both indices 1-indexed. If the sum is too small, left advances right — bigger value. If too big, right advances left — smaller value.
 >
 > Each step eliminates exactly one candidate position. Time: O(n). Space: O(1). The spec guarantees a solution so I won't reach the fallback, but I'll add a defensive return at the end."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — this two-pointer scan is the piece they build on.
+
+- **"Now find THREE numbers that sum to the target."** → Sort is already given; add an outer anchor loop and run this exact scan on the rest. That is LC 15 3Sum — the next script in this chain.
+- **"What if the array is NOT sorted?"** → Two options: hash map in O(n) time / O(n) space (LC 1 Two Sum), or sort first and lose the original indices.
+- **"Return ALL pairs that hit the target."** → Don't return on match; record the pair, then skip duplicate values on both sides and move both pointers inward.
+- **"What if no solution is guaranteed?"** → The loop already terminates when the pointers meet; return `[]` (or agree on a sentinel) instead of relying on the guarantee.
 
 ---
 

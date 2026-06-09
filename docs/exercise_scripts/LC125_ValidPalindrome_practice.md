@@ -6,6 +6,18 @@ Given a string `s`, return `true` if it is a palindrome, or `false` otherwise.
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"What counts as alphanumeric — do digits compare too?"** — Yes, digits count. That's why `"0P"` is `False`, not skipped.
+- **"Is the check case insensitive?"** — Yes. Compare with `.lower()` on both sides.
+- **"What if the string is empty, or all punctuation?"** — Both are palindromes → `True`. The pointers just meet without comparing anything.
+- **"May I build a cleaned copy, or do you want O(1) space?"** — Both are valid; the two-pointer version avoids the extra string. Ask which they prefer.
+- **"ASCII only or Unicode?"** — Python's `.isalnum()` accepts Unicode letters too. Worth one sentence so the interviewer knows you saw it.
+
+---
+
 ## Solution 1: Brute Force (Clean + Reverse)
 
 ```python
@@ -127,6 +139,17 @@ class Solution:
 | `while left <= right` | Compares the middle char to itself — harmless but unnecessary | Use `left < right` |
 | Skipping past `right` boundary | If you skip too eagerly, `left` can pass `right` mid-skip | Add `left < right` guard INSIDE the skip-while loops |
 | Reaching for `s[::-1] == s` when interviewer wants O(1) space | O(n) extra space for the reversed string | State that approach verbally, write the two-pointer version |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — the palindrome check usually gains one twist.
+
+- **"Now allow deleting at most ONE character."** → Valid Palindrome II. Same two pointers; on the first mismatch, branch: skip left OR skip right, and check if either remainder is a palindrome.
+- **"Return the longest palindromic substring instead."** → Different pattern: expand around each center (odd and even), track the best. O(n²).
+- **"What if it's a singly linked list, not a string?"** → No backward pointer. Find the middle, reverse the second half, compare halves.
+- **"Make it strict — punctuation and case matter."** → Drop the skip and `.lower()` logic; the loop shrinks to plain compare-and-converge.
 
 ---
 

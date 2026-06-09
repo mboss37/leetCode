@@ -21,6 +21,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can the array be empty?"** — Yes, length can be 0. Both helpers start `result = -1`, so `[-1, -1]` falls out for free.
+- **"Duplicates are allowed, right?"** — Yes — that's the whole twist. Without duplicates this is plain Binary Search.
+- **"If the target appears exactly once, do I return the same index twice?"** — Yes, `[i, i]`.
+- **"Is O(log n) required?"** — Yes. The one-pass linear scan is correct but rejected.
+
+---
+
 ## 1. Linear Scan — NOT RECOMMENDED (O(n))
 
 ```python
@@ -192,6 +203,17 @@ Returns `4`.
 > Both helpers default to `-1` if no match exists. Return `[find_left(), find_right()]`.
 >
 > O(log n) for each search, two searches, still O(log n). O(1) space."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — these are the natural extensions once both searches work.
+
+- **"How many times does the target appear?"** → `last - first + 1` when found, 0 otherwise. No extra search needed.
+- **"Can you do it with the standard library?"** → `bisect_left` gives the first position, `bisect_right - 1` gives the last. Check the value at `bisect_left` actually equals target.
+- **"What if the array was rotated at an unknown point?"** → Search in Rotated Sorted Array (LC 33): find which half is sorted, then narrow.
+- **"Count how many numbers fall in a range [lo, hi]."** → Same biased searches: leftmost position of `lo`, rightmost of `hi`, subtract.
 
 ---
 

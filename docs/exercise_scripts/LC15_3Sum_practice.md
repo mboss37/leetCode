@@ -15,6 +15,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Do you want the values or the indices?"** — Values. That's what makes sorting legal — sorting destroys original indices.
+- **"Are duplicate triplets allowed in the output?"** — No. Dedup is by VALUES, not positions — `[-1, -1, 2]` may only appear once.
+- **"May I modify (sort) the input array?"** — Usually yes. If not, sort a copy — costs O(n) space, same algorithm.
+- **"Does output order matter?"** — No. So no extra sorting of the result is needed.
+- **"What if no triplet sums to zero, or the array is tiny?"** — Return an empty list. Constraints say n ≥ 3, but `[]` covers smaller defensively.
+
+---
+
 ## 1. Brute Force Solution (O(n³))
 
 ```python
@@ -230,6 +242,17 @@ print(solution.threeSum([-2, -1, -1, 0, 0, 1, 1, 2]))     # [[-2, 0, 2], [-2, 1,
 > The outer loop fixes one element as the anchor. For each anchor I run a two-pointer scan over the rest, looking for L + R = -anchor. That's essentially LC 167 with a fixed target.
 > To prevent duplicate triplets, I add three skip checks: skip the outer anchor if it matches the previous anchor's value, and after each match walk L and R past their duplicate neighbors before advancing.
 > Total time O(n²), space O(1) auxiliary. The skips guarantee uniqueness, so no set is needed."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — 3Sum has two natural directions to grow.
+
+- **"Now find the triplet whose sum is CLOSEST to a target."** → Same sort + anchor + two-pointer skeleton, but track the best distance instead of deduping. That is LC 16 3Sum Closest — the next script in this chain.
+- **"Generalize to four numbers — or k numbers."** → 4Sum adds one more anchor loop around this code (O(n³)). For general k, recurse: peel anchors until two remain, then run the two-pointer scan.
+- **"COUNT the triplets instead of listing them."** → Don't skip duplicates — count the sizes of equal-value runs at L and R and multiply, instead of recording one triplet.
+- **"What if the target isn't zero?"** → Nothing structural changes: look for `L + R = target - anchor` instead of `-anchor`.
 
 ---
 

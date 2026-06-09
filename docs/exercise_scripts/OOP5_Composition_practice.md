@@ -22,6 +22,17 @@ The test: say it out loud. "A computer **is a** CPU"? No. "A computer **has a** 
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Are all three parts required, or can a computer ship without storage?"** — Required keeps the constructor simple; optional means defaults or `None` handling everywhere.
+- **"Can parts be swapped after construction?"** — Yes, that's the demo. Plain attributes are enough; a property with validation if a part must never be `None`.
+- **"Can a computer have multiple storage drives?"** — If yes, store a list of `Storage` and sum their prices — different shape of the class.
+- **"Should callers see the parts, or only specs and price?"** — Prefer delegating through `Computer`'s own methods so callers don't couple to part internals.
+
+---
+
 ## ❌ NOT RECOMMENDED — inheritance for "has-a"
 
 ```python
@@ -134,6 +145,17 @@ If you're unsure, default to composition — it's easier to refactor *toward* in
 ## Interview out-loud
 
 > "A computer isn't a kind of CPU — it *has* a CPU, RAM, and storage. So I compose: the `Computer` holds those parts as attributes and delegates to them for price and specs. That keeps each part independent and testable, and I can swap or upgrade a part at runtime without changing the `Computer` class. I reach for inheritance only when the relationship is genuinely 'is-a'; for 'has-a' or 'uses-a', composition is more flexible — which is why the guidance is to favor composition over inheritance."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the build to gain components.
+
+- **"Add a GPU."** → One new part class, one new attribute, one extra term in `total_price`. Existing parts untouched.
+- **"Support multiple storage drives."** → Hold a list of `Storage`; `total_price` sums over it, `specs` joins them.
+- **"All parts have a price — should they share a contract?"** → Yes, a `Part` ABC with a `price` field/method, so `total_price` can loop over parts uniformly — ties back to Abstraction (OOP4).
+- **"Why not `Computer(CPU, RAM, Storage)` with multiple inheritance?"** → "Computer is-a CPU" is false; you'd inherit three overlapping APIs and constructor conflicts instead of three clean attributes.
 
 ---
 

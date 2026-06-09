@@ -23,6 +23,17 @@ Two flavors in Python:
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Should a negative radius or width raise an error?"** — Yes — validate in each `__init__` and raise `ValueError`, so a shape can't exist in a bad state.
+- **"Must shapes share a base class, or is duck typing enough?"** — Both work in Python; the ABC documents the contract and catches missing `area()` at construction.
+- **"What should `largest` do on an empty list — raise or return None?"** — Agree up front; bare `max()` raises `ValueError`.
+- **"If two shapes tie for largest, which one wins?"** — `max` returns the first; confirm that's acceptable.
+
+---
+
 ## ❌ NOT RECOMMENDED — type-checking ladder
 
 ```python
@@ -136,6 +147,17 @@ The base class (`Shape`) is still worth it: it documents the contract and lets `
 ## Interview out-loud
 
 > "I'll give every shape a common `area()` method via a `Shape` base class. Then `total_area` and `largest` just call `area()` on each element — they don't branch on the concrete type. Adding a new shape means adding one subclass with its own `area()`; the existing loops never change. That's polymorphism: one interface, many implementations, and it's what lets the code stay open to extension but closed to modification."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect new shapes and new operations.
+
+- **"Add a Pentagon without touching `total_area`."** → One new subclass with its own `area()`. The existing functions never change — say that out loud, it's the whole point.
+- **"Now every shape needs a `perimeter()` too."** → Add a second `@abstractmethod` to `Shape`; Python refuses to construct any subclass that skips it.
+- **"Sort the shapes by area."** → `sorted(shapes, key=lambda s: s.area())` — the same polymorphic call, no type checks.
+- **"What if someone passes an object without `area()`?"** → With the ABC it can't be constructed as a Shape; with pure duck typing it fails at call time — that trade-off is the Abstraction exercise (OOP4).
 
 ---
 

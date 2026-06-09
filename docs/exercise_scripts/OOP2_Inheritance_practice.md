@@ -24,6 +24,17 @@ The relationship test is **"is-a"**: a `Manager` **is an** `Employee`. If you ca
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Should a plain `Employee` be constructible, or only Manager/Salesperson?"** — Decides plain base class vs an ABC that can't be instantiated.
+- **"Can salary, bonus, or commission be negative?"** — If not, validate once in the base `__init__` and raise `ValueError`.
+- **"Is commission a flat amount or a rate times sales?"** — A rate means `Salesperson` needs a `sales` field too — different constructor.
+- **"Is `annual_pay` gross yearly pay, before tax?"** — Pin down what the number means before three classes compute it.
+
+---
+
 ## ❌ NOT RECOMMENDED — copy-paste, no shared base
 
 ```python
@@ -121,6 +132,17 @@ for member in team:
 ## Interview out-loud
 
 > "Name and salary are common to every employee, so they go in a base `Employee` class with a default `annual_pay`. `Manager` and `Salesperson` inherit that and override `annual_pay`, but they call `super().annual_pay()` so they extend the base calculation instead of duplicating it. The relationship is genuinely 'is-a' — a manager is an employee — which is exactly when inheritance is the right tool."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the hierarchy to gain members.
+
+- **"Add a Contractor paid by the hour."** → One new subclass with `hours` and `rate`, overriding `annual_pay`. Nothing existing changes — that's the point.
+- **"Compute total payroll for a mixed list."** → One loop calling `member.annual_pay()` — no type checks. That's the Polymorphism exercise (OOP3).
+- **"A Manager who ALSO earns commission?"** → Don't deepen the tree. Compose: give employees a list of pay components and sum them — the Composition exercise (OOP5).
+- **"Force every subclass to define `annual_pay`."** → Make `Employee` an ABC with `@abstractmethod` — the Abstraction exercise (OOP4).
 
 ---
 

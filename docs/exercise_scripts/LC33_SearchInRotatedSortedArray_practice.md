@@ -14,6 +14,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Are all values unique, or can there be duplicates?"** — Unique here. Duplicates break the "which half is sorted" test and degrade to O(n) worst case (that's LC 81).
+- **"Can the array be not rotated at all?"** — Yes, rotation by 0 is allowed. The same code handles it — the left half just always tests as sorted.
+- **"Return the index or the value? What if target is missing?"** — Index; -1 if missing.
+- **"Is the array ascending before rotation?"** — Yes. Descending would flip every comparison.
+- **"Is O(n) acceptable or do you need O(log n)?"** — Spec demands O(log n), so a linear scan is off the table.
+
+---
+
 ## NOT RECOMMENDED — Linear Scan (O(n))
 
 ```python
@@ -111,6 +123,17 @@ Each step halves the search range → **O(log n)**.
 > Otherwise the RIGHT half is sorted. Check if target falls in (nums[mid], nums[right]] — if yes, search right, else search left.
 >
 > Each step halves the range → O(log n). O(1) space."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"Find the MINIMUM element instead of a target."** → That is literally LC 153 Find Minimum in Rotated Sorted Array — there's a practice script for it in this repo. Binary search toward the unsorted side; the min is the pivot.
+- **"What if duplicates are allowed?"** → LC 81. When `nums[left] == nums[mid] == nums[right]` you can't tell which half is sorted — shrink both ends by one. Worst case becomes O(n).
+- **"Find how many times the array was rotated."** → Same as finding the min: its index IS the rotation count.
+- **"Target appears multiple times — return the first occurrence."** → Only meaningful with duplicates; after finding any match, binary-search left for the boundary (LC 34 style).
 
 ---
 

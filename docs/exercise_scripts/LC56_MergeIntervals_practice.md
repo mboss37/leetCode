@@ -15,6 +15,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Are the intervals already sorted by start?"** — No, arbitrary order. Sorting first is the whole trick — it makes overlaps adjacent.
+- **"Do TOUCHING intervals merge? [1,4] and [4,5]?"** — Yes, they merge to [1,5]. That's why the disjoint test is strict `>`, not `>=`.
+- **"Can one interval fully contain another?"** — Yes. That's why the merged end takes `max(last.end, current.end)`, never just current's end.
+- **"Can start equal end — point intervals like [5,5]?"** — Yes, constraints allow it; the same code handles them.
+- **"May I sort the input in place? Does output order matter?"** — In-place sort is fine; output comes out sorted by start.
+
+---
+
 ## NOT RECOMMENDED — Pairwise Merge (O(n³))
 
 ```python
@@ -105,6 +117,17 @@ Sorted: `[[1,3], [2,6], [8,10], [15,18]]` (already sorted).
 ## Interview Out-Loud
 
 > "Sort intervals by start time so overlapping intervals become adjacent. Sweep once: if the current interval starts AFTER the last merged ends, append it as new. Otherwise extend the last merged's end to max(last.end, current.end). Time O(n log n) — sort dominates. Space O(n)."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"INSERT one new interval into an already-merged sorted list."** → LC 57 Insert Interval. Three phases: copy intervals ending before it, merge all that overlap, copy the rest. O(n), no re-sort.
+- **"How many meeting rooms do these intervals need?"** → LC 253. Sort starts and ends separately and sweep, or use a min-heap of end times. The answer is max simultaneous overlaps.
+- **"Remove the fewest intervals so the rest don't overlap."** → LC 435. Greedy: sort by END, keep each interval that starts at or after the last kept end.
+- **"Intervals arrive one at a time as a stream."** → Keep the merged list sorted and run the LC 57 insert per arrival — O(n) each, or an interval tree if pushed.
 
 ---
 

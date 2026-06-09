@@ -14,6 +14,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Do timestamps arrive in order?"** — Yes, non-decreasing. Out-of-order timestamps would break any queue-based cleanup.
+- **"Does a SUPPRESSED message reset the 10-second window?"** — No. The cooldown counts from the last PRINTED time — so never update the dict on suppress.
+- **"Is a message exactly 10 seconds after the last print allowed?"** — Yes. So the check is strict `<`, not `<=`.
+- **"Are there memory limits? How many distinct messages?"** — The dict grows with every distinct message ever seen — this is the hook for the cleanup follow-up.
+- **"Can two different messages share a timestamp?"** — Yes, and they're independent — per-message state only.
+
+---
+
 ## No meaningful brute force
 
 Design problem — track every message's last-print time and gate by a 10-second window. The naive approach (store every timestamp ever, scan on each call) is O(n) per call, but it's not a useful comparative — same algorithm, worse data structure. The dict-of-last-seen below is the minimal correct answer.
@@ -126,6 +138,17 @@ Memory bounded by the 10s window. Same O(1) amortized.
 > Strict less-than on the gap — exactly 10 seconds is allowed.
 >
 > O(1) per call. Memory grows with unique messages. Bounded variant: pair a deque with a set, evict entries older than timestamp - 10 on each call."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"Memory grows forever — fix it."** → The deque + set variant above. Evict entries older than `timestamp - 10` on every call; memory is bounded by the window.
+- **"Allow up to N prints per 10 seconds, not just 1."** → Per-message deque of recent print times. Pop expired ones, print only if fewer than N remain.
+- **"What if timestamps arrive out of order?"** → The plain dict still works per message, but the deque cleanup breaks — say so, and ask how late a timestamp can be.
+- **"Make it thread-safe."** → The check and the dict update must be atomic — wrap them in a lock, or it double-prints under races.
 
 ---
 
