@@ -59,8 +59,8 @@ class Solution:
 
         for i, t in enumerate(temperatures):
             while stack and temperatures[stack[-1]] < t:
-                prev_idx = stack.pop()
-                result[prev_idx] = i - prev_idx
+                cooler_day = stack.pop()
+                result[cooler_day] = i - cooler_day
             stack.append(i)
 
         return result
