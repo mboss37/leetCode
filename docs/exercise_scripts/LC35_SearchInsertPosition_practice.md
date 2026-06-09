@@ -20,6 +20,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Are the values distinct, or can there be duplicates?"** — Distinct here. With duplicates, "the" insertion index is ambiguous — leftmost vs rightmost becomes a real question.
+- **"If the target is bigger than everything, do I return `len(nums)`?"** — Yes. Inserting at the end is a valid answer, index n.
+- **"Sorted ascending, not rotated?"** — Plain ascending. A rotated array changes the whole approach.
+- **"Is O(log n) required, or is a linear scan acceptable?"** — Required. A linear scan is correct but rejected.
+
+---
+
 ## 1. Linear Scan — NOT RECOMMENDED (O(n))
 
 ```python
@@ -155,6 +166,17 @@ This fails when target exists at an index smaller than the mid binary search lan
 > The reasoning: when the `while left <= right` loop exits, `left` has been advanced past every index holding a value smaller than target, and `right` has been pulled before every index holding a value greater. So `left` sits exactly at the position where target should be inserted to keep things sorted.
 >
 > Time O(log n), space O(1)."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the problem to mutate after this version works.
+
+- **"Now the array has duplicates — return the leftmost valid position."** → Don't return on a match; record it and keep narrowing left. That is Find First and Last Position (LC 34), the next script in this chain.
+- **"Return -1 when the target is missing instead."** → That is plain Binary Search (LC 704) — change `return left` back to `return -1`.
+- **"What if the array was rotated at an unknown point?"** → Search in Rotated Sorted Array (LC 33): one half is always still sorted — pick the half that can hold the target.
+- **"Is there a library function that does this?"** → Yes, `bisect.bisect_left(nums, target)`. Name it to show you know the stdlib, then write it by hand anyway.
 
 ---
 

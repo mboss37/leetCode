@@ -14,6 +14,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+Requirements come before code — pick the ones that genuinely change your approach:
+
+- **"Mutate the tree in place, or return a new copy?"** — In place is expected; you return the same root. A copy doubles the work for nothing.
+- **"What exactly does invert mean?"** — Mirror left-to-right: swap the two children at EVERY node, all the way down.
+- **"Can the tree be empty?"** — Yes. Return None — that is the base case.
+- **"How big can it get? Recursion OK?"** — At most 100 nodes here, so stack depth is a non-issue. Say so, then offer BFS anyway.
+
+---
+
 ## No meaningful brute force
 
 Inverting the tree requires touching every node to swap its children — O(n) is the floor. The recursion below is the simplest correct version; no slower comparative exists.
@@ -104,6 +115,17 @@ BFS through the tree, swap at every node. Same big-O.
 > Python tuple swap evaluates the right side first, so the recursion happens before the assignment — clean one-liner.
 >
 > O(n) time — every node visited once. O(h) recursion stack. Balanced tree → log n stack."
+
+---
+
+## Likely Follow-ups
+
+One question that grows in parts — the swap is rarely where it ends.
+
+- **"Do it iteratively."** → The BFS alternative above: dequeue a node, swap its children, enqueue both. A stack (DFS) works the same way.
+- **"Why does the one-line tuple swap not double-invert?"** → Python evaluates the right side first, so both recursions run on the ORIGINAL children before assignment.
+- **"Check if a tree is a mirror of itself."** → Symmetric Tree: compare left and right subtrees pairwise — outer with outer, inner with inner.
+- **"Same recursion shape, different combine?"** → Maximum Depth — see the LC 104 practice script in this repo.
 
 ---
 

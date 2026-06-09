@@ -5,6 +5,18 @@ Given an integer array `nums`, find the contiguous subarray (containing at least
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Subarray means contiguous, right? Not a subsequence?"** — Contiguous. A subsequence (skipping allowed) would just be "sum all positives" — a different problem.
+- **"Can the subarray be empty?"** — No, at least one element. So an all-negative array returns the least negative number, NOT 0.
+- **"What if every number is negative?"** — Return the largest single element. This is why you initialize to `nums[0]`, never to 0.
+- **"Do you want the sum, or the subarray itself?"** — The sum. Returning the subarray needs start/end index tracking on top of Kadane's.
+- **"Can the input be empty?"** — Constraints say no, but agree on a return value (0 or an error) in one sentence.
+
+---
+
 ## Solution 1: Brute Force (Two Nested Loops)
 
 ```python
@@ -121,6 +133,17 @@ Result: `6` from subarray `[4, -1, 2, 1]`. Watch row 3 — the running sum was n
 | Iterating from index 0 with the standard pattern | Double-counts `nums[0]` if you initialize `max_current = nums[0]` and loop from index 0 | Start the loop at index 1 (`for num in nums[1:]`) |
 | Returning `max_current` instead of `max_global` | Returns the LAST running sum, not the BEST seen | Always return `max_global` |
 | Confusing "subarray" with "subsequence" | Subarrays are CONTIGUOUS; subsequences can skip | Read the problem — Kadane's is for subarrays only |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — Kadane's is the base, then they bend it.
+
+- **"Return the subarray itself, not just the sum."** → Remember a `start` index every time Kadane resets; save `(start, i)` whenever `max_global` improves.
+- **"Now it's the maximum PRODUCT subarray."** → Negatives flip signs, so track BOTH the max and min product ending here; a negative number swaps them.
+- **"The array is circular — it can wrap around."** → Best of: normal Kadane, or total sum minus the MINIMUM subarray (the wrap case). Watch the all-negative edge case.
+- **"What's the brute force and why is yours better?"** → Two nested loops sum every subarray, roughly n²/2 sums. Kadane's makes one decision per element in a single pass.
 
 ---
 

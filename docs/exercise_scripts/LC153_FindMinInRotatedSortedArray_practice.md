@@ -15,6 +15,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Are all values unique?"** — Yes, and it matters: duplicates break the half-comparison logic (that's LC 154, a different problem).
+- **"Can the array be not rotated at all?"** — Yes — rotating n times gives the original. My code must handle a fully sorted range, hence the early-return check.
+- **"Do you want the minimum value or its index?"** — The value. (The index would be the rotation count — a likely follow-up.)
+- **"Is O(n) acceptable, or do you need O(log n)?"** — Spec demands O(log n), so `min(nums)` is only my stated baseline.
+
+---
+
 ## NOT RECOMMENDED — Linear Scan (O(n))
 
 ```python
@@ -103,6 +114,17 @@ Returns **0** ✓
 > Loop while left < right. When they meet, that's the min.
 >
 > O(log n) time, O(1) space."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect a twist after the base solution works.
+
+- **"What if duplicates are allowed?"** → LC 154 idea: when `nums[mid] == nums[right]` you can't tell which half holds the pivot, so shrink with `right -= 1`. Worst case degrades to O(n).
+- **"Now search for a target in the rotated array."** → That's LC 33 — same "which half is sorted" test, then check if the target lies inside the sorted half. See its practice script.
+- **"How many times was the array rotated?"** → It's just the index of the minimum — return `left` instead of `nums[left]`.
+- **"Find the maximum instead."** → It sits immediately before the minimum: index `min_idx - 1`, wrapping with modulo for the unrotated case.
 
 ---
 

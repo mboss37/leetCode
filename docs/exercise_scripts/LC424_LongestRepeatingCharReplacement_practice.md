@@ -13,6 +13,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Is the string only uppercase A-Z?"** — Yes. So the count map caps at 26 entries — effectively O(1) space.
+- **"Can k be 0?"** — Yes. Then it's just the longest run of one repeated char — the same code handles it.
+- **"Do I replace with any letter, or only letters already in the string?"** — Any letter. And we never actually replace — we only count how many we WOULD need.
+- **"Return the length or the substring itself?"** — Length only. The substring would mean recording the window start whenever best updates.
+- **"Can k be larger than the string length?"** — Yes. Then the whole string is the answer; the window just never shrinks.
+
+---
+
 ## NOT RECOMMENDED — Check Every Substring (O(n³))
 
 ```python
@@ -129,6 +141,17 @@ Returns **4** ✓
 > Trick: don't bother decrementing max_count on shrink. It can stay stale; best only grows, so a too-large max_count just keeps the window-size check generous — never causes incorrect updates.
 >
 > O(n) time, O(1) space (26 chars max)."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"Return the substring, not just the length."** → Save `left` whenever `best` updates; return `s[best_left : best_left + best]` at the end.
+- **"Longest substring with at most k DISTINCT characters?"** → Same window shape, new invariant: shrink while `len(counts) > k` (LC 340). Compare with LC 3 — there's a practice script for it in this repo.
+- **"Minimum replacements to make the WHOLE string one letter?"** → No window needed: `len(s) - max frequency`.
+- **"What if the alphabet is huge (unicode)?"** → Logic unchanged; the counts dict just isn't capped at 26 anymore, so space grows with distinct chars.
 
 ---
 

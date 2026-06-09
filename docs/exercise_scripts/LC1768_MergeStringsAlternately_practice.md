@@ -16,6 +16,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer wants requirements pinned down before you type — pick the ones that genuinely change your code:
+
+- **"What happens when the strings have unequal lengths?"** — The leftover of the longer one is appended at the end. This IS the core of the problem.
+- **"Which string starts the alternation?"** — `word1`. Getting the order backwards is the cheapest possible bug.
+- **"Can either string be empty?"** — Constraints say length ≥ 1, but the tail-append version handles empty for free — worth saying.
+- **"Return a new string or modify in place?"** — Python strings are immutable, so always a new string.
+- **"One character at a time, or word by word?"** — One character at a time. Confirm before coding.
+
+---
+
 ## No meaningful brute force
 
 The operation is inherently O(n + m) — every character must be touched once. The two-pointer version below is the simplest expression of that floor. No slower comparative is worth writing.
@@ -104,6 +116,17 @@ class Solution:
 > Build via a list and `.join()` at the end — string += is O(n²) in Python.
 >
 > O(n + m) time and space."
+
+---
+
+## Likely Follow-ups
+
+This warmup grows into parts — have the next steps ready.
+
+- **"Why not build the result with `+=`?"** → Strings are immutable; each `+=` copies the whole string, O(n²) total. List buffer + `join` is O(n + m).
+- **"Can you do it without manual indices?"** → Yes — `zip_longest` with `fillvalue=''` (the Alternative section above). Lead with two pointers, mention this.
+- **"Now merge k strings alternately."** → Same loop over a list of pointers, or `zip_longest(*words, fillvalue='')`.
+- **"Same idea on linked lists?"** → That is Merge Two Sorted Lists — same two-pointer-plus-tail shape, see the chain note below.
 
 ---
 

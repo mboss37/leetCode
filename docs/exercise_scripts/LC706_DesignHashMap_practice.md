@@ -13,6 +13,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can I use Python's dict or set anywhere?"** — No, that's the whole exercise. Plain lists/arrays only.
+- **"Are keys always non-negative integers?"** — Yes, 0 to 10⁶. So `key % size` works directly — no string hashing needed.
+- **"What does get return for a missing key?"** — -1, not None. Easy contract to get wrong.
+- **"Does put overwrite an existing key?"** — Yes, update in place. So put must scan the bucket BEFORE appending.
+- **"How many operations? Do I need resizing?"** — Up to 10⁴ calls — a fixed 1000 buckets is fine. Name resizing as the real-world improvement.
+
+---
+
 ## The pattern — separate chaining
 
 Buckets array of size `M`. Each bucket is a list of `(key, value)` pairs.
@@ -111,6 +123,17 @@ For interview: state these as known improvements, don't implement them unless as
 > Average O(1) per op when keys distribute well. Worst case O(n) if everything collides.
 >
 > Real implementations would use a prime modulus and resize when the load factor gets high — happy to add either if you'd like."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"Add resizing — what's a load factor?"** → Load factor = entries / buckets. Past ~0.75, allocate 2× buckets and rehash every pair. Amortized still O(1).
+- **"What if keys are STRINGS?"** → Need a real hash function — e.g. polynomial rolling hash of the chars, mod bucket count. Same chaining after that.
+- **"Open addressing instead of chaining?"** → Store pairs in the array itself; on collision, probe to the next slot. Remove needs tombstone markers so probing doesn't break.
+- **"Design a HashSet instead."** → LC 705. Identical structure, just keys without values.
 
 ---
 

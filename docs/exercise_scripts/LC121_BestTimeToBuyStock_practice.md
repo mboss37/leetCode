@@ -6,6 +6,18 @@ You want to maximize profit by buying on one day and selling on a later day. Ret
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can I buy and sell on the same day?"** — No. Sell must be a LATER day — that's why profit is computed before updating the minimum.
+- **"How many transactions — one buy and one sell only?"** — One of each. Multiple transactions is a different problem (Stock II).
+- **"If no profit is possible, what do I return?"** — 0, never a negative number. That's why `max_profit` starts at 0.
+- **"Can the array be empty or one day long?"** — Yes, both return 0 — no valid buy/sell pair exists.
+- **"Do you want the profit, or the buy/sell days?"** — The profit. Returning the days needs two extra index trackers.
+
+---
+
 ## Solution 1: Brute Force (Two Nested Loops)
 
 ```python
@@ -126,6 +138,17 @@ Result: `5`. Watch row 2 — when today is the new minimum, profit is negative b
 | Returning a negative profit | Spec says return 0 if no profit possible | Initialize `max_profit = 0` — won't go below |
 | `for i, sell in enumerate(prices):` when `i` is never used | Useless index variable — signals "I'm not fluent in Python" to the interviewer | `for sell in prices:` — cleaner when you don't need the index |
 | Two-pass solution (find min, then find max after) | O(n) but misses days where min appears after | Single pass — min so far, profit at each day |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — the single-transaction rule is the part they relax first.
+
+- **"Now allow as many transactions as you want."** → Stock II. Greedy: sum every positive day-to-day step (`prices[i] - prices[i-1]` when positive).
+- **"Return the buy and sell DAYS, not the profit."** → Track a candidate buy index when `min_buy` updates, and lock in (buy, sell) indices whenever `max_profit` improves.
+- **"Prices arrive one at a time as a stream."** → The one-pass solution already works: keep `min_buy` and `max_profit` as the only state, update per price.
+- **"At most two transactions?"** → Harder DP. Sketch it: best one-transaction profit from the left, best from the right, combine at each split point.
 
 ---
 

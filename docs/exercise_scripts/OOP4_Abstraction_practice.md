@@ -22,6 +22,17 @@ In Python you express the contract with an **Abstract Base Class** (`ABC`) and `
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"On failure, should `pay` return False or raise?"** — This IS the contract every processor and caller must honor — settle it before writing any class.
+- **"Should `PaymentProcessor` itself be instantiable?"** — No: ABC + `@abstractmethod` makes constructing it a `TypeError`.
+- **"Float or Decimal for amounts?"** — Real money code uses `Decimal` or integer cents; float is fine here if we say so.
+- **"Are refunds part of the contract?"** — Decides whether the ABC has one abstract method or two.
+
+---
+
 ## ❌ NOT RECOMMENDED — no contract, leaked internals
 
 ```python
@@ -132,6 +143,17 @@ A plain base class with a `pay` that does nothing would let a broken subclass (o
 ## Interview out-loud
 
 > "I'll define a `PaymentProcessor` abstract base class with one abstract method, `pay`. Each concrete processor — credit card, PayPal — implements `pay` and keeps its gateway details private. The checkout function takes a `PaymentProcessor` and just calls `pay`; it has no idea how the money actually moves. That's abstraction: the caller depends on the contract, not the implementation, so I can add new payment methods without touching checkout. It's also dependency inversion — high-level code depends on the abstraction, not the concrete classes."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the contract to be stretched.
+
+- **"Add Apple Pay."** → One new `ApplePayProcessor(PaymentProcessor)` subclass; `checkout` doesn't change a line.
+- **"Add `refund(amount)` to the contract."** → Second `@abstractmethod`; any processor that skips it can no longer be constructed — the gap surfaces immediately.
+- **"Where do retries and timeouts live?"** → Inside each concrete processor, hidden behind `pay`. The contract stays about *what*, never *how*.
+- **"How do you test `checkout` without charging real money?"** → Pass a `FakeProcessor` that implements the same contract and records calls — the abstraction is the test seam.
 
 ---
 

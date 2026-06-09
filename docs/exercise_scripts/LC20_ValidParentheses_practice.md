@@ -19,6 +19,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Is the string only bracket characters, or can other text appear between them?"** — Only brackets here. With mixed text you'd skip non-bracket characters — one extra branch.
+- **"Is the empty string valid?"** — Yes, vacuously. Constraints say length ≥ 1, but the code handles it for free.
+- **"Exactly these three pair types — no angle brackets or quotes?"** — Just `()[]{}` here. More types only means a bigger dict.
+- **"Do you want just true/false, or the position of the first error?"** — Boolean only. Reporting a position means pushing indices, not characters.
+
+---
+
 ## 1. Brute Force — Repeated Pair Removal (O(n²))
 
 ```python
@@ -138,6 +149,17 @@ class Solution:
 > After the loop, the stack must be empty — anything left means an opener never got matched.
 >
 > O(n) time, O(n) space."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — once the stack version works, expect one of these.
+
+- **"Now the input is real text with brackets mixed in."** → Same loop. Push openers, check closers, ignore everything else.
+- **"Only `'('` and `')'` — can you do it without a stack?"** → Yes, a single counter: +1 on open, -1 on close, fail if it ever goes negative, valid if it ends at 0.
+- **"How many characters would you remove to make it valid?"** → Count closers that find no opener plus openers left on the stack at the end.
+- **"Design your own stack class with an extra O(1) min operation."** → That is Min Stack (LC 155), the next script in this chain.
 
 ---
 

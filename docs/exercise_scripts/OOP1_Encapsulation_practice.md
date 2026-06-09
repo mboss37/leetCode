@@ -24,6 +24,17 @@ In Python there is no `private` keyword. The convention is a leading underscore 
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Should invalid operations raise an exception or return False?"** — I'd raise `ValueError` so failures are loud; returning False makes them easy to ignore.
+- **"Float or Decimal for money?"** — Floats have rounding errors; real money code uses `Decimal` or integer cents. Float is fine for the exercise if we agree.
+- **"Is any overdraft allowed, even a small limit?"** — No: balance ≥ 0 is the invariant. A limit would just change one check in `withdraw`.
+- **"Should callers be able to read the balance at all?"** — Yes, read it but never assign it — that's the read-only property with no setter.
+
+---
+
 ## ❌ NOT RECOMMENDED — no encapsulation
 
 ```python
@@ -116,6 +127,17 @@ def balance(self, value):
 ## Interview out-loud
 
 > "I'll make balance internal — `_balance` — so the only ways to change it are `deposit` and `withdraw`, and both validate their input. I expose a read-only `balance` property so callers can see it but not assign it. That way the class enforces its own invariant — balance is always ≥ 0 and always a number — instead of trusting every caller to behave."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the account to gain features.
+
+- **"Add a transaction history."** → Keep an internal list of `(kind, amount)` tuples, append inside `deposit`/`withdraw`, and expose it as a copy so callers can't edit it.
+- **"Add a SavingsAccount that earns interest."** → Subclass `BankAccount`, add `apply_interest()`, reuse the validated `deposit`. That's the Inheritance exercise (OOP2).
+- **"Two threads deposit at once — what breaks?"** → `_balance += amount` isn't atomic; wrap deposit/withdraw bodies in a `threading.Lock`.
+- **"Add a daily withdrawal limit."** → Track the amount withdrawn today inside the class; the new rule lives next to the old ones, in one place.
 
 ---
 

@@ -18,6 +18,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Do duplicates count separately? Stream [5,5,4], k=2 — is the answer 5?"** — Yes, 5. K-th largest counts positions, not distinct values.
+- **"Can the initial list have fewer than k elements, or be empty?"** — Yes. The heap just fills up over the first adds; only pop when size exceeds k.
+- **"Is add ever called before k values exist?"** — No — the spec guarantees k values before an answer is needed.
+- **"Must I keep the whole stream in memory?"** — No. Only the top k values matter — that's the size-k heap insight.
+- **"Can values be negative?"** — Yes, down to -10⁴. Nothing changes.
+
+---
+
 ## No meaningful brute force
 
 The naive approach is *"on every add, sort the entire array and return index k-1"* → **O(n log n) per call**. Doable but wasteful — we don't actually need a fully sorted array, only the k-th largest.
@@ -123,6 +135,17 @@ def add(self, val: int) -> int:
 > On init: heapify the input, then pop until size k. On add: push the new value, pop if size exceeded k, return the root.
 >
 > O(log k) per add — we don't track values that can never make the top-k. Stdlib `heapq` is a min-heap, so for top-k LARGEST we want exactly that. If the problem asked for k-th smallest, we'd flip to a max-heap by negating values on push/pop."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"K-th SMALLEST instead of largest?"** → Flip the heap: negate values on push and pop, so Python's min-heap behaves as a max-heap of size k.
+- **"K-th largest of a STATIC array, one query?"** → LC 215. Same size-k heap in O(n log k), or quickselect for average O(n).
+- **"Find the MEDIAN of the stream?"** → LC 295. Two heaps: max-heap for the lower half, min-heap for the upper half, kept balanced.
+- **"Top k most FREQUENT elements?"** → LC 347 — there's a practice script for it in this repo. Count first, then the same size-k heap over frequencies.
 
 ---
 

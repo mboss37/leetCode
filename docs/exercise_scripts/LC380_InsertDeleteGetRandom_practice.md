@@ -18,6 +18,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Are duplicates allowed, or is this a true set?"** — True set here. `insert` of an existing value returns False. Duplicates is the LC 381 follow-up.
+- **"Must getRandom be uniform over the CURRENT elements?"** — Yes. That's the whole reason a dict alone fails — you need a list to sample from.
+- **"Is O(1) average acceptable, or strict worst case?"** — Average. Dict operations are average O(1), and that's what the spec means.
+- **"Can getRandom be called on an empty set?"** — No, guaranteed non-empty — no empty-check needed.
+- **"What do insert/remove return?"** — Booleans: True if the state actually changed.
+
+---
+
 ## The trick — pair a list with a dict
 
 | Structure | Provides | Doesn't provide |
@@ -132,6 +144,17 @@ State after: `items = [1, 3]`, `idx = {1: 0, 3: 1}` ✓
 > getRandom: random.choice on the list.
 >
 > All O(1) average. O(n) space."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"Now allow DUPLICATES."** → LC 381. The dict maps value → SET of indices. On remove, swap one index with the last element and update the moved value's index set.
+- **"Make getRandom weighted — value with weight w is w times more likely."** → Store cumulative weights, pick a random number, binary search for its slot (LC 528 idea).
+- **"Why only AVERAGE O(1)?"** → Dict ops can degrade on hash collisions, and list append occasionally reallocates. Amortized/average is what holds; ballpark is enough.
+- **"What if remove targets the last element?"** → Same code path — it overwrites itself, then pops. Walk that trace to show no special case is needed.
 
 ---
 

@@ -2,6 +2,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Is the array sorted?"** — No. If it were, two pointers with O(1) space would beat the hash map (that's LC 167).
+- **"Can I use the same element twice?"** — No. Same index twice is banned, but two equal values at different indices are fine (`[3,3]`, target 6).
+- **"Is there always exactly one solution?"** — Yes per spec. If none were possible, agree on a return value like `[]`.
+- **"Do you want indices or values?"** — Indices. That's why the hash map stores value → index.
+- **"Can numbers be negative? Zero?"** — Yes, both. Neither breaks the hash map.
+
+---
+
 ## 1. Brute Force Solution (O(n²))
 
 ```python
@@ -141,6 +153,17 @@ print(solution.twoSum([-1, -2, -3], -5))      # Expected: [1, 2]
 | `seen[complement]` lookup if `complement not in seen` | KeyError | Check `if complement in seen:` first |
 | Returning the values instead of indices | Spec wants indices | Return `[seen[complement], i]`, not the values |
 | Using `dict.get(complement)` and comparing to None | Confusing — `None` is falsy but so is `0` | Use `if complement in seen:` — explicit |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect Two Sum to mutate after you finish it.
+
+- **"What if the array is sorted?"** → Two pointers from both ends, O(1) space. That is exactly LC 167 Two Sum II — the next script in this chain.
+- **"Now find three numbers that sum to the target."** → Sort, fix an anchor, run two pointers on the rest. That is LC 15 3Sum.
+- **"Return ALL pairs, not just the first."** → Don't return early; collect matches and agree with the interviewer how duplicate pairs are handled.
+- **"What if the numbers arrive as a stream?"** → Same hash map, built as values arrive: check the complement, then store. One pass, no second look needed.
 
 ---
 

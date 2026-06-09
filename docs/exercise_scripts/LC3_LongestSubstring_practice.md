@@ -16,6 +16,18 @@ Output: a single integer (the length).
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Substring means contiguous, right — not a subsequence?"** — Yes, contiguous. A subsequence version is a completely different problem.
+- **"What characters can appear — lowercase only, or any ASCII?"** — Letters, digits, symbols, spaces. So a set works; a fixed 26-slot array does not.
+- **"Can the string be empty, and what do I return then?"** — Yes, length can be 0. Return 0.
+- **"Do you want just the length, or the substring itself?"** — Just the length. Returning the string means tracking the best window's start index too.
+- **"Is 'A' different from 'a'?"** — Assume case-sensitive unless told otherwise.
+
+---
+
 ## 1. Brute Force (O(n²))
 
 ```python
@@ -135,6 +147,17 @@ Different pattern. Don't reach for `left, right = 0, n-1` on sliding-window prob
 | Adding before checking duplicate | Adds the duplicate, then has to deal with it | Check `while s[right] in window` BEFORE adding |
 | Using `if` instead of `while` for shrink | Window may still contain the duplicate after one shrink | `while s[right] in window` — keep shrinking until gone |
 | Off-by-one on window size | Window size is `right - left + 1`, not `right - left` | Always +1 (both ends inclusive) |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the problem to mutate after your first solution works.
+
+- **"Now return the substring itself, not just the length."** → Track the start index of the best window when you update `best`. Return `s[start:start+best]`.
+- **"What if up to k repeats of a character are allowed?"** → Same window skeleton, different shrink condition. That is literally LC 424 Longest Repeating Character Replacement, the next script in this chain.
+- **"What if the input is a stream of characters, not a string?"** → The window already reads left to right. Keep the set and a deque of window chars; no random access needed.
+- **"Can you avoid re-scanning when you hit a duplicate?"** → Store each char's last-seen index in a dict and jump `left` straight past it, instead of shrinking one step at a time.
 
 ---
 

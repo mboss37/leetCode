@@ -13,6 +13,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores requirements capture before any code — pick the ones that genuinely change your approach:
+
+- **"Is division allowed?"** — No, the spec bans it. This kills the obvious total-product-divided-by-element idea up front.
+- **"Can the array contain zeros?"** — Yes. Zeros break the division trick anyway; the left/right-pass approach handles them for free.
+- **"Negative numbers?"** — Yes. Products of negatives flip sign correctly; nothing changes.
+- **"Does the output array count as extra space?"** — By convention, no. So aim for O(1) on top of the output — reuse it for the left products.
+- **"Can the product overflow?"** — Guaranteed to fit 32-bit here; in a non-Python language you would have to ask.
+
+---
+
 ## NOT RECOMMENDED — Brute Force (O(n²))
 
 ```python
@@ -159,6 +171,17 @@ If there are 2+ zeros, every entry is 0. No special-casing needed.
 > O(n) time, O(1) extra space — the output array isn't counted.
 >
 > Zeros handled automatically: one zero gives all-zeros except at the zero's index. Two zeros give all-zeros."
+
+---
+
+## Likely Follow-ups
+
+One question, several parts — once the two-pass version works, expect these.
+
+- **"What if division WERE allowed?"** → Count zeros first. No zeros: total product / nums[i]. One zero: all entries 0 except the zero's index, which gets the product of the rest. Two-plus zeros: all 0.
+- **"Can you cut the extra space?"** → Already done — left products go straight into the output, two scalars on top. Walk Section "Why O(1) extra space."
+- **"Why do zeros work for free in your version?"** → Every other index has the zero in its left or right product; the zero's own index multiplies only non-zeros.
+- **"Now SUM except self."** → Trivial: total sum minus each element — subtraction has an inverse, multiplication-with-zeros does not. That contrast is the whole point.
 
 ---
 

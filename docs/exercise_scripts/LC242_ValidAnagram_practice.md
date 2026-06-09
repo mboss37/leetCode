@@ -15,6 +15,18 @@ An anagram is a word formed by rearranging the letters of another word, using **
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Lowercase English letters only, or full Unicode?"** — Lowercase per spec. Unicode means the "26 keys" space claim changes, but Counter handles it unchanged.
+- **"Is it case sensitive? Do spaces count?"** — Per spec yes and there are none. If not, normalize with `.lower()` and strip spaces first.
+- **"Can the strings have different lengths?"** — Yes, and that's an instant `False` — check lengths first, it's the cheapest exit.
+- **"Are both strings empty a valid anagram?"** — Yes, `"" / ""` → `True`. Both loops just never run.
+- **"Can I use library helpers like Counter?"** — Usually yes. If blocked, write the manual frequency map (Solution 3).
+
+---
+
 ## Solution 1: Sorting (Brute Force / Simple)
 
 ```python
@@ -205,6 +217,17 @@ Empty dict at the end → `True`. **The delete-on-zero matters** — without it,
 | `dict.get(c, 1) + 1` for first sight | Off-by-one: first sighting becomes 2 instead of 1 | Use `dict.get(c, 0) + 1` |
 | Using `sorted(s) == sorted(t)` when interviewer asks for optimal | O(n log n) when O(n) is possible | State sort verbally, use Counter for code |
 | Forgetting Unicode | `.lower()` matters for case-sensitive variants | Read the spec — most are case-sensitive |
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the anagram check to become a building block.
+
+- **"Now group a whole list of words into anagram groups."** → That's Group Anagrams (LC 49). Hash map keyed by sorted word (or by the count tuple), values are lists.
+- **"What if the input is Unicode?"** → The fixed-26 assumption dies; a dict/Counter still works. Mention that "constant space" becomes O(k) for k distinct characters.
+- **"Find every anagram of `s` inside a long string."** → Sliding window of length `len(s)` over the long string, compare two frequency maps as the window moves.
+- **"Do it without Counter."** → The manual frequency map: count chars of `s`, subtract chars of `t`, fail on missing or negative, succeed if the map empties.
 
 ---
 

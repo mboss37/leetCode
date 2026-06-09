@@ -18,6 +18,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Is the array sorted ascending or descending?"** — Ascending here. Descending flips the two narrowing branches.
+- **"Are there duplicate values?"** — No, all unique. With duplicates, "the index" is ambiguous — that becomes Find First and Last Position.
+- **"What do I return if the target isn't there?"** — `-1`. Returning the insertion point instead is Search Insert Position.
+- **"Can the array be empty?"** — Spec says length ≥ 1, but the `while left <= right` loop handles empty for free.
+
+---
+
 ## 1. Linear Scan — NOT RECOMMENDED (O(n))
 
 ```python
@@ -177,6 +188,17 @@ print(solution.search([1, 2, 3, 4, 5], 5))        # 4
 > Loop condition is `while left <= right` with `<=` — when `left == right` there's still one element to check; using `<` would skip it. After the loop, target wasn't found, so return -1.
 >
 > Halving the range each step gives **O(log n) time, O(1) space** — just two indices."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — these are the natural next steps after plain binary search works.
+
+- **"If the target is missing, return where it would be inserted."** → That is exactly Search Insert Position (LC 35): same loop, `return left` instead of `-1`.
+- **"Now the array has duplicates — return the first and last index of the target."** → That is Find First and Last Position (LC 34): don't return on a match, record it and keep narrowing toward one side.
+- **"The sorted array was rotated at an unknown point."** → Search in Rotated Sorted Array (LC 33): one half is always still sorted — check which half, then decide where the target can live.
+- **"What if the array is too big to know its length?"** → Probe doubling indices (1, 2, 4, ...) to bracket the target, then binary search inside that range.
 
 ---
 

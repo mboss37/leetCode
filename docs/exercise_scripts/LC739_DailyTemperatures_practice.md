@@ -12,6 +12,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Does 'warmer' mean strictly warmer, or does an equal temperature count?"** — Strictly warmer. This decides `<` vs `<=` in the stack comparison.
+- **"Should I return the number of days to wait, or the index of the warmer day?"** — Days (`j - i`). That's why the stack must hold indices, not values.
+- **"What do I return when no warmer day ever comes?"** — 0. So I pre-fill the result with zeros and only overwrite on a pop.
+- **"How large can the input get?"** — Up to 10⁵ days, so the O(n²) scan is too slow and I need roughly linear.
+
+---
+
 ## NOT RECOMMENDED — Brute Force (O(n²))
 
 ```python
@@ -118,6 +129,17 @@ Final: `[1, 1, 4, 2, 1, 1, 0, 0]` ✓ (Indices 6 and 7 remain on the stack — n
 > Indices left on the stack at the end have no warmer future day — their answer stays at the default 0.
 >
 > O(n) time — each index pushed and popped at most once. O(n) space."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect a twist after the base solution works.
+
+- **"Now find the next COLDER day instead."** → Flip the comparison: pop while the stack top is warmer than the current day. The stack order flips too; nothing else changes.
+- **"Return the warmer temperature itself, not the wait."** → Same stack of indices; on pop, write `temperatures[i]` instead of `i - prev_idx`. This is Next Greater Element.
+- **"Temperatures arrive one at a time as a stream — can you still do it?"** → Yes. The stack approach is already online: each new day pops and answers the waiting days as it arrives.
+- **"Can you exploit the value range 30-100?"** → Scan right-to-left, keep the nearest index for each of the ~70 temperatures, and check the warmer values for each day. Constant work per day.
 
 ---
 

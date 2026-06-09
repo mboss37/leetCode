@@ -14,6 +14,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+Requirements are scored before you type — pick the ones that genuinely change your code:
+
+- **"Is n guaranteed to be valid — at most the list length?"** — Yes, per constraints. So no out-of-range handling needed; say it out loud.
+- **"Can n equal the list length, removing the head itself?"** — Yes. This is WHY you use a dummy node before the head.
+- **"Single-node list with n = 1?"** — Valid; the result is an empty list. Dummy makes the return `dummy.next = None` clean.
+- **"Modify the list in place or build a new one?"** — In place; just relink one pointer and return the head.
+- **"Is one pass required?"** — It is the stated follow-up — lead with the one-pass gap trick.
+
+---
+
 ## No meaningful brute force
 
 The "obvious" approach is two passes — find the length, then walk again to position n-from-end. Same O(n) complexity as the one-pass two-pointer below, just slower by a constant factor. No meaningful asymptotic baseline worth contrasting.
@@ -103,6 +115,17 @@ Result: `[1, 2, 3, 5]` ✓ (the 2nd-from-end was 4)
 > Skip the target: slow.next = slow.next.next. Return dummy.next.
 >
 > O(n) time, O(1) space. One pass."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect extensions after the first version works.
+
+- **"How would the two-pass version look?"** → Pass 1 counts the length L. Pass 2 walks L − n steps from the dummy, then skips the next node.
+- **"What if n could exceed the list length?"** → Check while advancing `fast`: if it hits None early, return the head unchanged (or raise — ask which).
+- **"Now find the middle of the list."** → Same gap idea with slow/fast at different speeds — slow moves 1, fast moves 2.
+- **"Now reverse the list."** → That is Reverse Linked List — see the LC 206 practice script in this repo.
 
 ---
 

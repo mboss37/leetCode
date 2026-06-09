@@ -12,6 +12,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Do diagonal neighbors count as connected?"** — No, 4-directional only. With diagonals I'd just add 4 more directions.
+- **"Am I allowed to mutate the grid?"** — If yes, sink `'1'` to `'0'` as my visited mark; if no, I need a visited set.
+- **"Are cells strings or ints?"** — Strings. Comparing to int `1` silently matches nothing and returns 0.
+- **"How big can the grid get?"** — 300×300. A snaking island could mean ~90k deep recursion — worth offering the BFS variant.
+
+---
+
 ## The pattern — connected-component count via flood fill
 
 For every cell:
@@ -140,6 +151,17 @@ Use BFS if interviewer is worried about stack overflow on huge grids. Same big-O
 > I'll use DFS and mutate the grid in-place ('1' to '0') as my visited marker — saves the visited-set space. If the grid must stay unchanged, swap in a set.
 >
 > Every cell visited at most once → O(m·n) time. Worst case O(m·n) recursion stack for a snaking island. BFS variant avoids that."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect a twist after the base solution works.
+
+- **"Now return the size of the LARGEST island."** → Max Area of Island: make `dfs` return the number of cells it sank, track the max instead of counting starts.
+- **"You can't modify the grid."** → Swap the sinking for a `visited` set of `(r, c)` tuples. Same traversal, O(m·n) extra space.
+- **"Return the perimeter of an island."** → For each land cell, add 1 for every neighbor that is water or out of bounds.
+- **"What if islands connect diagonally too?"** → Extend the direction list to 8 neighbors; everything else stays the same.
 
 ---
 

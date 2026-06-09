@@ -17,6 +17,17 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Lowercase a-z only, or can there be uppercase or unicode?"** — Lowercase only here. That's what makes the 26-slot count key legal; unicode forces the sorted-string key.
+- **"Can strings be empty?"** — Yes, length can be 0. All empty strings share the key `""` and group together.
+- **"Can the input contain duplicate strings?"** — Assume yes. Duplicates land in the same group and both copies are kept.
+- **"Any order for the groups and inside each group?"** — Yes, fully order-free. No sorting of the output needed.
+
+---
+
 ## 1. Brute Force (verbal baseline only — DON'T WRITE)
 
 Pairwise comparison: for each unvisited string, scan every other unvisited string and group anagrams together using `Counter(a) == Counter(b)`.
@@ -185,6 +196,17 @@ print(solution.groupAnagrams(["abc","bca","cab","xyz","zyx","yxz","no"]))
 > Time: O(n · k log k) — n strings, each sorted in O(k log k). Space: O(n · k) for storing the input across the groups.
 >
 > If you want me to drop the log factor, I can swap the sort for a 26-element count tuple — O(n · k) time. Works because the input is lowercase a-z only."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the key, not the pattern, to change.
+
+- **"Can you drop the log factor from the sort?"** → The count-tuple key — already the Alternative section above. O(n · k), tied to a fixed alphabet.
+- **"Now the strings can be unicode."** → The 26-slot count key breaks; the sorted-string key still works. Or use a Counter frozen into a hashable form.
+- **"Group strings that are shifts of each other, like 'abc' and 'bcd'."** → Same `defaultdict(list)` pattern, new canonical key: the tuple of letter-to-letter gaps mod 26.
+- **"Find all anagrams of a pattern inside one long string."** → Different problem — that's a sliding window with a count comparison (LC 438), not grouping.
 
 ---
 

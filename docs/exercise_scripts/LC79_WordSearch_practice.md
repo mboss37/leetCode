@@ -13,6 +13,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can the same cell be reused within one word?"** — No. This is THE constraint that forces the mark-and-unmark backtracking.
+- **"Do diagonal moves count as adjacent?"** — No, 4-directional only. Decides the neighbor list.
+- **"Am I allowed to mutate the board?"** — If yes, mark in place with `'#'`; if no, carry a visited set instead.
+- **"Is matching case-sensitive?"** — Yes, `'A'` and `'a'` are different letters.
+- **"Can the word be longer than the number of cells?"** — Constraints allow it (15 > 36 is false here, but ask) — if so, return False immediately.
+
+---
+
 ## No meaningful brute force
 
 Backtracking IS the natural approach for grid path-search. The "brute force" would be to enumerate every possible path of length L (4^L paths per starting cell) — which is exactly what backtracking does, just with pruning on mismatched characters cutting most subtrees. No meaningful slower baseline.
@@ -112,6 +124,17 @@ In practice it's much faster because of pruning (`board[r][c] != word[i]` cuts e
 > Base cases: consumed entire word → True. Out of bounds or mismatched char → False.
 >
 > Worst case O(m·n·4^L), but pruning on mismatch makes it much faster in practice. O(L) recursion stack."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect a twist after the base solution works.
+
+- **"What if you can't modify the board?"** → Use a `visited` set: add `(r, c)` on entry, remove on exit. Same backtracking discipline, no mutation.
+- **"Return the actual path, not just True/False."** → Carry a path list; append `(r, c)` going in, pop when backtracking. Return a copy on success.
+- **"Now search for MANY words at once."** → That's Word Search II — a trie shares prefixes across words. One-line mention is enough; it's beyond medium scope.
+- **"How would you make it faster in practice?"** → Letter-frequency prune up front, and reverse the word if its last letter is rarer than its first (fewer starting points).
 
 ---
 

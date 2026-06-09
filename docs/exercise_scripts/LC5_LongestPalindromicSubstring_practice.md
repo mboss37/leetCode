@@ -12,6 +12,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"If several palindromes tie for longest, which do I return?"** — Any one. In "babad" both "bab" and "aba" are accepted.
+- **"Substring or subsequence?"** — Substring — contiguous. Subsequence is a completely different DP problem (LC 516).
+- **"Is a single character a palindrome?"** — Yes. So the answer is never empty for non-empty input — initialize max_len to 1.
+- **"Is the comparison case-sensitive?"** — Yes. 'A' and 'a' are different chars; compare as-is.
+- **"Return the string itself, or its indices/length?"** — The substring itself — track start and length, slice at the end.
+
+---
+
 ## NOT RECOMMENDED — Check Every Substring (O(n³))
 
 ```python
@@ -151,6 +163,17 @@ There IS an O(n) solution called **Manacher's algorithm**. It's clever but trick
 > O(n²) time — n centers, up to n expansion steps each. O(1) space.
 >
 > If interviewer pushes for O(n), I'd mention Manacher's algorithm but skip the implementation unless required."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect one of these next:
+
+- **"COUNT all palindromic substrings instead."** → LC 647. Same expand-around-center; each successful expansion step adds 1 to a counter instead of updating a max.
+- **"Longest palindromic SUBSEQUENCE?"** → LC 516. Different problem — interval DP on `dp[i][j]`, chars need not be contiguous.
+- **"Can you beat O(n²)?"** → Manacher's algorithm, O(n) — name it (see the Marker section above), don't implement it.
+- **"Check if the string becomes a palindrome after deleting at most one char?"** → LC 680. Two pointers from both ends; on mismatch, try skipping either side.
 
 ---
 

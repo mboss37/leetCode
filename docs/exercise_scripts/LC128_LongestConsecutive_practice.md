@@ -18,6 +18,18 @@
 
 ---
 
+## Clarifying Questions (ask 2-3 before you code)
+
+The interviewer scores you on capturing requirements before typing. Pick the ones that genuinely change your approach:
+
+- **"Can the array contain duplicates?"** — Yes. A set collapses them for free, so build the set first.
+- **"What do I return for an empty array?"** — 0. Starting `best = 0` handles it with no special case.
+- **"Can values be negative?"** — Yes, down to -10⁹. Hashing does not care; no change needed.
+- **"Consecutive in value, or contiguous in the array?"** — Consecutive values; positions in the array do not matter.
+- **"Is sorting acceptable?"** — Only if O(n log n) is fine. The spec demands O(n), which rules sorting out.
+
+---
+
 ## 1. NOT RECOMMENDED — Sort + Sweep (O(n log n))
 
 ```python
@@ -179,6 +191,17 @@ Return `best = 4` ✓
 > Why is this O(n)? Each element is part of exactly ONE chain and is walked exactly ONCE — when its anchor visits it. Non-anchors get an O(1) check-and-skip. Total work is linear.
 >
 > Time: O(n). Space: O(n) for the set."
+
+---
+
+## Likely Follow-ups
+
+The interview is one question that grows in parts — expect the problem to extend after your first solution works.
+
+- **"Return the sequence itself, not just the length."** → Remember the anchor of the best chain; rebuild it as `anchor .. anchor + best - 1`.
+- **"Why is the nested while loop still O(n)?"** → Only anchors walk, and each element is walked exactly once by its anchor.
+- **"What if O(n log n) were acceptable?"** → Sort + sweep (Section 1): dedupe, sort, count runs of gap 1.
+- **"What if numbers arrive one at a time?"** → Keep a hash map of streak lengths at chain boundaries; merge left and right streaks on each insert.
 
 ---
 
