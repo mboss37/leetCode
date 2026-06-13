@@ -43,7 +43,7 @@ class Solution:
 ```
 
 **Time Complexity:** O(n log n)  
-**Space Complexity:** O(1) (sorting creates new strings, but acceptable)
+**Space Complexity:** O(n) — `sorted()` allocates a new list of n characters for each string (and Timsort itself uses up to O(n) auxiliary space). It does **not** sort in place.
 
 **Why this is NOT recommended as the main solution:**
 
@@ -152,7 +152,7 @@ Empty dict at the end → `True`. **The delete-on-zero matters** — without it,
 | Aspect                  | Sorting Version          | Hashmap Version              | Winner          |
 |-------------------------|--------------------------|------------------------------|-----------------|
 | Time Complexity         | O(n log n)               | **O(n)**                     | Hashmap         |
-| Space Complexity        | O(1)                     | O(1)                         | Tie             |
+| Space Complexity        | O(n)                     | **O(1)**                     | Hashmap         |
 | Code simplicity         | Very simple              | Slightly more code           | Sorting         |
 | What it demonstrates    | Basic Python knowledge   | **Frequency counting + hashmap** | Hashmap     |
 | Interview signal        | Acceptable               | **Strong**                   | Hashmap         |
