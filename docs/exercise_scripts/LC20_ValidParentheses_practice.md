@@ -57,13 +57,14 @@ class Solution:
         stack = []
 
         for c in s:
-            if c in pairs:
+            if c in "([{":
+                # c is an opener. Push.
+                stack.append(c)
+            elif c in ")]}":
                 # c is a closer. Stack must have a matching opener on top.
                 if not stack or stack.pop() != pairs[c]:
                     return False
-            else:
-                # c is an opener. Push.
-                stack.append(c)
+            # any other character is ignored — robust to mixed text
 
         return not stack   # valid iff all openers got matched
 ```
@@ -74,7 +75,12 @@ class Solution:
 
 - **Push** each opener.
 - On a **closer**: the stack's top must be the matching opener. If not (or stack empty) → invalid.
+- Any **other** character falls through both branches and is ignored.
 - After the loop: if the stack still has openers → unmatched → invalid.
+
+### Why enumerate openers *and* closers explicitly
+
+The tighter `if c in pairs: ... else: stack.append(c)` form treats "anything that isn't a closer" as an opener. Under this problem's `()[]{}`-only constraint that's fine — but the moment the input contains other text (a real follow-up, see below), that `else` pushes stray letters as phantom openers and `"(a)"` wrongly fails. Enumerating both bracket sets and ignoring everything else handles mixed text for free, at the cost of one extra membership check per character.
 
 ### Complexity
 
@@ -101,7 +107,7 @@ class Solution:
 
 > "Brackets nest last-in-first-out — the most recently opened bracket is what must close next. That's exactly what a stack provides.
 >
-> Walk the string. On an opener, push to the stack. On a closer, check: is the stack empty (no opener to match)? Or is the top of the stack the wrong opener type? Either case → invalid.
+> Walk the string. On an opener, push to the stack. On a closer, check: is the stack empty (no opener to match)? Or is the top of the stack the wrong opener type? Either case → invalid. Any non-bracket character I just skip.
 >
 > After the loop: if the stack still has openers, they went unmatched → invalid. Otherwise valid.
 >
@@ -110,6 +116,7 @@ class Solution:
 ### Step 2: Key Points
 
 - **Dict maps closer → opener** for O(1) match lookup.
+- **Branch on openers and closers explicitly** (`c in "([{"` / `c in ")]}"`) so any non-bracket character is ignored — robust to mixed text.
 - **`if not stack or stack.pop() != pairs[c]`** — the two failure cases in one expression. Empty stack short-circuits before `.pop()` is called.
 - **Return `not stack` at the end** — empty stack means all openers got matched.
 
@@ -134,6 +141,7 @@ class Solution:
 
 | Trap | What goes wrong | Fix |
 |---|---|---|
+| `else: stack.append(c)` (push anything not a closer) | Assumes bracket-only input; stray text gets pushed as phantom openers, so `"(a)"` fails | Enumerate openers explicitly (`c in "([{"`) and ignore the rest |
 | `pairs` dict inverted (opener→closer) but indexed by closer | `KeyError` on first closer | Either flip dict to closer→opener, OR flip the comparison |
 | `False` without `return` | Naked `False` is silently discarded; function continues | `return False` |
 | Forgetting `not stack` check before `.pop()` | Calling `.pop()` on empty list raises `IndexError` | Use `not stack or ...` — short-circuits when empty |
@@ -144,7 +152,7 @@ class Solution:
 
 ## 6. Interview Out-Loud Explanation
 
-> "Brackets nest last-in-first-out, so I'll use a stack. Walk the string. On an opener, push it. On a closer, check the top of the stack — if it's the matching opener, pop and continue. If the stack is empty or the top is wrong, return False immediately.
+> "Brackets nest last-in-first-out, so I'll use a stack. Walk the string. On an opener, push it. On a closer, check the top of the stack — if it's the matching opener, pop and continue. If the stack is empty or the top is wrong, return False immediately. I enumerate openers and closers explicitly, so any other character is just ignored — that keeps it robust if the input ever contains non-bracket text.
 >
 > After the loop, the stack must be empty — anything left means an opener never got matched.
 >
@@ -156,7 +164,7 @@ class Solution:
 
 The interview is one question that grows in parts — once the stack version works, expect one of these.
 
-- **"Now the input is real text with brackets mixed in."** → Same loop. Push openers, check closers, ignore everything else.
+- **"Now the input is real text with brackets mixed in."** → The recommended code already handles it: openers and closers are enumerated explicitly, so every other character falls through and is ignored. No change needed.
 - **"Only `'('` and `')'` — can you do it without a stack?"** → Yes, a single counter: +1 on open, -1 on close, fail if it ever goes negative, valid if it ends at 0.
 - **"How many characters would you remove to make it valid?"** → Count closers that find no opener plus openers left on the stack at the end.
 - **"Design your own stack class with an extra O(1) min operation."** → That is Min Stack (LC 155), the next script in this chain.
