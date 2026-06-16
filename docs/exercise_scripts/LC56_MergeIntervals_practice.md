@@ -23,7 +23,7 @@ The interviewer scores you on capturing requirements before typing. Pick the one
 - **"Do TOUCHING intervals merge? [1,4] and [4,5]?"** — Yes, they merge to [1,5]. That's why the disjoint test is strict `>`, not `>=`.
 - **"Can one interval fully contain another?"** — Yes. That's why the merged end takes `max(last.end, current.end)`, never just current's end.
 - **"Can start equal end — point intervals like [5,5]?"** — Yes, constraints allow it; the same code handles them.
-- **"May I sort the input in place? Does output order matter?"** — In-place sort is fine; output comes out sorted by start.
+- **"May I reorder the input? Does output order matter?"** — I use `sorted()` so the caller's array is left untouched; output comes out sorted by start. (In-place `.sort()` also works if mutation is acceptable.)
 
 ---
 
@@ -32,7 +32,7 @@ The interviewer scores you on capturing requirements before typing. Pick the one
 ```python
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        result = [list(iv) for iv in intervals]
+        result = intervals
         changed = True
         while changed:
             changed = False
@@ -64,9 +64,8 @@ from typing import List
 
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        intervals.sort()
         merged = []
-        for current in intervals:
+        for current in sorted(intervals):
             if not merged or current[0] > merged[-1][1]:
                 merged.append(current)
             else:
@@ -107,7 +106,7 @@ Sorted: `[[1,3], [2,6], [8,10], [15,18]]` (already sorted).
 
 | Trap | What goes wrong | Fix |
 |---|---|---|
-| Forgetting to sort | Adjacent overlaps aren't adjacent in input | `intervals.sort()` |
+| Forgetting to sort | Adjacent overlaps aren't adjacent in input | `sorted(intervals)` (or `intervals.sort()`) |
 | Using `current[0] >= merged[-1][1]` | Touching intervals NOT merged ([1,4] and [4,5] stay separate) | Use `>` strictly; `≤` overlap rule |
 | `merged[-1][1] = current[1]` instead of max | Shrinks last.end when current is nested | `max(merged[-1][1], current[1])` |
 | Building result with tuples instead of lists | LC accepts both; tuples are immutable so can't extend | Use lists |
