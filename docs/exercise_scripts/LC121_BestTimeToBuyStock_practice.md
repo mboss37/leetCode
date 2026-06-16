@@ -160,4 +160,4 @@ Best Time to Buy/Sell is the **Greedy** pattern — one linear walk, two scalar 
 - **Container With Most Water** — track best as you walk
 - **Maximum Product Subarray** — same one-pass shape with two trackers (min + max)
 
-This is the **simplest dynamic-programming pattern** — "best ending here, best overall" — without explicitly building a DP array. Lock it in.
+This sits right on the **greedy/DP boundary**: the greedy framing ("always buy at the cheapest valid day so far") is the clean way to explain it, and it happens to be expressible as a 1-state DP ("best ending here, best overall") with no DP array. Lead with the greedy story in an interview — it's shorter to justify — and mention the DP equivalence only if pushed. Lock it in.
