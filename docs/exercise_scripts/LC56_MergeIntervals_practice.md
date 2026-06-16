@@ -32,15 +32,15 @@ The interviewer scores you on capturing requirements before typing. Pick the one
 ```python
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        result = intervals
+        result = sorted(intervals)          # sorted → a always starts at/before b
         changed = True
         while changed:
             changed = False
             for i in range(len(result)):
                 for j in range(i + 1, len(result)):
                     a, b = result[i], result[j]
-                    if a[0] <= b[1] and b[0] <= a[1]:   # overlap
-                        result[i] = [min(a[0], b[0]), max(a[1], b[1])]
+                    if b[0] <= a[1]:                    # overlap (a[0] <= b[0] guaranteed by sort)
+                        result[i] = [a[0], max(a[1], b[1])]
                         result.pop(j)
                         changed = True
                         break
@@ -52,8 +52,10 @@ class Solution:
 - **Time:** O(n³) worst case — repeatedly scan pairs and merge until stable.
 - For n = 10⁴: ~10¹² ops → TLE.
 
+> Sorting first means `result[i]` always starts at or before `result[j]` (since `i < j`), so the overlap test collapses from the two-sided `a[0] <= b[1] and b[0] <= a[1]` down to just `b[0] <= a[1]`.
+
 State verbally:
-> *"Brute force is keep scanning pairs and merging on the fly until no more merges happen. O(n³). I'll sort by start time so overlapping intervals become adjacent, then a single linear sweep handles it — O(n log n)."*
+> *"Brute force keeps rescanning pairs and merging on the fly until no more merges happen — O(n³). The fix isn't a better merge check, it's the sweep: once sorted, overlapping intervals are adjacent, so a single linear pass replaces the repeated rescans — O(n log n)."*
 
 ---
 
